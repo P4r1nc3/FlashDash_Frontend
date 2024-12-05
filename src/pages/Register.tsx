@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { TextField, Button, Box, Typography, Alert, Container } from '@mui/material';
 import { register } from '../api/auth';
 
@@ -28,10 +28,19 @@ const Register = () => {
                 flexDirection="column"
                 alignItems="center"
                 justifyContent="center"
-                sx={{ mt: 8 }}
+                sx={{
+                    mt: 10,
+                    boxShadow: 3,
+                    p: 4,
+                    borderRadius: 2,
+                    backgroundColor: 'white',
+                }}
             >
-                <Typography variant="h4" gutterBottom>
-                    Register
+                <Typography variant="h4" fontWeight="bold" gutterBottom>
+                    Create an Account
+                </Typography>
+                <Typography variant="body1" color="textSecondary" gutterBottom>
+                    Join us today!
                 </Typography>
                 <form onSubmit={handleRegister} style={{ width: '100%' }}>
                     <TextField
@@ -80,11 +89,24 @@ const Register = () => {
                         variant="contained"
                         color="primary"
                         fullWidth
-                        sx={{ mt: 3 }}
+                        sx={{ mt: 3, py: 1.5, fontSize: '1rem' }}
                     >
                         Register
                     </Button>
                 </form>
+                <Typography variant="body2" sx={{ mt: 2 }}>
+                    Already have an account?{' '}
+                    <Link
+                        to="/login"
+                        style={{
+                            color: '#1976d2',
+                            textDecoration: 'none',
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        Login
+                    </Link>
+                </Typography>
             </Box>
         </Container>
     );
