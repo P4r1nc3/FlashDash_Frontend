@@ -10,16 +10,19 @@ import {
     CardContent,
     CardActions,
     Alert,
+    MenuItem,
+    Select,
+    InputLabel,
+    FormControl,
 } from '@mui/material';
 import { getDecks, createDeck, updateDeck, deleteDeck } from '../api/decks';
-import { Deck } from '../interfaces/Deck';
-
+import { Deck, DeckType } from '../interfaces/Deck';
 
 const DeckManager = () => {
     const [decks, setDecks] = useState<Deck[]>([]);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [deckType, setDeckType] = useState('QUESTION');
+    const [deckType, setDeckType] = useState<DeckType>(DeckType.QUESTION);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [editingDeck, setEditingDeck] = useState<Deck | null>(null);
@@ -67,7 +70,7 @@ const DeckManager = () => {
     const resetForm = () => {
         setName('');
         setDescription('');
-        setDeckType('QUESTION');
+        setDeckType(DeckType.QUESTION);
         setEditingDeck(null);
         setError('');
         setSuccess('');
@@ -103,14 +106,18 @@ const DeckManager = () => {
                         margin="normal"
                         required
                     />
-                    <TextField
-                        label="Deck Type"
-                        value={deckType}
-                        onChange={(e) => setDeckType(e.target.value)}
-                        fullWidth
-                        margin="normal"
-                        required
-                    />
+                    <FormControl fullWidth margin="normal" required>
+                        <InputLabel id="deck-type-label">Deck Type</InputLabel>
+                        <Select
+                            labelId="deck-type-label"
+                            value={deckType}
+                            onChange={(e) => setDeckType(e.target.value as DeckType)}
+                            disabled={!!editingDeck}
+                        >
+                            <MenuItem value={DeckType.QUESTION}>Question</MenuItem>
+                            <MenuItem value={DeckType.CARD}>Card</MenuItem>
+                        </Select>
+                    </FormControl>
                     {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
                     {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
                     <Button
