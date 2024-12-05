@@ -1,6 +1,11 @@
+export enum DeckType {
+    QUESTION = 'QUESTION',
+    CARD = 'CARD',
+}
+
 export interface Deck {
     id: number;
-    deckType: string;
+    deckType: DeckType;
     name: string;
     description: string;
     createdAt: string;
