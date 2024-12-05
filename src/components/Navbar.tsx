@@ -14,7 +14,6 @@ const Navbar = () => {
                     justifyContent: 'space-between',
                 }}
             >
-                {/* Logo po lewej stronie */}
                 <Typography
                     variant="h6"
                     component={Link}
@@ -29,10 +28,21 @@ const Navbar = () => {
                     FlashDash
                 </Typography>
 
-                {/* Linki po prawej stronie */}
                 <Box>
                     {auth?.isAuthenticated ? (
                         <>
+                            <Button
+                                component={Link}
+                                to="/decks"
+                                sx={{
+                                    textTransform: 'none',
+                                    color: 'black',
+                                    fontWeight: 'bold',
+                                    fontSize: '1rem',
+                                }}
+                            >
+                                Decks
+                            </Button>
                             <Button
                                 component={Link}
                                 to="/account"
