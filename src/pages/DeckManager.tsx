@@ -3,29 +3,31 @@ import {
     Container,
     Box,
     Typography,
-    TextField,
     Button,
     Grid,
     Card,
     CardContent,
     CardActions,
-    Alert,
-    MenuItem,
-    Select,
-    InputLabel,
+    TextField,
     FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
 } from '@mui/material';
 import { getDecks, createDeck, updateDeck, deleteDeck } from '../api/decks';
 import { Deck, DeckType } from '../interfaces/Deck';
 
 const DeckManager = () => {
     const [decks, setDecks] = useState<Deck[]>([]);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [editingDeck, setEditingDeck] = useState<Deck | null>(null);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [deckType, setDeckType] = useState<DeckType>(DeckType.QUESTION);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const [editingDeck, setEditingDeck] = useState<Deck | null>(null);
 
     useEffect(() => {
         fetchDecks();
@@ -35,61 +37,125 @@ const DeckManager = () => {
         try {
             const data = await getDecks();
             setDecks(data);
-        } catch (err: any) {
-            setError('Failed to load decks.');
+        } catch (error) {
+            console.error('Failed to fetch decks:', error);
         }
     };
 
-    const handleCreateOrUpdate = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleOpenModal = (deck?: Deck) => {
+        if (deck) {
+            setEditingDeck(deck);
+            setName(deck.name);
+            setDescription(deck.description);
+            setDeckType(deck.deckType);
+        } else {
+            resetForm();
+        }
+        setModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        resetForm();
+    };
+
+    const handleSubmit = async () => {
         try {
             if (editingDeck) {
                 await updateDeck(editingDeck.id, { name, description, deckType });
-                setSuccess('Deck updated successfully!');
             } else {
                 await createDeck({ name, description, deckType });
-                setSuccess('Deck created successfully!');
             }
-            resetForm();
             fetchDecks();
-        } catch (err: any) {
-            setError('Failed to save deck.');
+            handleCloseModal();
+        } catch (error) {
+            console.error('Failed to save deck:', error);
         }
     };
 
     const handleDelete = async (deckId: number) => {
         try {
             await deleteDeck(deckId);
-            setSuccess('Deck deleted successfully!');
             fetchDecks();
-        } catch (err: any) {
-            setError('Failed to delete deck.');
+        } catch (error) {
+            console.error('Failed to delete deck:', error);
         }
     };
 
     const resetForm = () => {
+        setEditingDeck(null);
         setName('');
         setDescription('');
         setDeckType(DeckType.QUESTION);
-        setEditingDeck(null);
-        setError('');
-        setSuccess('');
-    };
-
-    const handleEdit = (deck: Deck) => {
-        setEditingDeck(deck);
-        setName(deck.name);
-        setDescription(deck.description);
-        setDeckType(deck.deckType);
     };
 
     return (
-        <Container maxWidth="md">
-            <Box sx={{ mt: 4 }}>
+        <Container maxWidth="lg">
+            <Box sx={{ textAlign: 'center', mb: 4 }}>
                 <Typography variant="h4" gutterBottom>
                     Manage Decks
                 </Typography>
-                <form onSubmit={handleCreateOrUpdate}>
+            </Box>
+            <Grid container spacing={3} justifyContent="center">
+                {decks.map((deck) => (
+                    <Grid item xs={12} sm={6} md={4} key={deck.id}>
+                        <Card sx={{ height: 180, position: 'relative' }}>
+                            <CardContent>
+                                <Typography variant="h6" gutterBottom>
+                                    {deck.name}
+                                </Typography>
+                                <Typography variant="body2" color="textSecondary">
+                                    {deck.description}
+                                </Typography>
+                                <Typography variant="body2" color="textSecondary">
+                                    Type: {deck.deckType}
+                                </Typography>
+                            </CardContent>
+                            <CardActions
+                                sx={{ position: 'absolute', bottom: 8, right: 8 }}
+                            >
+                                <Button
+                                    size="small"
+                                    onClick={() => handleOpenModal(deck)}
+                                >
+                                    Edit
+                                </Button>
+                                <Button
+                                    size="small"
+                                    color="error"
+                                    onClick={() => handleDelete(deck.id)}
+                                >
+                                    Delete
+                                </Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                ))}
+                <Grid item xs={12} sm={6} md={4}>
+                    <Card
+                        onClick={() => handleOpenModal()}
+                        sx={{
+                            height: 180,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            border: '2px dashed gray',
+                        }}
+                    >
+                        <Typography variant="h5" color="textSecondary">
+                            + Add Deck
+                        </Typography>
+                    </Card>
+                </Grid>
+            </Grid>
+
+            {/* Modal for Adding/Editing Deck */}
+            <Dialog open={modalOpen} onClose={handleCloseModal}>
+                <DialogTitle>
+                    {editingDeck ? 'Edit Deck' : 'Create Deck'}
+                </DialogTitle>
+                <DialogContent>
                     <TextField
                         label="Name"
                         value={name}
@@ -111,71 +177,25 @@ const DeckManager = () => {
                         <Select
                             labelId="deck-type-label"
                             value={deckType}
-                            onChange={(e) => setDeckType(e.target.value as DeckType)}
-                            disabled={!!editingDeck}
+                            onChange={(e) =>
+                                setDeckType(e.target.value as DeckType)
+                            }
+                            disabled={!!editingDeck} // Disable when editing
                         >
                             <MenuItem value={DeckType.QUESTION}>Question</MenuItem>
                             <MenuItem value={DeckType.CARD}>Card</MenuItem>
                         </Select>
                     </FormControl>
-                    {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-                    {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        sx={{ mt: 2 }}
-                    >
-                        {editingDeck ? 'Update Deck' : 'Create Deck'}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseModal} color="secondary">
+                        Cancel
                     </Button>
-                    {editingDeck && (
-                        <Button
-                            variant="outlined"
-                            sx={{ mt: 2, ml: 2 }}
-                            onClick={resetForm}
-                        >
-                            Cancel Edit
-                        </Button>
-                    )}
-                </form>
-                <Box sx={{ mt: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                        Existing Decks
-                    </Typography>
-                    <Grid container spacing={2}>
-                        {decks.map((deck) => (
-                            <Grid item xs={12} sm={6} md={4} key={deck.id}>
-                                <Card>
-                                    <CardContent>
-                                        <Typography variant="h6">{deck.name}</Typography>
-                                        <Typography color="textSecondary">
-                                            {deck.description}
-                                        </Typography>
-                                        <Typography color="textSecondary">
-                                            Type: {deck.deckType}
-                                        </Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        <Button
-                                            size="small"
-                                            onClick={() => handleEdit(deck)}
-                                        >
-                                            Edit
-                                        </Button>
-                                        <Button
-                                            size="small"
-                                            color="error"
-                                            onClick={() => handleDelete(deck.id)}
-                                        >
-                                            Delete
-                                        </Button>
-                                    </CardActions>
-                                </Card>
-                            </Grid>
-                        ))}
-                    </Grid>
-                </Box>
-            </Box>
+                    <Button onClick={handleSubmit} variant="contained" color="primary">
+                        {editingDeck ? 'Update' : 'Create'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 };
