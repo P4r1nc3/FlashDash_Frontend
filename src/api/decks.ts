@@ -13,9 +13,9 @@ export const getDecks = async (): Promise<Deck[]> => {
     return response.data;
 };
 
-export const getDeck = async (deckId: number): Promise<Deck> => {
+export const getDeckDetails = async (deckId: string): Promise<Deck> => {
     const token = getToken();
-    const response: AxiosResponse<Deck> = await axiosInstance.get(`/decks/${deckId}`, {
+    const response = await axiosInstance.get(`/decks/${deckId}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
