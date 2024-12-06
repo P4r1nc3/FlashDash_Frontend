@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import { getDecks, createDeck, updateDeck, deleteDeck } from '../api/decks';
 import { Deck, DeckType } from '../interfaces/Deck';
+import { useNavigate } from 'react-router-dom';
 
 const DeckManager = () => {
     const [decks, setDecks] = useState<Deck[]>([]);
@@ -28,6 +29,7 @@ const DeckManager = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [deckType, setDeckType] = useState<DeckType>(DeckType.QUESTION);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchDecks();
@@ -89,6 +91,10 @@ const DeckManager = () => {
         setDeckType(DeckType.QUESTION);
     };
 
+    const handleViewDeck = (deckId: number) => {
+        navigate(`/decks/${deckId}`);
+    };
+
     return (
         <Container maxWidth="lg">
             <Box sx={{ textAlign: 'center', mb: 4 }}>
@@ -114,6 +120,9 @@ const DeckManager = () => {
                             <CardActions
                                 sx={{ position: 'absolute', bottom: 8, right: 8 }}
                             >
+                                <Button size="small" onClick={() => handleViewDeck(deck.id)}>
+                                    View
+                                </Button>
                                 <Button
                                     size="small"
                                     onClick={() => handleOpenModal(deck)}
