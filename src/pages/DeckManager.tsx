@@ -129,7 +129,7 @@ const DeckManager = () => {
 
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long' };
-        return new Date(date).toLocaleDateString(undefined, options);
+        return new Date(date).toLocaleDateString('en-US', options);
     };
 
     const groupedDecksByDate = () => {
