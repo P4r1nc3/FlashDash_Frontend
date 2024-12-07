@@ -5,24 +5,20 @@ import {
     Tab,
     Box,
     Button,
-    Grid,
     TextField,
     Select,
     MenuItem,
     FormControl,
     InputLabel,
-    Card,
-    CardContent,
-    CardActions,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
+    Divider,
+    IconButton,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDecks, createDeck, updateDeck, deleteDeck } from '../api/decks';
 import { Deck, DeckType } from '../interfaces/Deck';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 const DeckManager = () => {
     const [decks, setDecks] = useState<Deck[]>([]);
@@ -189,101 +185,68 @@ const DeckManager = () => {
             </Box>
             {Object.keys(groupedDecks).map((date) => (
                 <Box key={date} mb={4}>
-                    <Typography variant="h6" fontWeight="bold" gutterBottom>
-                        {date}
+                    <Typography
+                        variant="subtitle1"
+                        fontWeight="bold"
+                        color="textSecondary"
+                        gutterBottom
+                        sx={{ borderBottom: '1px solid #e0e0e0', pb: 1 }}
+                    >
+                        In {date}
                     </Typography>
-                    <Grid container spacing={3}>
-                        {groupedDecks[date].map((deck) => (
-                            <Grid
-                                item
-                                xs={12}
-                                sm={6}
-                                md={4}
-                                key={deck.id}
-                                onClick={() => navigate(`/decks/${deck.id}`)}
-                                style={{ cursor: 'pointer' }}
-                            >
-                                <Card>
-                                    <CardContent>
-                                        <Typography variant="h6">{deck.name}</Typography>
-                                        <Typography
-                                            variant="body2"
-                                            color="textSecondary"
-                                            gutterBottom
-                                        >
-                                            {deck.description}
-                                        </Typography>
-                                        <Typography variant="body2" color="textSecondary">
-                                            {deck.deckType === 'CARD' ? 'Card Deck' : 'Question Deck'}
-                                        </Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        <Button
-                                            size="small"
-                                            color="primary"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleEditDeck(deck);
-                                            }}
-                                        >
-                                            Edit
-                                        </Button>
-                                        <Button
-                                            size="small"
-                                            color="error"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleDeleteDeck(deck.id);
-                                            }}
-                                        >
-                                            Delete
-                                        </Button>
-                                    </CardActions>
-                                </Card>
-                            </Grid>
-                        ))}
-                    </Grid>
+                    {groupedDecks[date].map((deck) => (
+                        <Box
+                            key={deck.id}
+                            onClick={() => navigate(`/decks/${deck.id}`)}
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                padding: 2,
+                                border: '1px solid #e0e0e0',
+                                borderRadius: '8px',
+                                marginBottom: 1,
+                                cursor: 'pointer',
+                                backgroundColor: '#fff',
+                                '&:hover': { backgroundColor: '#f9f9f9' },
+                            }}
+                        >
+                            <Box>
+                                <Typography variant="h6">{deck.name}</Typography>
+                                <Typography
+                                    variant="body2"
+                                    color="textSecondary"
+                                    gutterBottom
+                                >
+                                    {deck.description}
+                                </Typography>
+                                <Typography variant="body2" color="textSecondary">
+                                    {deck.deckType === 'CARD' ? 'Card Deck' : 'Question Deck'}
+                                </Typography>
+                            </Box>
+                            <Box>
+                                <IconButton
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleEditDeck(deck);
+                                    }}
+                                >
+                                    <EditIcon />
+                                </IconButton>
+                                <IconButton
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteDeck(deck.id);
+                                    }}
+                                    color="error"
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Box>
+                        </Box>
+                    ))}
                 </Box>
             ))}
-            <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
-                <DialogTitle>{editingDeck ? 'Edit Deck' : 'Create Deck'}</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        label="Name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel id="deck-type-label">Deck Type</InputLabel>
-                        <Select
-                            labelId="deck-type-label"
-                            value={deckType}
-                            onChange={(e) => setDeckType(e.target.value as DeckType)}
-                            disabled={!!editingDeck}
-                        >
-                            <MenuItem value="CARD">Card Deck</MenuItem>
-                            <MenuItem value="QUESTION">Question Deck</MenuItem>
-                        </Select>
-                    </FormControl>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setModalOpen(false)} color="secondary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleSubmitDeck} variant="contained" color="primary">
-                        {editingDeck ? 'Update' : 'Create'}
-                    </Button>
-                </DialogActions>
-            </Dialog>
         </Container>
     );
 };
