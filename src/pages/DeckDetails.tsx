@@ -21,10 +21,12 @@ import AddIcon from '@mui/icons-material/Add';
 import {
     getCardsInDeck,
     addCardToDeck,
+    updateCard,
 } from '../api/cards';
 import {
     getQuestionsInDeck,
     addQuestionToDeck,
+    updateQuestion,
 } from '../api/questions';
 import { getDeckDetails } from '../api/decks';
 import { DeckType } from '../interfaces/Deck';
@@ -42,7 +44,11 @@ const DeckDetails = () => {
     const [questions, setQuestions] = useState<QuestionResponse[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
+
     const [modalOpen, setModalOpen] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editItemId, setEditItemId] = useState<string | null>(null);
+
     const [newQuestion, setNewQuestion] = useState('');
     const [newAnswer, setNewAnswer] = useState('');
     const [difficulty, setDifficulty] = useState('medium');
@@ -76,6 +82,32 @@ const DeckDetails = () => {
     }, [deckId]);
 
     const handleAdd = () => {
+        setIsEditing(false);
+        setEditItemId(null);
+        setNewQuestion('');
+        setNewAnswer('');
+        setDifficulty('medium');
+        setIncorrectAnswers(['', '', '']);
+        setModalOpen(true);
+    };
+
+    const handleEdit = (itemId: string) => {
+        const item = deckType === 'CARD'
+            ? cards.find((card) => card.cardId === itemId)
+            : questions.find((question) => question.questionId === itemId);
+
+        if (!item) return;
+
+        setIsEditing(true);
+        setEditItemId(itemId);
+        setNewQuestion(item.question);
+        setNewAnswer(deckType === 'CARD' ? item.answer : item.correctAnswers[0]);
+        setDifficulty(item.difficulty);
+
+        if (deckType === 'QUESTION' && 'incorrectAnswers' in item) {
+            setIncorrectAnswers(item.incorrectAnswers);
+        }
+
         setModalOpen(true);
     };
 
@@ -84,29 +116,42 @@ const DeckDetails = () => {
             if (!deckId) return;
 
             if (deckType === 'CARD') {
-                await addCardToDeck(deckId, {
-                    question: newQuestion,
-                    answer: newAnswer,
-                    difficulty,
-                });
+                if (isEditing && editItemId) {
+                    await updateCard(deckId, editItemId, {
+                        question: newQuestion,
+                        answer: newAnswer,
+                        difficulty,
+                    });
+                } else {
+                    await addCardToDeck(deckId, {
+                        question: newQuestion,
+                        answer: newAnswer,
+                        difficulty,
+                    });
+                }
                 const updatedCards = await getCardsInDeck(deckId);
                 setCards(updatedCards);
             } else if (deckType === 'QUESTION') {
-                await addQuestionToDeck(deckId, {
-                    question: newQuestion,
-                    correctAnswers: [newAnswer],
-                    incorrectAnswers: incorrectAnswers.filter((ans) => ans),
-                    difficulty,
-                });
+                if (isEditing && editItemId) {
+                    await updateQuestion(deckId, editItemId, {
+                        question: newQuestion,
+                        correctAnswers: [newAnswer],
+                        incorrectAnswers: incorrectAnswers.filter((ans) => ans),
+                        difficulty,
+                    });
+                } else {
+                    await addQuestionToDeck(deckId, {
+                        question: newQuestion,
+                        correctAnswers: [newAnswer],
+                        incorrectAnswers: incorrectAnswers.filter((ans) => ans),
+                        difficulty,
+                    });
+                }
                 const updatedQuestions = await getQuestionsInDeck(deckId);
                 setQuestions(updatedQuestions);
             }
 
             setModalOpen(false);
-            setNewQuestion('');
-            setNewAnswer('');
-            setDifficulty('medium');
-            setIncorrectAnswers(['', '', '']);
         } catch (error) {
             console.error('Failed to save item:', error);
         }
@@ -185,6 +230,7 @@ const DeckDetails = () => {
                         }}
                     >
                         <IconButton
+                            onClick={() => handleEdit(deckType === 'CARD' ? currentItem.cardId : currentItem.questionId)}
                             sx={{
                                 position: 'absolute',
                                 top: 16,
@@ -249,9 +295,11 @@ const DeckDetails = () => {
                 </Typography>
             )}
 
-            {/* Add Modal */}
+            {/* Add/Edit Modal */}
             <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
-                <DialogTitle>Add {deckType === 'CARD' ? 'Card' : 'Question'}</DialogTitle>
+                <DialogTitle>
+                    {isEditing ? 'Edit' : 'Add'} {deckType === 'CARD' ? 'Card' : 'Question'}
+                </DialogTitle>
                 <DialogContent>
                     <TextField
                         label="Question"
