@@ -2,14 +2,17 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
     Container,
-    Box,
     Typography,
+    Box,
     Button,
-    Grid,
+    IconButton,
     Card,
     CardContent,
-    CardActions,
 } from '@mui/material';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import EditIcon from '@mui/icons-material/Edit';
+import AddIcon from '@mui/icons-material/Add';
 import {
     getCardsInDeck,
     addCardToDeck,
@@ -30,11 +33,13 @@ const DeckDetails = () => {
     const navigate = useNavigate();
 
     const [deckType, setDeckType] = useState<DeckType | null>(null);
+    const [deckName, setDeckName] = useState('');
+    const [deckDescription, setDeckDescription] = useState('');
     const [cards, setCards] = useState<CardResponse[]>([]);
     const [questions, setQuestions] = useState<QuestionResponse[]>([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
 
-    // Fetch deck details and data based on the deck type
     useEffect(() => {
         const fetchDeckDetails = async () => {
             try {
@@ -42,6 +47,8 @@ const DeckDetails = () => {
 
                 const deckDetails = await getDeckDetails(deckId);
                 setDeckType(deckDetails.deckType);
+                setDeckName(deckDetails.name);
+                setDeckDescription(deckDetails.description);
 
                 if (deckDetails.deckType === 'CARD') {
                     const cardData = await getCardsInDeck(deckId);
@@ -60,7 +67,6 @@ const DeckDetails = () => {
         fetchDeckDetails();
     }, [deckId]);
 
-    // Add a card or question based on the deck type
     const handleAdd = async () => {
         try {
             if (!deckId) return;
@@ -88,24 +94,24 @@ const DeckDetails = () => {
         }
     };
 
-    // Delete a card or question
-    const handleDelete = async (id: string) => {
-        try {
-            if (!deckId) return;
-
-            if (deckType === 'CARD') {
-                await deleteCard(deckId, id);
-                const updatedCards = await getCardsInDeck(deckId);
-                setCards(updatedCards);
-            } else if (deckType === 'QUESTION') {
-                await deleteQuestion(deckId, id);
-                const updatedQuestions = await getQuestionsInDeck(deckId);
-                setQuestions(updatedQuestions);
-            }
-        } catch (error) {
-            console.error('Failed to delete item:', error);
+    const handleNavigate = (direction: 'prev' | 'next') => {
+        if (direction === 'prev') {
+            setCurrentIndex((prevIndex) =>
+                prevIndex === 0 ? currentDeck.length - 1 : prevIndex - 1
+            );
+        } else {
+            setCurrentIndex((prevIndex) =>
+                prevIndex === currentDeck.length - 1 ? 0 : prevIndex + 1
+            );
         }
     };
+
+    const handleEdit = (id: string) => {
+        console.log(`Edit ${id}`);
+    };
+
+    const currentDeck = deckType === 'CARD' ? cards : questions;
+    const currentItem = currentDeck[currentIndex];
 
     if (loading) {
         return (
@@ -119,58 +125,110 @@ const DeckDetails = () => {
 
     return (
         <Container>
-            <Box sx={{ textAlign: 'center', mb: 4 }}>
-                <Typography variant="h4">
-                    {deckType === 'CARD' ? 'Manage Cards' : 'Manage Questions'}
+            <Box sx={{ textAlign: 'center', my: 4 }}>
+                <Typography variant="h4" fontWeight="bold">
+                    {deckName}
                 </Typography>
+                {deckDescription && (
+                    <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        sx={{ mt: 1 }}
+                    >
+                        {deckDescription}
+                    </Typography>
+                )}
             </Box>
-            <Button
-                variant="contained"
-                onClick={handleAdd}
-                sx={{ mb: 3 }}
-            >
-                Add {deckType === 'CARD' ? 'Card' : 'Question'}
-            </Button>
-            <Grid container spacing={3}>
-                {(deckType === 'CARD' ? cards : questions).map((item) => {
-                    const id = deckType === 'CARD' ? (item as CardResponse).cardId : (item as QuestionResponse).questionId;
-                    const question = deckType === 'CARD' ? (item as CardResponse).question : (item as QuestionResponse).question;
-                    const answer = deckType === 'CARD' ? (item as CardResponse).answer : null;
 
-                    return (
-                        <Grid item xs={12} sm={6} md={4} key={id}>
-                            <Card>
-                                <CardContent>
-                                    <Typography variant="h6">{question}</Typography>
-                                    {answer && (
-                                        <Typography
-                                            variant="body2"
-                                            color="textSecondary"
-                                        >
-                                            {answer}
-                                        </Typography>
-                                    )}
-                                </CardContent>
-                                <CardActions>
-                                    <Button
-                                        color="error"
-                                        onClick={() => handleDelete(id!)}
-                                    >
-                                        Delete
-                                    </Button>
-                                </CardActions>
-                            </Card>
-                        </Grid>
-                    );
-                })}
-            </Grid>
-            <Button
-                variant="outlined"
-                sx={{ mt: 3 }}
-                onClick={() => navigate('/decks')}
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mb: 3,
+                }}
             >
-                Back to Decks
-            </Button>
+                <Button variant="outlined" onClick={() => navigate('/decks')}>
+                    Back to Decks
+                </Button>
+                <Button
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                    onClick={handleAdd}
+                >
+                    Add {deckType === 'CARD' ? 'Card' : 'Question'}
+                </Button>
+            </Box>
+
+            {currentDeck.length > 0 ? (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        mt: 5,
+                        mb: 5,
+                        position: 'relative',
+                    }}
+                >
+                    <IconButton onClick={() => handleNavigate('prev')}>
+                        <ArrowBackIosIcon />
+                    </IconButton>
+                    <Card
+                        sx={{
+                            width: '100%',
+                            maxWidth: 600,
+                            p: 3,
+                            position: 'relative',
+                        }}
+                    >
+                        <IconButton
+                            onClick={() => handleEdit(currentItem.cardId || currentItem.questionId)}
+                            sx={{
+                                position: 'absolute',
+                                top: 16,
+                                right: 16,
+                                color: 'gray',
+                            }}
+                        >
+                            <EditIcon />
+                        </IconButton>
+                        <CardContent sx={{ textAlign: 'center' }}>
+                            <Typography variant="h5">
+                                {currentItem?.question}
+                            </Typography>
+                            {deckType === 'CARD' && currentItem?.answer && (
+                                <Typography
+                                    variant="body2"
+                                    color="textSecondary"
+                                    sx={{ mt: 2 }}
+                                >
+                                    {currentItem?.answer}
+                                </Typography>
+                            )}
+                        </CardContent>
+                    </Card>
+                    <IconButton onClick={() => handleNavigate('next')}>
+                        <ArrowForwardIosIcon />
+                    </IconButton>
+                </Box>
+            ) : (
+                <Typography variant="body1" align="center" sx={{ mt: 5 }}>
+                    No items in this deck yet. Add a{' '}
+                    {deckType === 'CARD' ? 'Card' : 'Question'} to get started.
+                </Typography>
+            )}
+
+            {currentDeck.length > 0 && (
+                <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    align="center"
+                    sx={{ mt: 2 }}
+                >
+                    {currentIndex + 1} / {currentDeck.length}
+                </Typography>
+            )}
         </Container>
     );
 };
