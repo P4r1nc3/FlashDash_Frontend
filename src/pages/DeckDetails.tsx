@@ -55,6 +55,7 @@ const DeckDetails = () => {
     const [editItemId, setEditItemId] = useState<string | null>(null);
 
     const [newQuestion, setNewQuestion] = useState('');
+    const [newAnswer, setNewAnswer] = useState('');
     const [correctAnswers, setCorrectAnswers] = useState<string[]>(['']);
     const [incorrectAnswers, setIncorrectAnswers] = useState<string[]>(['']);
     const [difficulty, setDifficulty] = useState<Difficulty>(Difficulty.MEDIUM);
@@ -90,6 +91,7 @@ const DeckDetails = () => {
         setIsEditing(false);
         setEditItemId(null);
         setNewQuestion('');
+        setNewAnswer('');
         setCorrectAnswers(['']);
         setIncorrectAnswers(['']);
         setDifficulty(Difficulty.MEDIUM);
@@ -107,7 +109,9 @@ const DeckDetails = () => {
         setEditItemId(itemId);
         setNewQuestion(item.question);
 
-        if (deckType === 'QUESTION') {
+        if (deckType === 'CARD') {
+            setNewAnswer(item.answer || '');
+        } else if (deckType === 'QUESTION') {
             setCorrectAnswers(item.correctAnswers || []);
             setIncorrectAnswers(item.incorrectAnswers || []);
         }
@@ -125,13 +129,13 @@ const DeckDetails = () => {
                 if (isEditing && editItemId) {
                     await updateCard(deckId, editItemId, {
                         question: newQuestion,
-                        answer: correctAnswers[0] || '', // For cards, the first correct answer is the main answer
+                        answer: newAnswer, // Cards require a single answer
                         difficulty,
                     });
                 } else {
                     await addCardToDeck(deckId, {
                         question: newQuestion,
-                        answer: correctAnswers[0] || '',
+                        answer: newAnswer,
                         difficulty,
                     });
                 }
@@ -314,6 +318,15 @@ const DeckDetails = () => {
                         fullWidth
                         margin="normal"
                     />
+                    {deckType === 'CARD' && (
+                        <TextField
+                            label="Answer"
+                            value={newAnswer}
+                            onChange={(e) => setNewAnswer(e.target.value)}
+                            fullWidth
+                            margin="normal"
+                        />
+                    )}
                     {deckType === 'QUESTION' && (
                         <>
                             <Typography variant="subtitle1" sx={{ mt: 2 }}>
