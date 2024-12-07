@@ -8,6 +8,11 @@ import {
     IconButton,
     Card,
     CardContent,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    TextField,
 } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -16,12 +21,10 @@ import AddIcon from '@mui/icons-material/Add';
 import {
     getCardsInDeck,
     addCardToDeck,
-    deleteCard,
 } from '../api/cards';
 import {
     getQuestionsInDeck,
     addQuestionToDeck,
-    deleteQuestion,
 } from '../api/questions';
 import { getDeckDetails } from '../api/decks';
 import { DeckType } from '../interfaces/Deck';
@@ -39,6 +42,11 @@ const DeckDetails = () => {
     const [questions, setQuestions] = useState<QuestionResponse[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [newQuestion, setNewQuestion] = useState('');
+    const [newAnswer, setNewAnswer] = useState('');
+    const [difficulty, setDifficulty] = useState('medium');
+    const [incorrectAnswers, setIncorrectAnswers] = useState<string[]>(['', '', '']);
 
     useEffect(() => {
         const fetchDeckDetails = async () => {
@@ -67,47 +75,41 @@ const DeckDetails = () => {
         fetchDeckDetails();
     }, [deckId]);
 
-    const handleAdd = async () => {
+    const handleAdd = () => {
+        setModalOpen(true);
+    };
+
+    const handleSave = async () => {
         try {
             if (!deckId) return;
 
             if (deckType === 'CARD') {
                 await addCardToDeck(deckId, {
-                    question: 'Sample Question',
-                    answer: 'Sample Answer',
-                    difficulty: 'medium',
+                    question: newQuestion,
+                    answer: newAnswer,
+                    difficulty,
                 });
                 const updatedCards = await getCardsInDeck(deckId);
                 setCards(updatedCards);
             } else if (deckType === 'QUESTION') {
                 await addQuestionToDeck(deckId, {
-                    question: 'Sample Question',
-                    correctAnswers: ['Correct Answer'],
-                    incorrectAnswers: ['Wrong Answer 1', 'Wrong Answer 2'],
-                    difficulty: 'medium',
+                    question: newQuestion,
+                    correctAnswers: [newAnswer],
+                    incorrectAnswers: incorrectAnswers.filter((ans) => ans),
+                    difficulty,
                 });
                 const updatedQuestions = await getQuestionsInDeck(deckId);
                 setQuestions(updatedQuestions);
             }
+
+            setModalOpen(false);
+            setNewQuestion('');
+            setNewAnswer('');
+            setDifficulty('medium');
+            setIncorrectAnswers(['', '', '']);
         } catch (error) {
-            console.error('Failed to add item:', error);
+            console.error('Failed to save item:', error);
         }
-    };
-
-    const handleNavigate = (direction: 'prev' | 'next') => {
-        if (direction === 'prev') {
-            setCurrentIndex((prevIndex) =>
-                prevIndex === 0 ? currentDeck.length - 1 : prevIndex - 1
-            );
-        } else {
-            setCurrentIndex((prevIndex) =>
-                prevIndex === currentDeck.length - 1 ? 0 : prevIndex + 1
-            );
-        }
-    };
-
-    const handleEdit = (id: string) => {
-        console.log(`Edit ${id}`);
     };
 
     const currentDeck = deckType === 'CARD' ? cards : questions;
@@ -171,7 +173,7 @@ const DeckDetails = () => {
                         position: 'relative',
                     }}
                 >
-                    <IconButton onClick={() => handleNavigate('prev')}>
+                    <IconButton onClick={() => setCurrentIndex((prevIndex) => (prevIndex === 0 ? currentDeck.length - 1 : prevIndex - 1))}>
                         <ArrowBackIosIcon />
                     </IconButton>
                     <Card
@@ -183,7 +185,6 @@ const DeckDetails = () => {
                         }}
                     >
                         <IconButton
-                            onClick={() => handleEdit(currentItem.cardId || currentItem.questionId)}
                             sx={{
                                 position: 'absolute',
                                 top: 16,
@@ -208,7 +209,7 @@ const DeckDetails = () => {
                             )}
                         </CardContent>
                     </Card>
-                    <IconButton onClick={() => handleNavigate('next')}>
+                    <IconButton onClick={() => setCurrentIndex((prevIndex) => (prevIndex === currentDeck.length - 1 ? 0 : prevIndex + 1))}>
                         <ArrowForwardIosIcon />
                     </IconButton>
                 </Box>
@@ -229,6 +230,62 @@ const DeckDetails = () => {
                     {currentIndex + 1} / {currentDeck.length}
                 </Typography>
             )}
+
+            {/* Add Modal */}
+            <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
+                <DialogTitle>Add {deckType === 'CARD' ? 'Card' : 'Question'}</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        label="Question"
+                        value={newQuestion}
+                        onChange={(e) => setNewQuestion(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <TextField
+                        label={deckType === 'CARD' ? 'Answer' : 'Correct Answer'}
+                        value={newAnswer}
+                        onChange={(e) => setNewAnswer(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+                    {deckType === 'QUESTION' && (
+                        <>
+                            {incorrectAnswers.map((incorrectAnswer, index) => (
+                                <TextField
+                                    key={index}
+                                    label={`Incorrect Answer ${index + 1}`}
+                                    value={incorrectAnswer}
+                                    onChange={(e) =>
+                                        setIncorrectAnswers((prev) =>
+                                            prev.map((ans, i) =>
+                                                i === index ? e.target.value : ans
+                                            )
+                                        )
+                                    }
+                                    fullWidth
+                                    margin="normal"
+                                />
+                            ))}
+                        </>
+                    )}
+                    <TextField
+                        label="Difficulty"
+                        value={difficulty}
+                        onChange={(e) => setDifficulty(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setModalOpen(false)} color="secondary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleSave} variant="contained" color="primary">
+                        Save
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 };
