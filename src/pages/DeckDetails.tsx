@@ -207,6 +207,24 @@ const DeckDetails = () => {
                                     {currentItem?.answer}
                                 </Typography>
                             )}
+                            {deckType === 'QUESTION' && (
+                                <>
+                                    <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                        sx={{ mt: 2 }}
+                                    >
+                                        <strong>Correct Answer:</strong> {currentItem?.correctAnswers?.join(', ')}
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                        sx={{ mt: 1 }}
+                                    >
+                                        <strong>Incorrect Answers:</strong> {currentItem?.incorrectAnswers?.join(', ')}
+                                    </Typography>
+                                </>
+                            )}
                         </CardContent>
                     </Card>
                     <IconButton onClick={() => setCurrentIndex((prevIndex) => (prevIndex === currentDeck.length - 1 ? 0 : prevIndex + 1))}>
