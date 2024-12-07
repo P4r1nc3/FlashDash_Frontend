@@ -170,6 +170,10 @@ const DeckDetails = () => {
     const currentDeck = deckType === 'CARD' ? cards : questions;
     const currentItem = currentDeck[currentIndex];
 
+    const navigateToGameMode = (mode: 'flashcards' | 'matching') => {
+        navigate(`/decks/${deckId}/${mode}`);
+    };
+
     if (loading) {
         return (
             <Container>
@@ -216,6 +220,37 @@ const DeckDetails = () => {
                     Add {deckType === 'CARD' ? 'Card' : 'Question'}
                 </Button>
             </Box>
+
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, mb: 3 }}>
+                {deckType === 'CARD' && (
+                    <>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => navigateToGameMode('flashcards')}
+                        >
+                            Flashcards
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => navigateToGameMode('matching')}
+                        >
+                            Matching Game
+                        </Button>
+                    </>
+                )}
+                {deckType === 'QUESTION' && (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => navigateToGameMode('quiz')}
+                    >
+                        Quiz Game
+                    </Button>
+                )}
+            </Box>
+
 
             {currentDeck.length > 0 ? (
                 <Box
@@ -305,11 +340,8 @@ const DeckDetails = () => {
                 </Typography>
             )}
 
-            {/* Add/Edit Modal */}
             <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
-                <DialogTitle>
-                    {isEditing ? 'Edit' : 'Add'} {deckType === 'CARD' ? 'Card' : 'Question'}
-                </DialogTitle>
+                <DialogTitle>{isEditing ? 'Edit' : 'Add'} {deckType === 'CARD' ? 'Card' : 'Question'}</DialogTitle>
                 <DialogContent>
                     <TextField
                         label="Question"
