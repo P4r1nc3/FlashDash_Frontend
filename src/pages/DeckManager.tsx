@@ -12,6 +12,10 @@ import {
     InputLabel,
     Divider,
     IconButton,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -79,10 +83,7 @@ const DeckManager = () => {
     };
 
     const handleAddDeck = () => {
-        setEditingDeck(null);
-        setName('');
-        setDescription('');
-        setDeckType('CARD');
+        resetModalState();
         setModalOpen(true);
     };
 
@@ -106,15 +107,24 @@ const DeckManager = () => {
     const handleSubmitDeck = async () => {
         try {
             if (editingDeck) {
+                // Update an existing deck
                 await updateDeck(editingDeck.id, { name, description, deckType });
             } else {
+                // Create a new deck
                 await createDeck({ name, description, deckType });
             }
             fetchDecks();
-            setModalOpen(false);
+            setModalOpen(false); // Close the modal
         } catch (error) {
             console.error('Failed to save deck:', error);
         }
+    };
+
+    const resetModalState = () => {
+        setEditingDeck(null);
+        setName('');
+        setDescription('');
+        setDeckType('CARD');
     };
 
     const formatDate = (date: string) => {
@@ -185,15 +195,27 @@ const DeckManager = () => {
             </Box>
             {Object.keys(groupedDecks).map((date) => (
                 <Box key={date} mb={4}>
-                    <Typography
-                        variant="subtitle1"
-                        fontWeight="bold"
-                        color="textSecondary"
-                        gutterBottom
-                        sx={{ borderBottom: '1px solid #e0e0e0', pb: 1 }}
-                    >
-                        In {date}
-                    </Typography>
+                    <Box display="flex" alignItems="center" mb={1}>
+                        <Typography
+                            variant="subtitle1"
+                            fontWeight="bold"
+                            color="textSecondary"
+                            sx={{
+                                fontSize: '0.9rem',
+                                color: '#757575',
+                                flex: '0 0 auto',
+                            }}
+                        >
+                            In {date}
+                        </Typography>
+                        <Divider
+                            sx={{
+                                flex: '1 1 auto',
+                                marginLeft: 2,
+                                borderColor: '#e0e0e0',
+                            }}
+                        />
+                    </Box>
                     {groupedDecks[date].map((deck) => (
                         <Box
                             key={deck.id}
@@ -247,6 +269,45 @@ const DeckManager = () => {
                     ))}
                 </Box>
             ))}
+            <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
+                <DialogTitle>{editingDeck ? 'Edit Deck' : 'Create Deck'}</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        label="Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <TextField
+                        label="Description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel id="deck-type-label">Deck Type</InputLabel>
+                        <Select
+                            labelId="deck-type-label"
+                            value={deckType}
+                            onChange={(e) => setDeckType(e.target.value as DeckType)}
+                            disabled={!!editingDeck}
+                        >
+                            <MenuItem value="CARD">Card Deck</MenuItem>
+                            <MenuItem value="QUESTION">Question Deck</MenuItem>
+                        </Select>
+                    </FormControl>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setModalOpen(false)} color="secondary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleSubmitDeck} variant="contained" color="primary">
+                        {editingDeck ? 'Update' : 'Create'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 };
