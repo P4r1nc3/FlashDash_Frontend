@@ -165,7 +165,6 @@ const DeckManager = () => {
                 flexWrap="wrap"
                 gap={2}
             >
-                {/* Sorting Dropdown */}
                 <FormControl sx={{ minWidth: 150 }}>
                     <InputLabel id="sort-select-label">Sort By</InputLabel>
                     <Select
@@ -177,7 +176,6 @@ const DeckManager = () => {
                         <MenuItem value="alphabetical">Alphabetical</MenuItem>
                     </Select>
                 </FormControl>
-                {/* Search Bar */}
                 <TextField
                     placeholder="Search decks"
                     value={searchTerm}
@@ -185,12 +183,10 @@ const DeckManager = () => {
                     fullWidth
                     sx={{ maxWidth: 400 }}
                 />
-                {/* Add Deck Button */}
                 <Button variant="contained" color="primary" onClick={handleAddDeck}>
                     Add Deck
                 </Button>
             </Box>
-            {/* Decks List */}
             {Object.keys(groupedDecks).map((date) => (
                 <Box key={date} mb={4}>
                     <Typography variant="h6" fontWeight="bold" gutterBottom>
@@ -198,7 +194,15 @@ const DeckManager = () => {
                     </Typography>
                     <Grid container spacing={3}>
                         {groupedDecks[date].map((deck) => (
-                            <Grid item xs={12} sm={6} md={4} key={deck.id}>
+                            <Grid
+                                item
+                                xs={12}
+                                sm={6}
+                                md={4}
+                                key={deck.id}
+                                onClick={() => navigate(`/decks/${deck.id}`)}
+                                style={{ cursor: 'pointer' }}
+                            >
                                 <Card>
                                     <CardContent>
                                         <Typography variant="h6">{deck.name}</Typography>
@@ -216,23 +220,21 @@ const DeckManager = () => {
                                     <CardActions>
                                         <Button
                                             size="small"
-                                            onClick={() =>
-                                                navigate(`/decks/${deck.id}`)
-                                            }
-                                        >
-                                            View
-                                        </Button>
-                                        <Button
-                                            size="small"
                                             color="primary"
-                                            onClick={() => handleEditDeck(deck)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleEditDeck(deck);
+                                            }}
                                         >
                                             Edit
                                         </Button>
                                         <Button
                                             size="small"
                                             color="error"
-                                            onClick={() => handleDeleteDeck(deck.id)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleDeleteDeck(deck.id);
+                                            }}
                                         >
                                             Delete
                                         </Button>
@@ -243,7 +245,6 @@ const DeckManager = () => {
                     </Grid>
                 </Box>
             ))}
-            {/* Modal for Adding/Editing Deck */}
             <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
                 <DialogTitle>{editingDeck ? 'Edit Deck' : 'Create Deck'}</DialogTitle>
                 <DialogContent>
