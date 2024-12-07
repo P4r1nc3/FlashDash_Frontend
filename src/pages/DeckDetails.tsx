@@ -13,11 +13,16 @@ import {
     DialogContent,
     DialogActions,
     TextField,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
 } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
+import { Difficulty } from '../enums/Difficulty'; // Import the Difficulty Enum
 import {
     getCardsInDeck,
     addCardToDeck,
@@ -51,7 +56,7 @@ const DeckDetails = () => {
 
     const [newQuestion, setNewQuestion] = useState('');
     const [newAnswer, setNewAnswer] = useState('');
-    const [difficulty, setDifficulty] = useState('medium');
+    const [difficulty, setDifficulty] = useState<Difficulty>(Difficulty.MEDIUM);
     const [incorrectAnswers, setIncorrectAnswers] = useState<string[]>(['', '', '']);
 
     useEffect(() => {
@@ -86,7 +91,7 @@ const DeckDetails = () => {
         setEditItemId(null);
         setNewQuestion('');
         setNewAnswer('');
-        setDifficulty('medium');
+        setDifficulty(Difficulty.MEDIUM);
         setIncorrectAnswers(['', '', '']);
         setModalOpen(true);
     };
@@ -102,7 +107,7 @@ const DeckDetails = () => {
         setEditItemId(itemId);
         setNewQuestion(item.question);
         setNewAnswer(deckType === 'CARD' ? item.answer : item.correctAnswers[0]);
-        setDifficulty(item.difficulty);
+        setDifficulty(item.difficulty as Difficulty);
 
         if (deckType === 'QUESTION' && 'incorrectAnswers' in item) {
             setIncorrectAnswers(item.incorrectAnswers);
@@ -335,13 +340,20 @@ const DeckDetails = () => {
                             ))}
                         </>
                     )}
-                    <TextField
-                        label="Difficulty"
-                        value={difficulty}
-                        onChange={(e) => setDifficulty(e.target.value)}
-                        fullWidth
-                        margin="normal"
-                    />
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel id="difficulty-label">Difficulty</InputLabel>
+                        <Select
+                            labelId="difficulty-label"
+                            value={difficulty}
+                            onChange={(e) => setDifficulty(e.target.value as Difficulty)}
+                        >
+                            {Object.values(Difficulty).map((level) => (
+                                <MenuItem key={level} value={level}>
+                                    {level}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setModalOpen(false)} color="secondary">
