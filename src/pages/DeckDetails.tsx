@@ -55,9 +55,9 @@ const DeckDetails = () => {
     const [editItemId, setEditItemId] = useState<string | null>(null);
 
     const [newQuestion, setNewQuestion] = useState('');
-    const [newAnswer, setNewAnswer] = useState('');
+    const [correctAnswers, setCorrectAnswers] = useState<string[]>(['']);
+    const [incorrectAnswers, setIncorrectAnswers] = useState<string[]>(['']);
     const [difficulty, setDifficulty] = useState<Difficulty>(Difficulty.MEDIUM);
-    const [incorrectAnswers, setIncorrectAnswers] = useState<string[]>(['', '', '']);
 
     useEffect(() => {
         const fetchDeckDetails = async () => {
@@ -90,9 +90,9 @@ const DeckDetails = () => {
         setIsEditing(false);
         setEditItemId(null);
         setNewQuestion('');
-        setNewAnswer('');
+        setCorrectAnswers(['']);
+        setIncorrectAnswers(['']);
         setDifficulty(Difficulty.MEDIUM);
-        setIncorrectAnswers(['', '', '']);
         setModalOpen(true);
     };
 
@@ -106,12 +106,13 @@ const DeckDetails = () => {
         setIsEditing(true);
         setEditItemId(itemId);
         setNewQuestion(item.question);
-        setNewAnswer(deckType === 'CARD' ? item.answer : item.correctAnswers[0]);
-        setDifficulty(item.difficulty as Difficulty);
 
-        if (deckType === 'QUESTION' && 'incorrectAnswers' in item) {
-            setIncorrectAnswers(item.incorrectAnswers);
+        if (deckType === 'QUESTION') {
+            setCorrectAnswers(item.correctAnswers || []);
+            setIncorrectAnswers(item.incorrectAnswers || []);
         }
+
+        setDifficulty(item.difficulty as Difficulty);
 
         setModalOpen(true);
     };
@@ -124,13 +125,13 @@ const DeckDetails = () => {
                 if (isEditing && editItemId) {
                     await updateCard(deckId, editItemId, {
                         question: newQuestion,
-                        answer: newAnswer,
+                        answer: correctAnswers[0] || '', // For cards, the first correct answer is the main answer
                         difficulty,
                     });
                 } else {
                     await addCardToDeck(deckId, {
                         question: newQuestion,
-                        answer: newAnswer,
+                        answer: correctAnswers[0] || '',
                         difficulty,
                     });
                 }
@@ -140,14 +141,14 @@ const DeckDetails = () => {
                 if (isEditing && editItemId) {
                     await updateQuestion(deckId, editItemId, {
                         question: newQuestion,
-                        correctAnswers: [newAnswer],
+                        correctAnswers: correctAnswers.filter((ans) => ans),
                         incorrectAnswers: incorrectAnswers.filter((ans) => ans),
                         difficulty,
                     });
                 } else {
                     await addQuestionToDeck(deckId, {
                         question: newQuestion,
-                        correctAnswers: [newAnswer],
+                        correctAnswers: correctAnswers.filter((ans) => ans),
                         incorrectAnswers: incorrectAnswers.filter((ans) => ans),
                         difficulty,
                     });
@@ -265,7 +266,7 @@ const DeckDetails = () => {
                                         color="textSecondary"
                                         sx={{ mt: 2 }}
                                     >
-                                        <strong>Correct Answer:</strong> {currentItem?.correctAnswers?.join(', ')}
+                                        <strong>Correct Answers:</strong> {currentItem?.correctAnswers?.join(', ')}
                                     </Typography>
                                     <Typography
                                         variant="body2"
@@ -313,34 +314,82 @@ const DeckDetails = () => {
                         fullWidth
                         margin="normal"
                     />
-                    <TextField
-                        label={deckType === 'CARD' ? 'Answer' : 'Correct Answer'}
-                        value={newAnswer}
-                        onChange={(e) => setNewAnswer(e.target.value)}
-                        fullWidth
-                        margin="normal"
-                    />
                     {deckType === 'QUESTION' && (
                         <>
-                            {incorrectAnswers.map((incorrectAnswer, index) => (
-                                <TextField
-                                    key={index}
-                                    label={`Incorrect Answer ${index + 1}`}
-                                    value={incorrectAnswer}
-                                    onChange={(e) =>
-                                        setIncorrectAnswers((prev) =>
-                                            prev.map((ans, i) =>
-                                                i === index ? e.target.value : ans
+                            <Typography variant="subtitle1" sx={{ mt: 2 }}>
+                                Correct Answers
+                            </Typography>
+                            {correctAnswers.map((answer, index) => (
+                                <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                    <TextField
+                                        label={`Correct Answer ${index + 1}`}
+                                        value={answer}
+                                        onChange={(e) =>
+                                            setCorrectAnswers((prev) =>
+                                                prev.map((ans, i) => (i === index ? e.target.value : ans))
                                             )
-                                        )
-                                    }
-                                    fullWidth
-                                    margin="normal"
-                                />
+                                        }
+                                        fullWidth
+                                    />
+                                    <Button
+                                        onClick={() =>
+                                            setCorrectAnswers((prev) =>
+                                                prev.filter((_, i) => i !== index)
+                                            )
+                                        }
+                                        sx={{ ml: 1 }}
+                                        color="error"
+                                    >
+                                        Remove
+                                    </Button>
+                                </Box>
                             ))}
+                            <Button
+                                onClick={() => setCorrectAnswers((prev) => [...prev, ''])}
+                                variant="outlined"
+                                size="small"
+                            >
+                                Add Correct Answer
+                            </Button>
+
+                            <Typography variant="subtitle1" sx={{ mt: 3 }}>
+                                Incorrect Answers
+                            </Typography>
+                            {incorrectAnswers.map((answer, index) => (
+                                <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                    <TextField
+                                        label={`Incorrect Answer ${index + 1}`}
+                                        value={answer}
+                                        onChange={(e) =>
+                                            setIncorrectAnswers((prev) =>
+                                                prev.map((ans, i) => (i === index ? e.target.value : ans))
+                                            )
+                                        }
+                                        fullWidth
+                                    />
+                                    <Button
+                                        onClick={() =>
+                                            setIncorrectAnswers((prev) =>
+                                                prev.filter((_, i) => i !== index)
+                                            )
+                                        }
+                                        sx={{ ml: 1 }}
+                                        color="error"
+                                    >
+                                        Remove
+                                    </Button>
+                                </Box>
+                            ))}
+                            <Button
+                                onClick={() => setIncorrectAnswers((prev) => [...prev, ''])}
+                                variant="outlined"
+                                size="small"
+                            >
+                                Add Incorrect Answer
+                            </Button>
                         </>
                     )}
-                    <FormControl fullWidth margin="normal">
+                    <FormControl fullWidth margin="normal" sx={{ mt: 3 }}>
                         <InputLabel id="difficulty-label">Difficulty</InputLabel>
                         <Select
                             labelId="difficulty-label"
