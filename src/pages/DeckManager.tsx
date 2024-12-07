@@ -31,6 +31,8 @@ const DeckManager = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [sortOption, setSortOption] = useState('recent');
     const [modalOpen, setModalOpen] = useState(false);
+    const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+    const [deckToDelete, setDeckToDelete] = useState<number | null>(null);
     const [editingDeck, setEditingDeck] = useState<Deck | null>(null);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
@@ -95,29 +97,21 @@ const DeckManager = () => {
         setModalOpen(true);
     };
 
-    const handleDeleteDeck = async (deckId: number) => {
-        try {
-            await deleteDeck(deckId);
-            fetchDecks();
-        } catch (error) {
-            console.error('Failed to delete deck:', error);
+    const handleDeleteDeck = async () => {
+        if (deckToDelete !== null) {
+            try {
+                await deleteDeck(deckToDelete);
+                fetchDecks();
+                setConfirmDeleteOpen(false);
+            } catch (error) {
+                console.error('Failed to delete deck:', error);
+            }
         }
     };
 
-    const handleSubmitDeck = async () => {
-        try {
-            if (editingDeck) {
-                // Update an existing deck
-                await updateDeck(editingDeck.id, { name, description, deckType });
-            } else {
-                // Create a new deck
-                await createDeck({ name, description, deckType });
-            }
-            fetchDecks();
-            setModalOpen(false); // Close the modal
-        } catch (error) {
-            console.error('Failed to save deck:', error);
-        }
+    const openConfirmDeleteDialog = (deckId: number) => {
+        setDeckToDelete(deckId);
+        setConfirmDeleteOpen(true);
     };
 
     const resetModalState = () => {
@@ -125,6 +119,20 @@ const DeckManager = () => {
         setName('');
         setDescription('');
         setDeckType('CARD');
+    };
+
+    const handleSubmitDeck = async () => {
+        try {
+            if (editingDeck) {
+                await updateDeck(editingDeck.id, { name, description, deckType });
+            } else {
+                await createDeck({ name, description, deckType });
+            }
+            fetchDecks();
+            setModalOpen(false);
+        } catch (error) {
+            console.error('Failed to save deck:', error);
+        }
     };
 
     const formatDate = (date: string) => {
@@ -258,7 +266,7 @@ const DeckManager = () => {
                                 <IconButton
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        handleDeleteDeck(deck.id);
+                                        openConfirmDeleteDialog(deck.id);
                                     }}
                                     color="error"
                                 >
@@ -305,6 +313,26 @@ const DeckManager = () => {
                     </Button>
                     <Button onClick={handleSubmitDeck} variant="contained" color="primary">
                         {editingDeck ? 'Update' : 'Create'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={confirmDeleteOpen} onClose={() => setConfirmDeleteOpen(false)}>
+                <DialogTitle>Confirm Delete</DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        Are you sure you want to delete this deck? This action cannot be undone.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDeleteDeck} variant="outlined" color="error">
+                        Delete
+                    </Button>
+                    <Button
+                        onClick={() => setConfirmDeleteOpen(false)}
+                        variant="contained"
+                        sx={{ backgroundColor: '#f44336', color: '#fff', '&:hover': { backgroundColor: '#d32f2f' } }}
+                    >
+                        Cancel
                     </Button>
                 </DialogActions>
             </Dialog>
