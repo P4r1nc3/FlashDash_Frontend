@@ -38,7 +38,6 @@ const DeckDetails = () => {
     const [deckDescription, setDeckDescription] = useState('');
     const [questions, setQuestions] = useState<QuestionResponse[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [loading, setLoading] = useState(true);
 
     const [modalOpen, setModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -49,7 +48,6 @@ const DeckDetails = () => {
     const [incorrectAnswers, setIncorrectAnswers] = useState<string[]>(['']);
     const [difficulty, setDifficulty] = useState<Difficulty>(Difficulty.MEDIUM);
 
-    // Fetch deck details
     useEffect(() => {
         const fetchDeckDetails = async () => {
             try {
@@ -61,14 +59,11 @@ const DeckDetails = () => {
                 setQuestions(questionData);
             } catch (error) {
                 console.error('Failed to fetch deck details:', error);
-            } finally {
-                setLoading(false);
             }
         };
         fetchDeckDetails();
     }, [deckId]);
 
-    // Handlers for modal actions
     const openAddModal = () => {
         setIsEditing(false);
         resetModalFields();
@@ -125,19 +120,8 @@ const DeckDetails = () => {
         }
     };
 
-    // Pagination helpers
     const nextQuestion = () => setCurrentIndex((prev) => (prev + 1) % questions.length);
     const prevQuestion = () => setCurrentIndex((prev) => (prev === 0 ? questions.length - 1 : prev - 1));
-
-    if (loading) {
-        return (
-            <Container>
-                <Typography align="center" variant="h6" sx={{ mt: 5 }}>
-                    Loading deck details...
-                </Typography>
-            </Container>
-        );
-    }
 
     const currentQuestion = questions[currentIndex];
 
@@ -163,15 +147,19 @@ const DeckDetails = () => {
                 <Box display="flex" alignItems="center" justifyContent="center" mt={5} mb={5}>
                     <IconButton onClick={prevQuestion}><ArrowBackIosIcon /></IconButton>
                     <Card sx={{ width: 600, p: 3, position: 'relative' }}>
-                        <Box position="absolute" top={16} right={16} display="flex" gap={1}>
-                            <IconButton onClick={() => openEditModal(currentQuestion)}><EditIcon /></IconButton>
-                            <IconButton onClick={() => deleteCurrentQuestion(currentQuestion.questionId)} color="error"><DeleteIcon /></IconButton>
-                        </Box>
-                        <CardContent>
-                            <Typography variant="h5" textAlign="center">{currentQuestion.question}</Typography>
-                            <Typography mt={2}><strong>Correct:</strong> {currentQuestion.correctAnswers.join(', ')}</Typography>
-                            <Typography mt={1}><strong>Incorrect:</strong> {currentQuestion.incorrectAnswers.join(', ')}</Typography>
-                        </CardContent>
+                        {currentQuestion && (
+                            <>
+                                <Box position="absolute" top={16} right={16} display="flex" gap={1}>
+                                    <IconButton onClick={() => openEditModal(currentQuestion)}><EditIcon /></IconButton>
+                                    <IconButton onClick={() => deleteCurrentQuestion(currentQuestion.questionId)} color="error"><DeleteIcon /></IconButton>
+                                </Box>
+                                <CardContent>
+                                    <Typography variant="h5" textAlign="center">{currentQuestion.question}</Typography>
+                                    <Typography mt={2}><strong>Correct:</strong> {currentQuestion.correctAnswers.join(', ')}</Typography>
+                                    <Typography mt={1}><strong>Incorrect:</strong> {currentQuestion.incorrectAnswers.join(', ')}</Typography>
+                                </CardContent>
+                            </>
+                        )}
                     </Card>
                     <IconButton onClick={nextQuestion}><ArrowForwardIosIcon /></IconButton>
                 </Box>
@@ -179,12 +167,9 @@ const DeckDetails = () => {
                 <Typography align="center">No questions available. Add a new question to get started.</Typography>
             )}
 
-            {/* Pagination Indicator */}
-            {questions.length > 0 && (
-                <Typography align="center" color="textSecondary">
-                    {currentIndex + 1} / {questions.length}
-                </Typography>
-            )}
+            <Typography align="center" color="textSecondary">
+                {questions.length > 0 ? `${currentIndex + 1} / ${questions.length}` : ''}
+            </Typography>
 
             {/* Modal for Adding/Editing Questions */}
             <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
