@@ -22,21 +22,25 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete'; // Import DeleteIcon here
 import { Difficulty } from '../enums/Difficulty'; // Import the Difficulty Enum
 import {
     getCardsInDeck,
     addCardToDeck,
     updateCard,
+    deleteCard,
 } from '../api/cards';
 import {
     getQuestionsInDeck,
     addQuestionToDeck,
     updateQuestion,
+    deleteQuestion,
 } from '../api/questions';
 import { getDeckDetails } from '../api/decks';
 import { DeckType } from '../interfaces/Deck';
 import { CardResponse } from '../interfaces/Card';
 import { QuestionResponse } from '../interfaces/Question';
+
 
 const DeckDetails = () => {
     const { deckId } = useParams<{ deckId: string }>();
@@ -167,6 +171,24 @@ const DeckDetails = () => {
         }
     };
 
+    const handleDelete = async (itemId: string) => {
+        try {
+            if (!deckId) return;
+
+            if (deckType === 'CARD') {
+                await deleteCard(deckId, itemId);
+                const updatedCards = await getCardsInDeck(deckId);
+                setCards(updatedCards);
+            } else if (deckType === 'QUESTION') {
+                await deleteQuestion(deckId, itemId);
+                const updatedQuestions = await getQuestionsInDeck(deckId);
+                setQuestions(updatedQuestions);
+            }
+        } catch (error) {
+            console.error('Failed to delete item:', error);
+        }
+    };
+
     const currentDeck = deckType === 'CARD' ? cards : questions;
     const currentItem = currentDeck[currentIndex];
 
@@ -274,17 +296,29 @@ const DeckDetails = () => {
                             position: 'relative',
                         }}
                     >
-                        <IconButton
-                            onClick={() => handleEdit(deckType === 'CARD' ? currentItem.cardId : currentItem.questionId)}
+                        <Box
                             sx={{
+                                display: 'flex',
+                                justifyContent: 'flex-end',
                                 position: 'absolute',
                                 top: 16,
                                 right: 16,
-                                color: 'gray',
+                                gap: 1,
                             }}
                         >
-                            <EditIcon />
-                        </IconButton>
+                            <IconButton
+                                onClick={() => handleEdit(deckType === 'CARD' ? currentItem.cardId : currentItem.questionId)}
+                                color="primary"
+                            >
+                                <EditIcon />
+                            </IconButton>
+                            <IconButton
+                                onClick={() => handleDelete(deckType === 'CARD' ? currentItem.cardId : currentItem.questionId)}
+                                color="error"
+                            >
+                                <DeleteIcon />
+                            </IconButton>
+                        </Box>
                         <CardContent sx={{ textAlign: 'center' }}>
                             <Typography variant="h5">
                                 {currentItem?.question}
