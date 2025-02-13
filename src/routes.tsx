@@ -6,19 +6,21 @@ import DeckManager from './pages/DeckManager';
 import DeckDetails from './pages/DeckDetails';
 import QuizGame from './pages/QuizGame';
 import Account from './pages/Account';
+import Friends from './pages/Friends';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const AppRoutes = () => (
     <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>}/>
-            <Route path="/decks" element={<ProtectedRoute><DeckManager /></ProtectedRoute>}/>
-            <Route path="/decks/:deckId" element={<ProtectedRoute><DeckDetails /></ProtectedRoute>}/>
-            <Route path="/decks/:deckId/quiz" element={<ProtectedRoute><QuizGame /></ProtectedRoute>} />
-            <Route path="*" element={<NotFound />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+        <Route path="/decks" element={<ProtectedRoute><DeckManager /></ProtectedRoute>} />
+        <Route path="/decks/:deckId" element={<ProtectedRoute><DeckDetails /></ProtectedRoute>} />
+        <Route path="/decks/:deckId/quiz" element={<ProtectedRoute><QuizGame /></ProtectedRoute>} />
+        <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} /> {/* Nowa trasa */}
+        <Route path="*" element={<NotFound />} />
     </Routes>
 );
 
