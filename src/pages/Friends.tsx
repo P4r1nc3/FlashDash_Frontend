@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Container, Typography, Box, Tabs, Tab, Paper, Button, TextField } from '@mui/material';
-import { getFriends, getSentInvitations, getReceivedInvitations, sendFriendInvitation, respondToInvitation } from '../api/friends';
+import { getFriends, getSentInvitations, getReceivedInvitations, sendFriendInvitation, respondToInvitation, deleteFriend } from '../api/friends';
 import { User } from '../interfaces/User';
 import { FriendInvitationResponse } from '../interfaces/FriendInvitation';
 import { ErrorResponse } from '../interfaces/ErrorResponse';
@@ -72,6 +72,16 @@ const Friends = () => {
         }
     };
 
+    const handleDeleteFriend = async (friendEmail: string) => {
+        try {
+            await deleteFriend(friendEmail);
+            toast.success('Friend removed successfully.');
+            fetchFriends();
+        } catch (error: any) {
+            handleError(error);
+        }
+    };
+
     const handleError = (error: any) => {
         if (error.response) {
             const errorResponse: ErrorResponse = error.response.data;
@@ -110,9 +120,18 @@ const Friends = () => {
 
                             {friends.length > 0 ? (
                                 friends.map((friend) => (
-                                    <Paper key={friend.email} sx={{ p: 2, mb: 2 }}>
-                                        <Typography variant="h6">{friend.firstName} {friend.lastName}</Typography>
-                                        <Typography color="textSecondary">{friend.email}</Typography>
+                                    <Paper key={friend.email} sx={{ p: 2, mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Box>
+                                            <Typography variant="h6">{friend.firstName} {friend.lastName}</Typography>
+                                            <Typography color="textSecondary">{friend.email}</Typography>
+                                        </Box>
+                                        <Button
+                                            variant="contained"
+                                            color="error"
+                                            onClick={() => handleDeleteFriend(friend.email)}
+                                        >
+                                            Remove Friend
+                                        </Button>
                                     </Paper>
                                 ))
                             ) : (

@@ -14,6 +14,15 @@ export const getFriends = async (): Promise<User[]> => {
     return response.data;
 };
 
+export const deleteFriend = async (friendEmail: string): Promise<void> => {
+    const token = getToken();
+    await axiosInstance.delete(`/friends/${friendEmail}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
+
 export const sendFriendInvitation = async (recipientEmail: string): Promise<void> => {
     const token = getToken();
     await axiosInstance.post(`/friends/invite?recipientEmail=${encodeURIComponent(recipientEmail)}`, null, {
