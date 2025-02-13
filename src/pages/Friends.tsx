@@ -3,6 +3,8 @@ import { Container, Typography, Box, Tabs, Tab, Paper, Button, TextField } from 
 import { getFriends, getSentInvitations, getReceivedInvitations, sendFriendInvitation, respondToInvitation } from '../api/friends';
 import { User } from '../interfaces/User';
 import { FriendInvitationResponse } from '../interfaces/FriendInvitation';
+import { ErrorResponse } from '../interfaces/ErrorResponse';
+import { toast } from 'react-toastify';
 
 const Friends = () => {
     const [tabIndex, setTabIndex] = useState(0);
@@ -21,8 +23,8 @@ const Friends = () => {
         try {
             const data = await getFriends();
             setFriends(data);
-        } catch (error) {
-            console.error('Error fetching friends:', error);
+        } catch (error: any) {
+            handleError(error);
         }
     };
 
@@ -30,8 +32,8 @@ const Friends = () => {
         try {
             const data = await getSentInvitations();
             setSentInvitations(data);
-        } catch (error) {
-            console.error('Error fetching sent invitations:', error);
+        } catch (error: any) {
+            handleError(error);
         }
     };
 
@@ -39,8 +41,8 @@ const Friends = () => {
         try {
             const data = await getReceivedInvitations();
             setReceivedInvitations(data);
-        } catch (error) {
-            console.error('Error fetching received invitations:', error);
+        } catch (error: any) {
+            handleError(error);
         }
     };
 
@@ -49,19 +51,32 @@ const Friends = () => {
         try {
             await sendFriendInvitation(email);
             setEmail('');
+            toast.success('Friend invitation sent successfully!');
             fetchSentInvitations();
-        } catch (error) {
-            console.error('Error sending invitation:', error);
+        } catch (error: any) {
+            handleError(error);
         }
     };
 
     const handleRespondToInvitation = async (invitationId: number, status: 'ACCEPTED' | 'REJECTED') => {
         try {
             await respondToInvitation(invitationId, status);
+            toast.success(
+                status === 'ACCEPTED' ? 'Friend invitation accepted!' : 'Friend invitation rejected.'
+            );
             fetchReceivedInvitations();
             fetchFriends();
-        } catch (error) {
-            console.error('Error responding to invitation:', error);
+        } catch (error: any) {
+            handleError(error);
+        }
+    };
+
+    const handleError = (error: any) => {
+        if (error.response) {
+            const errorResponse: ErrorResponse = error.response.data;
+            toast.error(errorResponse.cause || 'An unexpected error occurred.');
+        } else {
+            toast.error('Something went wrong. Please try again.');
         }
     };
 
