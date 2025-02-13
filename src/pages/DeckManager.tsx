@@ -1,8 +1,6 @@
 import {
     Container,
     Typography,
-    Tabs,
-    Tab,
     Box,
     Button,
     TextField,
@@ -20,14 +18,13 @@ import {
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDecks, createDeck, updateDeck, deleteDeck } from '../api/decks';
-import { Deck, DeckType } from '../interfaces/Deck';
+import { Deck } from '../interfaces/Deck';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
 const DeckManager = () => {
     const [decks, setDecks] = useState<Deck[]>([]);
     const [filteredDecks, setFilteredDecks] = useState<Deck[]>([]);
-    const [activeTab, setActiveTab] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortOption, setSortOption] = useState('recent');
     const [modalOpen, setModalOpen] = useState(false);
@@ -36,7 +33,6 @@ const DeckManager = () => {
     const [editingDeck, setEditingDeck] = useState<Deck | null>(null);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [deckType, setDeckType] = useState<DeckType>('CARD');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -45,7 +41,7 @@ const DeckManager = () => {
 
     useEffect(() => {
         filterAndSortDecks();
-    }, [decks, activeTab, searchTerm, sortOption]);
+    }, [decks, searchTerm, sortOption]);
 
     const fetchDecks = async () => {
         try {
@@ -58,12 +54,6 @@ const DeckManager = () => {
 
     const filterAndSortDecks = () => {
         let filtered = decks;
-
-        if (activeTab === 1) {
-            filtered = decks.filter((deck) => deck.deckType === 'CARD');
-        } else if (activeTab === 2) {
-            filtered = decks.filter((deck) => deck.deckType === 'QUESTION');
-        }
 
         if (searchTerm) {
             filtered = filtered.filter((deck) =>
@@ -80,10 +70,6 @@ const DeckManager = () => {
         setFilteredDecks(filtered);
     };
 
-    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-        setActiveTab(newValue);
-    };
-
     const handleAddDeck = () => {
         resetModalState();
         setModalOpen(true);
@@ -93,7 +79,6 @@ const DeckManager = () => {
         setEditingDeck(deck);
         setName(deck.name);
         setDescription(deck.description);
-        setDeckType(deck.deckType);
         setModalOpen(true);
     };
 
@@ -118,15 +103,14 @@ const DeckManager = () => {
         setEditingDeck(null);
         setName('');
         setDescription('');
-        setDeckType('CARD');
     };
 
     const handleSubmitDeck = async () => {
         try {
             if (editingDeck) {
-                await updateDeck(editingDeck.id, { name, description, deckType });
+                await updateDeck(editingDeck.id, { name, description });
             } else {
-                await createDeck({ name, description, deckType });
+                await createDeck({ name, description });
             }
             fetchDecks();
             setModalOpen(false);
@@ -159,18 +143,6 @@ const DeckManager = () => {
                     Your Library
                 </Typography>
             </Box>
-            <Tabs
-                value={activeTab}
-                onChange={handleTabChange}
-                centered
-                textColor="primary"
-                indicatorColor="primary"
-                sx={{ marginBottom: 2 }}
-            >
-                <Tab label="Decks" />
-                <Tab label="Card Decks" />
-                <Tab label="Question Decks" />
-            </Tabs>
             <Box
                 display="flex"
                 justifyContent="space-between"
@@ -250,9 +222,6 @@ const DeckManager = () => {
                                 >
                                     {deck.description}
                                 </Typography>
-                                <Typography variant="body2" color="textSecondary">
-                                    {deck.deckType === 'CARD' ? 'Card Deck' : 'Question Deck'}
-                                </Typography>
                             </Box>
                             <Box>
                                 <IconButton
@@ -294,18 +263,6 @@ const DeckManager = () => {
                         fullWidth
                         margin="normal"
                     />
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel id="deck-type-label">Deck Type</InputLabel>
-                        <Select
-                            labelId="deck-type-label"
-                            value={deckType}
-                            onChange={(e) => setDeckType(e.target.value as DeckType)}
-                            disabled={!!editingDeck}
-                        >
-                            <MenuItem value="CARD">Card Deck</MenuItem>
-                            <MenuItem value="QUESTION">Question Deck</MenuItem>
-                        </Select>
-                    </FormControl>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setModalOpen(false)} color="secondary">
