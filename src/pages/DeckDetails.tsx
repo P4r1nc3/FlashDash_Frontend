@@ -28,6 +28,7 @@ import {
 import { Difficulty } from '../enums/Difficulty';
 import { getQuestionsInDeck, addQuestionToDeck, updateQuestion, deleteQuestion } from '../api/questions';
 import { getDeckDetails } from '../api/decks';
+import { startGameSession } from '../api/gameSession'; // Import obsługi sesji
 import { QuestionResponse } from '../interfaces/Question';
 
 const DeckDetails = () => {
@@ -63,6 +64,16 @@ const DeckDetails = () => {
         };
         fetchDeckDetails();
     }, [deckId]);
+
+    const handleStartQuiz = async () => {
+        if (!deckId) return;
+        try {
+            await startGameSession(deckId);
+            navigate(`/decks/${deckId}/quiz`);
+        } catch (error) {
+            console.error('Failed to start game session:', error);
+        }
+    };
 
     const openAddModal = () => {
         setIsEditing(false);
@@ -138,8 +149,10 @@ const DeckDetails = () => {
                 <Button variant="outlined" onClick={() => navigate('/decks')}>Back to Decks</Button>
                 <Button variant="contained" startIcon={<AddIcon />} onClick={openAddModal}>Add Question</Button>
             </Box>
+
+            {/* Start quiz game */}
             <Box textAlign="center" mb={3}>
-                <Button variant="contained" color="primary" onClick={() => navigate(`/decks/${deckId}/quiz`)}>Quiz Game</Button>
+                <Button variant="contained" color="primary" onClick={handleStartQuiz}>Quiz Game</Button>
             </Box>
 
             {/* Question Viewer */}
