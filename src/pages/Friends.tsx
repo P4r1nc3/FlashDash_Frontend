@@ -64,6 +64,7 @@ const Friends = () => {
             toast.success(
                 status === 'ACCEPTED' ? 'Friend invitation accepted!' : 'Friend invitation rejected.'
             );
+            fetchSentInvitations();
             fetchReceivedInvitations();
             fetchFriends();
         } catch (error: any) {
@@ -124,9 +125,18 @@ const Friends = () => {
                         <Box>
                             {sentInvitations.length > 0 ? (
                                 sentInvitations.map((inv) => (
-                                    <Paper key={inv.id} sx={{ p: 2, mb: 2 }}>
-                                        <Typography variant="h6">{inv.recipientFirstName} {inv.recipientLastName}</Typography>
-                                        <Typography color="textSecondary">Status: {inv.status}</Typography>
+                                    <Paper key={inv.id} sx={{ p: 2, mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Box>
+                                            <Typography variant="h6">{inv.recipientFirstName} {inv.recipientLastName}</Typography>
+                                            <Typography color="textSecondary">Status: {inv.status}</Typography>
+                                        </Box>
+                                        <Button
+                                            variant="contained"
+                                            color="error"
+                                            onClick={() => handleRespondToInvitation(inv.id, 'REJECTED')}
+                                        >
+                                            Cancel
+                                        </Button>
                                     </Paper>
                                 ))
                             ) : (
