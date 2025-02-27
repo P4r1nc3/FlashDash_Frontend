@@ -45,6 +45,18 @@ const Navbar = () => {
                             </Button>
                             <Button
                                 component={Link}
+                                to="/friends"
+                                sx={{
+                                    textTransform: 'none',
+                                    color: 'black',
+                                    fontWeight: 'bold',
+                                    fontSize: '1rem',
+                                }}
+                            >
+                                Friends
+                            </Button>
+                            <Button
+                                component={Link}
                                 to="/account"
                                 sx={{
                                     textTransform: 'none',
