@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
-import { Container, Typography, Box, Paper, Tabs, Tab } from '@mui/material';
-import { getUserInfo } from '../api/user';
+import { Container, Typography, Box, Paper, Tabs, Tab, TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { getUserInfo, changeUserPassword, deleteUserAccount } from '../api/user';
 import { User } from '../interfaces/User';
+import { ChangePasswordRequest } from '../interfaces/ChangePassword';
+
 
 const Account = () => {
     const [user, setUser] = useState<User | null>(null);
     const [error, setError] = useState('');
     const [tabIndex, setTabIndex] = useState(0);
+    const [passwords, setPasswords] = useState({ oldPassword: '', newPassword: '' });
+    const [passwordError, setPasswordError] = useState('');
+    const [modalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchUserInfo = async () => {
@@ -20,6 +25,32 @@ const Account = () => {
 
         fetchUserInfo();
     }, []);
+
+    const handlePasswordChange = async () => {
+        try {
+            if (!passwords.oldPassword || !passwords.newPassword) {
+                setPasswordError('Both fields are required.');
+                return;
+            }
+
+            await changeUserPassword({ oldPassword: passwords.oldPassword, newPassword: passwords.newPassword });
+            setPasswords({ oldPassword: '', newPassword: '' });
+            setPasswordError('');
+            alert('Password changed successfully.');
+        } catch (error) {
+            setPasswordError('Failed to change password.');
+        }
+    };
+
+    const handleDeleteAccount = async () => {
+        try {
+            await deleteUserAccount();
+            alert('Account deleted successfully.');
+            window.location.href = '/';
+        } catch (error) {
+            alert('Failed to delete account.');
+        }
+    };
 
     if (error) {
         return <Typography color="error" align="center" sx={{ mt: 3 }}>{error}</Typography>;
@@ -71,18 +102,52 @@ const Account = () => {
                     )}
 
                     {tabIndex === 1 && (
-                        <Typography align="center" sx={{ mt: 3 }}>
-                            Password change functionality coming soon.
-                        </Typography>
+                        <Box textAlign="center" sx={{ mt: 3 }}>
+                            <Typography variant="h6" fontWeight="bold">Change Password</Typography>
+                            <TextField
+                                label="Old Password"
+                                type="password"
+                                fullWidth
+                                sx={{ mt: 2 }}
+                                value={passwords.oldPassword}
+                                onChange={(e) => setPasswords({ ...passwords, oldPassword: e.target.value })}
+                            />
+                            <TextField
+                                label="New Password"
+                                type="password"
+                                fullWidth
+                                sx={{ mt: 2 }}
+                                value={passwords.newPassword}
+                                onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
+                            />
+                            {passwordError && <Typography color="error" sx={{ mt: 1 }}>{passwordError}</Typography>}
+                            <Button variant="contained" sx={{ mt: 2 }} onClick={handlePasswordChange}>Change Password</Button>
+                        </Box>
                     )}
 
                     {tabIndex === 2 && (
-                        <Typography align="center" sx={{ mt: 3, color: 'red', fontWeight: 'bold' }}>
-                            Delete account functionality coming soon.
-                        </Typography>
+                        <Box textAlign="center" sx={{ mt: 3 }}>
+                            <Typography color="error" fontWeight="bold">Delete Account</Typography>
+                            <Button variant="contained" color="error" sx={{ mt: 2 }} onClick={() => setModalOpen(true)}>
+                                Confirm Delete
+                            </Button>
+                        </Box>
                     )}
                 </Box>
             </Paper>
+
+            <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
+                <DialogTitle>Confirm Account Deletion</DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        Are you sure you want to delete your account? This action cannot be undone.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setModalOpen(false)}>Cancel</Button>
+                    <Button color="error" onClick={handleDeleteAccount}>Delete</Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 };
