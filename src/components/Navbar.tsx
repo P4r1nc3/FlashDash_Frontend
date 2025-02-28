@@ -1,116 +1,48 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { AuthContext } from '../contexts/AuthContext';
 
 const Navbar = () => {
     const auth = useContext(AuthContext);
 
     return (
-        <AppBar position="static" sx={{ backgroundColor: 'white', boxShadow: 1 }}>
-            <Toolbar
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                }}
-            >
-                <Typography
-                    variant="h6"
-                    component={Link}
-                    to="/"
-                    sx={{
-                        textDecoration: 'none',
-                        color: 'black',
-                        fontWeight: 'bold',
-                        fontFamily: 'Roboto, sans-serif',
-                    }}
-                >
-                    FlashDash
-                </Typography>
+        <nav className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
+            <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+                {/* Logo */}
+                <Link to="/" className="text-xl font-extrabold tracking-wide text-gray-900 font-poppins">
+                    Flash<span className="text-blue-500">Dash</span>
+                </Link>
 
-                <Box>
+                {/* Nawigacja */}
+                <div className="flex space-x-6">
                     {auth?.isAuthenticated ? (
                         <>
-                            <Button
-                                component={Link}
-                                to="/decks"
-                                sx={{
-                                    textTransform: 'none',
-                                    color: 'black',
-                                    fontWeight: 'bold',
-                                    fontSize: '1rem',
-                                }}
-                            >
-                                Decks
-                            </Button>
-                            <Button
-                                component={Link}
-                                to="/friends"
-                                sx={{
-                                    textTransform: 'none',
-                                    color: 'black',
-                                    fontWeight: 'bold',
-                                    fontSize: '1rem',
-                                }}
-                            >
-                                Friends
-                            </Button>
-                            <Button
-                                component={Link}
-                                to="/account"
-                                sx={{
-                                    textTransform: 'none',
-                                    color: 'black',
-                                    fontWeight: 'bold',
-                                    fontSize: '1rem',
-                                }}
-                            >
-                                Account
-                            </Button>
-                            <Button
+                            <NavItem to="/decks">Decks</NavItem>
+                            <NavItem to="/friends">Friends</NavItem>
+                            <NavItem to="/account">Account</NavItem>
+                            <button
                                 onClick={auth.logout}
-                                sx={{
-                                    textTransform: 'none',
-                                    color: 'black',
-                                    fontWeight: 'bold',
-                                    fontSize: '1rem',
-                                }}
+                                className="nav-item text-red-500 hover:text-red-600"
                             >
                                 Logout
-                            </Button>
+                            </button>
                         </>
                     ) : (
                         <>
-                            <Button
-                                component={Link}
-                                to="/login"
-                                sx={{
-                                    textTransform: 'none',
-                                    color: 'black',
-                                    fontWeight: 'bold',
-                                    fontSize: '1rem',
-                                }}
-                            >
-                                Login
-                            </Button>
-                            <Button
-                                component={Link}
-                                to="/register"
-                                sx={{
-                                    textTransform: 'none',
-                                    color: 'black',
-                                    fontWeight: 'bold',
-                                    fontSize: '1rem',
-                                }}
-                            >
-                                Register
-                            </Button>
+                            <NavItem to="/login">Login</NavItem>
+                            <NavItem to="/register">Register</NavItem>
                         </>
                     )}
-                </Box>
-            </Toolbar>
-        </AppBar>
+                </div>
+            </div>
+        </nav>
     );
 };
+
+const NavItem = ({ to, children }: { to: string; children: React.ReactNode }) => (
+    <Link to={to} className="nav-item">
+        {children}
+    </Link>
+);
 
 export default Navbar;
