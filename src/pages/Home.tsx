@@ -58,9 +58,9 @@ const Home = () => {
             </section>
 
             {/* Key Features Section */}
-            <section className="py-20 bg-white text-center">
+            <section className="h-[50vh] py-20 bg-white text-center flex flex-col justify-center">
                 <div className="container mx-auto px-6 lg:px-16">
-                    <h2 className="text-5xl font-extrabold text-gray-900 mb-16">Key Features</h2>
+                    <h2 className="text-5xl font-extrabold text-gray-900 mb-12">Key Features</h2>
                     <div className="grid md:grid-cols-3 gap-12">
                         <FeatureCard
                             title="Engaging Quizzes"
@@ -82,7 +82,7 @@ const Home = () => {
             </section>
 
             {/* Testimonials Section */}
-            <section className="py-20 bg-gray-100 text-center">
+            <section className="h-[50vh] py-20 bg-gray-100 text-center flex flex-col justify-center">
                 <div className="container mx-auto px-6 lg:px-16">
                     <h2 className="text-5xl font-extrabold text-gray-900 mb-12">What Users Say</h2>
                     <Swiper
@@ -116,12 +116,28 @@ const Home = () => {
                     </Swiper>
                 </div>
             </section>
+
+            {/* Footer Section */}
+            <footer className="h-[50vh] bg-gradient-to-b from-blue-400 to-blue-500 text-white flex flex-col items-center justify-center text-center">
+                <div className="container mx-auto px-6">
+                    <Link to="/register">
+                        <motion.button
+                            className="bg-white text-blue-500 px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-gray-100 transition duration-300"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            Register Now
+                        </motion.button>
+                    </Link>
+                    <p className="text-lg mb-6">© {new Date().getFullYear()} FlashDash. All Rights Reserved.</p>
+                </div>
+            </footer>
         </main>
     );
 };
 
 const FeatureCard = ({ title, description, icon }) => (
-    <div className="p-8 bg-gray-100 rounded-lg shadow-lg hover:shadow-xl transition duration-300 flex flex-col items-center text-center min-h-[300px]">
+    <div className="p-8 bg-gray-100 rounded-lg shadow-lg hover:shadow-xl transition duration-300 flex flex-col items-center text-center min-h-[350px]">
         <div className="text-6xl mb-6">{icon}</div>
         <h3 className="text-3xl font-bold text-gray-800 mb-4">{title}</h3>
         <p className="text-lg text-gray-600">{description}</p>
