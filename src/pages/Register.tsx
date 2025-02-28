@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { TextField, Button, Box, Typography, Alert, Container } from '@mui/material';
 import { register } from '../api/auth';
@@ -22,14 +22,22 @@ const Register = () => {
     };
 
     return (
-        <Container maxWidth="xs">
+        <Container
+            maxWidth="xs"
+            sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: 'calc(100vh - 80px)' // 100% wysokości ekranu minus 80px nawigacji
+            }}
+        >
             <Box
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
                 justifyContent="center"
                 sx={{
-                    mt: 10,
+                    width: '100%',
                     boxShadow: 3,
                     p: 4,
                     borderRadius: 2,
