@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { TextField, Button, Box, Typography, Alert, Container } from '@mui/material';
 import { login } from '../api/auth';
@@ -23,14 +23,22 @@ const Login = () => {
     };
 
     return (
-        <Container maxWidth="xs">
+        <Container
+            maxWidth="xs"
+            sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: 'calc(100vh - 80px)'
+            }}
+        >
             <Box
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
                 justifyContent="center"
                 sx={{
-                    mt: 10,
+                    width: '100%',
                     boxShadow: 3,
                     p: 4,
                     borderRadius: 2,
