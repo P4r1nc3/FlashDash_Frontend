@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import { FaBars, FaLayerGroup, FaUsers, FaUser, FaSignOutAlt } from "react-icons/fa";
@@ -6,6 +6,13 @@ import { FaBars, FaLayerGroup, FaUsers, FaUser, FaSignOutAlt } from "react-icons
 const Navbar = () => {
     const auth = useContext(AuthContext);
     const [isExpanded, setIsExpanded] = useState(false);
+
+    useEffect(() => {
+        const content = document.getElementById("content");
+        if (content) {
+            content.style.marginLeft = auth?.isAuthenticated ? (isExpanded ? "260px" : "80px") : "0"; // Jeśli niezalogowany, pełna szerokość
+        }
+    }, [isExpanded, auth?.isAuthenticated]);
 
     if (!auth?.isAuthenticated) {
         return (
