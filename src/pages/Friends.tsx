@@ -146,7 +146,15 @@ const Friends = () => {
                             </div>
 
                             <div className="p-6 bg-gray-100 rounded-lg shadow">
-                                <h2 className="text-xl font-semibold">Your Friends</h2>
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-xl font-semibold flex items-center gap-2">
+                                        Your Friends
+                                        <span className="w-6 h-6 flex items-center justify-center bg-gray-300 text-gray-700 text-lg font-bold rounded-full">
+                                            {friends.length}
+                                        </span>
+                                    </h2>
+                                </div>
+
                                 {friends.length > 0 ? (
                                     friends.map((friend) => (
                                         <div key={friend.email} className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg shadow">
