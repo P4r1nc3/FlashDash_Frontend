@@ -119,6 +119,20 @@ const Home = () => {
                 </div>
             </section>
 
+            {/* FAQ Section */}
+            <section className="py-20 bg-white text-center flex flex-col justify-center">
+                <div className="container mx-auto px-6 lg:px-16">
+                    <h2 className="text-5xl font-extrabold text-gray-900 mb-2">Frequently Asked Questions</h2>
+                    <p className="text-lg text-gray-600 mb-12">Have questions? We have answers!</p>
+                    <div className="grid md:grid-cols-2 gap-12 text-left">
+                        <FAQItem question="Is FlashDash free to use?" answer="Yes! FlashDash offers free access to thousands of quizzes. A premium version is available for extra features." />
+                        <FAQItem question="Can I create my own quizzes?" answer="Absolutely! Create, share, and challenge friends with your custom quizzes." />
+                        <FAQItem question="How do I earn rewards?" answer="Earn points by completing quizzes and maintaining learning streaks." />
+                        <FAQItem question="Is FlashDash available on mobile?" answer="Our mobile app is coming soon! Stay tuned for updates." />
+                    </div>
+                </div>
+            </section>
+
             {/* Footer Section */}
             <footer className="h-[35vh] bg-gradient-to-b from-blue-400 to-blue-500 text-white flex flex-col items-center justify-center text-center">
                 <div className="container mx-auto px-6">
@@ -152,6 +166,13 @@ const Testimonial = ({ quote, name, location }) => (
         <p className="text-xl italic text-gray-700 mb-4">"{quote}"</p>
         <h4 className="font-bold text-gray-800">{name}</h4>
         <span className="text-gray-500">{location}</span>
+    </div>
+);
+
+const FAQItem = ({ question, answer }) => (
+    <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
+        <h4 className="text-xl font-semibold text-gray-900 mb-2">{question}</h4>
+        <p className="text-gray-700">{answer}</p>
     </div>
 );
 
