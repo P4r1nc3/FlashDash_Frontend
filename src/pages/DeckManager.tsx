@@ -1,299 +1,164 @@
-import {
-    Container,
-    Typography,
-    Box,
-    Button,
-    TextField,
-    Select,
-    MenuItem,
-    FormControl,
-    InputLabel,
-    Divider,
-    IconButton,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-} from '@mui/material';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getDecks, createDeck, updateDeck, deleteDeck } from '../api/decks';
-import { Deck } from '../interfaces/Deck';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { getDecks, createDeck, updateDeck, deleteDeck } from "../api/decks";
+import { Deck } from "../interfaces/Deck";
+import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import { AiOutlinePlus, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
+
+const IconLibrary = () => <span className="text-2xl">📚</span>;
+const IconShared = () => <span className="text-2xl">🔗</span>;
 
 const DeckManager = () => {
+    const [tabIndex, setTabIndex] = useState("yourDecks");
     const [decks, setDecks] = useState<Deck[]>([]);
-    const [filteredDecks, setFilteredDecks] = useState<Deck[]>([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [sortOption, setSortOption] = useState('recent');
+    const [searchTerm, setSearchTerm] = useState("");
+    const [sortOption, setSortOption] = useState("recent");
     const [modalOpen, setModalOpen] = useState(false);
-    const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
     const [deckToDelete, setDeckToDelete] = useState<number | null>(null);
     const [editingDeck, setEditingDeck] = useState<Deck | null>(null);
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchDecks();
     }, []);
 
-    useEffect(() => {
-        filterAndSortDecks();
-    }, [decks, searchTerm, sortOption]);
-
     const fetchDecks = async () => {
         try {
             const data = await getDecks();
             setDecks(data);
         } catch (error) {
-            console.error('Failed to fetch decks:', error);
+            toast.error("Failed to fetch decks.");
         }
     };
 
-    const filterAndSortDecks = () => {
-        let filtered = decks;
-
-        if (searchTerm) {
-            filtered = filtered.filter((deck) =>
-                deck.name.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-        }
-
-        if (sortOption === 'recent') {
-            filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        } else if (sortOption === 'alphabetical') {
-            filtered.sort((a, b) => a.name.localeCompare(b.name));
-        }
-
-        setFilteredDecks(filtered);
-    };
-
-    const handleAddDeck = () => {
-        resetModalState();
-        setModalOpen(true);
-    };
-
-    const handleEditDeck = (deck: Deck) => {
-        setEditingDeck(deck);
-        setName(deck.name);
-        setDescription(deck.description);
-        setModalOpen(true);
-    };
-
-    const handleDeleteDeck = async () => {
-        if (deckToDelete !== null) {
-            try {
-                await deleteDeck(deckToDelete);
-                fetchDecks();
-                setConfirmDeleteOpen(false);
-            } catch (error) {
-                console.error('Failed to delete deck:', error);
-            }
-        }
-    };
-
-    const openConfirmDeleteDialog = (deckId: number) => {
-        setDeckToDelete(deckId);
-        setConfirmDeleteOpen(true);
-    };
-
-    const resetModalState = () => {
-        setEditingDeck(null);
-        setName('');
-        setDescription('');
-    };
-
-    const handleSubmitDeck = async () => {
+    const handleCreateOrUpdateDeck = async () => {
         try {
             if (editingDeck) {
                 await updateDeck(editingDeck.id, { name, description });
+                toast.success("Deck updated!");
             } else {
                 await createDeck({ name, description });
+                toast.success("Deck created!");
             }
+            setName("");
+            setDescription("");
+            setEditingDeck(null);
             fetchDecks();
             setModalOpen(false);
         } catch (error) {
-            console.error('Failed to save deck:', error);
+            toast.error("Failed to save deck.");
         }
     };
 
-    const formatDate = (date: string) => {
-        const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long' };
-        return new Date(date).toLocaleDateString('en-US', options);
+    const handleDeleteDeck = async (deckId: number) => {
+        try {
+            await deleteDeck(deckId);
+            toast.success("Deck deleted successfully.");
+            fetchDecks();
+        } catch (error) {
+            toast.error("Failed to delete deck.");
+        }
     };
-
-    const groupedDecksByDate = () => {
-        const grouped: { [key: string]: Deck[] } = {};
-        filteredDecks.forEach((deck) => {
-            const dateKey = formatDate(deck.createdAt);
-            if (!grouped[dateKey]) grouped[dateKey] = [];
-            grouped[dateKey].push(deck);
-        });
-        return grouped;
-    };
-
-    const groupedDecks = groupedDecksByDate();
 
     return (
-        <Container maxWidth="lg">
-            <Box sx={{ textAlign: 'center', my: 4 }}>
-                <Typography variant="h4" fontWeight="bold">
-                    Your Library
-                </Typography>
-            </Box>
-            <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                mb={3}
-                flexWrap="wrap"
-                gap={2}
-            >
-                <FormControl sx={{ minWidth: 150 }}>
-                    <InputLabel id="sort-select-label">Sort By</InputLabel>
-                    <Select
-                        labelId="sort-select-label"
+        <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-gray-100 to-gray-300">
+            <div className="w-full max-w-4xl bg-white shadow-xl rounded-xl p-8 min-h-[80vh] flex flex-col">
+                <h1 className="text-4xl font-bold text-center">Your Library</h1>
+                <p className="text-center text-gray-500">Manage your learning materials.</p>
+
+                <div className="flex justify-center mt-6 space-x-6 border-b pb-3">
+                    <button
+                        className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "yourDecks" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`}
+                        onClick={() => setTabIndex("yourDecks")}
+                    >
+                        <IconLibrary /> Your Decks
+                    </button>
+                    <button
+                        className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "sharedDecks" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`}
+                        onClick={() => setTabIndex("sharedDecks")}
+                    >
+                        <IconShared /> Shared Decks
+                    </button>
+                </div>
+
+                <div className="flex justify-between mt-6 mb-4 items-center space-x-4">
+                    <select
+                        className="p-3 border rounded-lg"
                         value={sortOption}
                         onChange={(e) => setSortOption(e.target.value)}
                     >
-                        <MenuItem value="recent">Recent</MenuItem>
-                        <MenuItem value="alphabetical">Alphabetical</MenuItem>
-                    </Select>
-                </FormControl>
-                <TextField
-                    placeholder="Search decks"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    fullWidth
-                    sx={{ maxWidth: 400 }}
-                />
-                <Button variant="contained" color="primary" onClick={handleAddDeck}>
-                    Add Deck
-                </Button>
-            </Box>
-            {Object.keys(groupedDecks).map((date) => (
-                <Box key={date} mb={4}>
-                    <Box display="flex" alignItems="center" mb={1}>
-                        <Typography
-                            variant="subtitle1"
-                            fontWeight="bold"
-                            color="textSecondary"
-                            sx={{
-                                fontSize: '0.9rem',
-                                color: '#757575',
-                                flex: '0 0 auto',
-                            }}
-                        >
-                            In {date}
-                        </Typography>
-                        <Divider
-                            sx={{
-                                flex: '1 1 auto',
-                                marginLeft: 2,
-                                borderColor: '#e0e0e0',
-                            }}
-                        />
-                    </Box>
-                    {groupedDecks[date].map((deck) => (
-                        <Box
-                            key={deck.id}
-                            onClick={() => navigate(`/decks/${deck.id}`)}
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                padding: 2,
-                                border: '1px solid #e0e0e0',
-                                borderRadius: '8px',
-                                marginBottom: 1,
-                                cursor: 'pointer',
-                                backgroundColor: '#fff',
-                                '&:hover': { backgroundColor: '#f9f9f9' },
-                            }}
-                        >
-                            <Box>
-                                <Typography variant="h6">{deck.name}</Typography>
-                                <Typography
-                                    variant="body2"
-                                    color="textSecondary"
-                                    gutterBottom
-                                >
-                                    {deck.description}
-                                </Typography>
-                            </Box>
-                            <Box>
-                                <IconButton
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleEditDeck(deck);
-                                    }}
-                                >
-                                    <EditIcon />
-                                </IconButton>
-                                <IconButton
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        openConfirmDeleteDialog(deck.id);
-                                    }}
-                                    color="error"
-                                >
-                                    <DeleteIcon />
-                                </IconButton>
-                            </Box>
-                        </Box>
-                    ))}
-                </Box>
-            ))}
-            <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
-                <DialogTitle>{editingDeck ? 'Edit Deck' : 'Create Deck'}</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        label="Name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        fullWidth
-                        margin="normal"
+                        <option value="recent">Recent</option>
+                        <option value="alphabetical">Alphabetical</option>
+                    </select>
+                    <input
+                        type="text"
+                        placeholder="Search decks..."
+                        className="p-3 flex-1 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <TextField
-                        label="Description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        fullWidth
-                        margin="normal"
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setModalOpen(false)} color="secondary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleSubmitDeck} variant="contained" color="primary">
-                        {editingDeck ? 'Update' : 'Create'}
-                    </Button>
-                </DialogActions>
-            </Dialog>
-            <Dialog open={confirmDeleteOpen} onClose={() => setConfirmDeleteOpen(false)}>
-                <DialogTitle>Confirm Delete</DialogTitle>
-                <DialogContent>
-                    <Typography>
-                        Are you sure you want to delete this deck? This action cannot be undone.
-                    </Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleDeleteDeck} variant="outlined" color="error">
-                        Delete
-                    </Button>
-                    <Button
-                        onClick={() => setConfirmDeleteOpen(false)}
-                        variant="contained"
-                        sx={{ backgroundColor: '#f44336', color: '#fff', '&:hover': { backgroundColor: '#d32f2f' } }}
-                    >
-                        Cancel
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </Container>
+                    {tabIndex === "yourDecks" && (
+                        <button
+                            className="bg-blue-500 text-white px-4 py-3 rounded-lg flex items-center gap-2"
+                            onClick={() => setModalOpen(true)}
+                        >
+                            <AiOutlinePlus size={20} /> Add Deck
+                        </button>
+                    )}
+                </div>
+
+                <div className="space-y-4">
+                    {tabIndex === "yourDecks" && (
+                        decks.length > 0 ? (
+                            decks.map((deck) => (
+                                <motion.div
+                                    key={deck.id}
+                                    className="flex justify-between items-center p-4 bg-gray-100 rounded-lg shadow cursor-pointer hover:bg-gray-200"
+                                    onClick={() => navigate(`/decks/${deck.id}`)}
+                                    whileHover={{ scale: 1.02 }}
+                                >
+                                    <div>
+                                        <h2 className="text-xl font-semibold">{deck.name}</h2>
+                                        <p className="text-gray-600">{deck.description}</p>
+                                    </div>
+                                    <div className="flex space-x-3">
+                                        <button className="text-blue-500 hover:text-blue-700" onClick={(e) => { e.stopPropagation(); setEditingDeck(deck); setModalOpen(true); }}>
+                                            <AiOutlineEdit size={22} />
+                                        </button>
+                                        <button className="text-red-500 hover:text-red-700" onClick={(e) => { e.stopPropagation(); setDeckToDelete(deck.id); handleDeleteDeck(deck.id); }}>
+                                            <AiOutlineDelete size={22} />
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            ))
+                        ) : (
+                            <p className="text-center text-gray-500">No decks found.</p>
+                        )
+                    )}
+
+                    {tabIndex === "sharedDecks" && (
+                        <p className="text-center text-gray-500">No shared decks yet.</p>
+                    )}
+                </div>
+            </div>
+
+            {modalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+                    <motion.div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                        <h2 className="text-lg font-semibold">{editingDeck ? "Edit Deck" : "Create Deck"}</h2>
+                        <input type="text" placeholder="Deck Name" className="p-3 w-full bg-gray-50 border rounded-lg mt-4" value={name} onChange={(e) => setName(e.target.value)} />
+                        <input type="text" placeholder="Description" className="p-3 w-full bg-gray-50 border rounded-lg mt-3" value={description} onChange={(e) => setDescription(e.target.value)} />
+                        <div className="flex justify-end mt-4 space-x-2">
+                            <button className="px-4 py-2 border rounded-lg" onClick={() => setModalOpen(false)}>Cancel</button>
+                            <button className="px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={handleCreateOrUpdateDeck}>Save</button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+        </div>
     );
 };
 
