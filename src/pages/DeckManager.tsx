@@ -12,6 +12,7 @@ const IconShared = () => <span className="text-2xl">🔗</span>;
 const DeckManager = () => {
     const [tabIndex, setTabIndex] = useState("yourDecks");
     const [decks, setDecks] = useState<Deck[]>([]);
+    const [filteredDecks, setFilteredDecks] = useState<Deck[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOption, setSortOption] = useState("recent");
     const [modalOpen, setModalOpen] = useState(false);
@@ -25,6 +26,10 @@ const DeckManager = () => {
         fetchDecks();
     }, []);
 
+    useEffect(() => {
+        filterAndSortDecks();
+    }, [decks, searchTerm, sortOption]);
+
     const fetchDecks = async () => {
         try {
             const data = await getDecks();
@@ -32,6 +37,24 @@ const DeckManager = () => {
         } catch (error) {
             toast.error("Failed to fetch decks.");
         }
+    };
+
+    const filterAndSortDecks = () => {
+        let filtered = decks;
+
+        if (searchTerm) {
+            filtered = filtered.filter((deck) =>
+                deck.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                deck.description.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+        if (sortOption === "recent") {
+            filtered = filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        } else if (sortOption === "alphabetical") {
+            filtered = filtered.sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        setFilteredDecks(filtered);
     };
 
     const handleCreateOrUpdateDeck = async () => {
@@ -111,36 +134,30 @@ const DeckManager = () => {
                 </div>
 
                 <div className="space-y-4">
-                    {tabIndex === "yourDecks" && (
-                        decks.length > 0 ? (
-                            decks.map((deck) => (
-                                <motion.div
-                                    key={deck.id}
-                                    className="flex justify-between items-center p-4 bg-gray-100 rounded-lg shadow cursor-pointer hover:bg-gray-200"
-                                    onClick={() => navigate(`/decks/${deck.id}`)}
-                                    whileHover={{ scale: 1.02 }}
-                                >
-                                    <div>
-                                        <h2 className="text-xl font-semibold">{deck.name}</h2>
-                                        <p className="text-gray-600">{deck.description}</p>
-                                    </div>
-                                    <div className="flex space-x-3">
-                                        <button className="text-blue-500 hover:text-blue-700" onClick={(e) => { e.stopPropagation(); setEditingDeck(deck); setModalOpen(true); }}>
-                                            <AiOutlineEdit size={22} />
-                                        </button>
-                                        <button className="text-red-500 hover:text-red-700" onClick={(e) => { e.stopPropagation(); setDeckToDelete(deck.id); handleDeleteDeck(deck.id); }}>
-                                            <AiOutlineDelete size={22} />
-                                        </button>
-                                    </div>
-                                </motion.div>
-                            ))
-                        ) : (
-                            <p className="text-center text-gray-500">No decks found.</p>
-                        )
-                    )}
-
-                    {tabIndex === "sharedDecks" && (
-                        <p className="text-center text-gray-500">No shared decks yet.</p>
+                    {filteredDecks.length > 0 ? (
+                        filteredDecks.map((deck) => (
+                            <motion.div
+                                key={deck.id}
+                                className="flex justify-between items-center p-4 bg-gray-100 rounded-lg shadow cursor-pointer hover:bg-gray-200"
+                                onClick={() => navigate(`/decks/${deck.id}`)}
+                                whileHover={{ scale: 1.02 }}
+                            >
+                                <div>
+                                    <h2 className="text-xl font-semibold">{deck.name}</h2>
+                                    <p className="text-gray-600">{deck.description}</p>
+                                </div>
+                                <div className="flex space-x-3">
+                                    <button className="text-blue-500 hover:text-blue-700" onClick={(e) => { e.stopPropagation(); setEditingDeck(deck); setModalOpen(true); }}>
+                                        <AiOutlineEdit size={22} />
+                                    </button>
+                                    <button className="text-red-500 hover:text-red-700" onClick={(e) => { e.stopPropagation(); setDeckToDelete(deck.id); handleDeleteDeck(deck.id); }}>
+                                        <AiOutlineDelete size={22} />
+                                    </button>
+                                </div>
+                            </motion.div>
+                        ))
+                    ) : (
+                        <p className="text-center text-gray-500">No decks found.</p>
                     )}
                 </div>
             </div>
