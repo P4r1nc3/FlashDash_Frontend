@@ -57,7 +57,7 @@ const Account = () => {
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-gray-100 to-gray-300">
-            <div className="w-full max-w-3xl bg-white shadow-xl rounded-xl p-8 min-h-[80vh] flex flex-col">
+            <div className="w-full max-w-4xl bg-white shadow-xl rounded-xl p-8 min-h-[80vh] flex flex-col">
                 <h1 className="text-4xl font-bold text-center">Welcome, {user?.firstName}!</h1>
                 <p className="text-center text-gray-500">
                     It is great to see You again!
