@@ -20,6 +20,7 @@ const DeckManager = () => {
     const [editingDeck, setEditingDeck] = useState<Deck | null>(null);
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -45,7 +46,7 @@ const DeckManager = () => {
         if (searchTerm) {
             filtered = filtered.filter((deck) =>
                 deck.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                deck.description.toLowerCase().includes(searchTerm.toLowerCase())
+                deck.description?.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
         if (sortOption === "recent") {
@@ -58,17 +59,23 @@ const DeckManager = () => {
     };
 
     const handleCreateOrUpdateDeck = async () => {
+        if (!name.trim()) {
+            setError("Title is required.");
+            return;
+        }
+
         try {
             if (editingDeck) {
-                await updateDeck(editingDeck.id, { name, description });
+                await updateDeck(editingDeck.id, { name, description: description || "" });
                 toast.success("Deck updated!");
             } else {
-                await createDeck({ name, description });
+                await createDeck({ name, description: description || "" });
                 toast.success("Deck created!");
             }
             setName("");
             setDescription("");
             setEditingDeck(null);
+            setError("");
             fetchDecks();
             setModalOpen(false);
         } catch (error) {
@@ -84,6 +91,14 @@ const DeckManager = () => {
         } catch (error) {
             toast.error("Failed to delete deck.");
         }
+    };
+
+    const openEditModal = (deck: Deck) => {
+        setEditingDeck(deck);
+        setName(deck.name);
+        setDescription(deck.description || ""); // Ustaw pusty string jeśli brak opisu
+        setError("");
+        setModalOpen(true);
     };
 
     return (
@@ -126,7 +141,7 @@ const DeckManager = () => {
                     {tabIndex === "yourDecks" && (
                         <button
                             className="bg-blue-500 text-white px-4 py-3 rounded-lg flex items-center gap-2"
-                            onClick={() => setModalOpen(true)}
+                            onClick={() => { setModalOpen(true); setEditingDeck(null); setName(""); setDescription(""); setError(""); }}
                         >
                             <AiOutlinePlus size={20} /> Add Deck
                         </button>
@@ -147,7 +162,7 @@ const DeckManager = () => {
                                     <p className="text-gray-600">{deck.description}</p>
                                 </div>
                                 <div className="flex space-x-3">
-                                    <button className="text-blue-500 hover:text-blue-700" onClick={(e) => { e.stopPropagation(); setEditingDeck(deck); setModalOpen(true); }}>
+                                    <button className="text-blue-500 hover:text-blue-700" onClick={(e) => { e.stopPropagation(); openEditModal(deck); }}>
                                         <AiOutlineEdit size={22} />
                                     </button>
                                     <button className="text-red-500 hover:text-red-700" onClick={(e) => { e.stopPropagation(); setDeckToDelete(deck.id); handleDeleteDeck(deck.id); }}>
@@ -166,8 +181,33 @@ const DeckManager = () => {
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
                     <motion.div className="bg-white p-6 rounded-lg shadow-lg w-96">
                         <h2 className="text-lg font-semibold">{editingDeck ? "Edit Deck" : "Create Deck"}</h2>
-                        <input type="text" placeholder="Deck Name" className="p-3 w-full bg-gray-50 border rounded-lg mt-4" value={name} onChange={(e) => setName(e.target.value)} />
-                        <input type="text" placeholder="Description" className="p-3 w-full bg-gray-50 border rounded-lg mt-3" value={description} onChange={(e) => setDescription(e.target.value)} />
+
+                        {/* Deck Name */}
+                        <label className="block text-gray-700 font-semibold mt-4">
+                            Deck Name <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="Enter deck name"
+                            className="p-3 w-full bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                        {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+
+                        {/* Description */}
+                        <label className="block text-gray-700 font-semibold mt-4">
+                            Description
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="Enter description"
+                            className="p-3 w-full bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
+
+                        {/* Buttons */}
                         <div className="flex justify-end mt-4 space-x-2">
                             <button className="px-4 py-2 border rounded-lg" onClick={() => setModalOpen(false)}>Cancel</button>
                             <button className="px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={handleCreateOrUpdateDeck}>Save</button>
@@ -175,6 +215,7 @@ const DeckManager = () => {
                     </motion.div>
                 </div>
             )}
+
         </div>
     );
 };
