@@ -6,8 +6,27 @@ import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 
 const IconFriends = () => <span className="text-2xl">👥</span>;
-const IconInvitations = () => <span className="text-2xl">📩</span>;
-const IconSent = () => <span className="text-2xl">📤</span>;
+const IconInvitations = ({ count }: { count: number }) => (
+    <span className="relative text-2xl">
+        📩
+        {count > 0 && (
+            <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs font-semibold w-5 h-5 flex items-center justify-center rounded-full">
+                {count}
+            </span>
+        )}
+    </span>
+);
+
+const IconSent = ({ count }: { count: number }) => (
+    <span className="relative text-2xl">
+        📤
+        {count > 0 && (
+            <span className="absolute -top-2 -right-3 bg-orange-500 text-white text-xs font-semibold w-5 h-5 flex items-center justify-center rounded-full">
+                {count}
+            </span>
+        )}
+    </span>
+);
 
 const Friends = () => {
     const [tabIndex, setTabIndex] = useState("friends");
@@ -93,11 +112,17 @@ const Friends = () => {
                     <button className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "friends" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`} onClick={() => setTabIndex("friends")}>
                         <IconFriends /> Friends
                     </button>
-                    <button className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "received" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`} onClick={() => setTabIndex("received")}>
-                        <IconInvitations /> Received Invitations
+                    <button
+                        className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "received" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`}
+                        onClick={() => setTabIndex("received")}
+                    >
+                        <IconInvitations count={receivedInvitations.length} /> Received Invitations
                     </button>
-                    <button className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "sent" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`} onClick={() => setTabIndex("sent")}>
-                        <IconSent /> Sent Invitations
+                    <button
+                        className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "sent" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`}
+                        onClick={() => setTabIndex("sent")}
+                    >
+                        <IconSent count={sentInvitations.length} /> Sent Invitations
                     </button>
                 </div>
 
