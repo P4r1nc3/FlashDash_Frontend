@@ -1,17 +1,20 @@
-import { useEffect, useState } from 'react';
-import { Container, Typography, Box, Tabs, Tab, Paper, Button, TextField } from '@mui/material';
-import { getFriends, getSentInvitations, getReceivedInvitations, sendFriendInvitation, respondToInvitation, deleteFriend } from '../api/friends';
-import { User } from '../interfaces/User';
-import { FriendInvitationResponse } from '../interfaces/FriendInvitation';
-import { ErrorResponse } from '../interfaces/ErrorResponse';
-import { toast } from 'react-toastify';
+import { useEffect, useState } from "react";
+import { getFriends, getSentInvitations, getReceivedInvitations, sendFriendInvitation, respondToInvitation, deleteFriend } from "../api/friends";
+import { User } from "../interfaces/User";
+import { FriendInvitationResponse } from "../interfaces/FriendInvitation";
+import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+
+const IconFriends = () => <span className="text-2xl">👥</span>;
+const IconInvitations = () => <span className="text-2xl">📩</span>;
+const IconSent = () => <span className="text-2xl">📤</span>;
 
 const Friends = () => {
-    const [tabIndex, setTabIndex] = useState(0);
+    const [tabIndex, setTabIndex] = useState("friends");
     const [friends, setFriends] = useState<User[]>([]);
     const [sentInvitations, setSentInvitations] = useState<FriendInvitationResponse[]>([]);
     const [receivedInvitations, setReceivedInvitations] = useState<FriendInvitationResponse[]>([]);
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState("");
 
     useEffect(() => {
         fetchFriends();
@@ -23,8 +26,8 @@ const Friends = () => {
         try {
             const data = await getFriends();
             setFriends(data);
-        } catch (error: any) {
-            handleError(error);
+        } catch (error) {
+            toast.error("Failed to load friends.");
         }
     };
 
@@ -32,8 +35,8 @@ const Friends = () => {
         try {
             const data = await getSentInvitations();
             setSentInvitations(data);
-        } catch (error: any) {
-            handleError(error);
+        } catch (error) {
+            toast.error("Failed to load sent invitations.");
         }
     };
 
@@ -41,8 +44,8 @@ const Friends = () => {
         try {
             const data = await getReceivedInvitations();
             setReceivedInvitations(data);
-        } catch (error: any) {
-            handleError(error);
+        } catch (error) {
+            toast.error("Failed to load received invitations.");
         }
     };
 
@@ -50,156 +53,138 @@ const Friends = () => {
         if (!email) return;
         try {
             await sendFriendInvitation(email);
-            setEmail('');
-            toast.success('Friend invitation sent successfully!');
+            setEmail("");
+            toast.success("Friend invitation sent successfully!");
             fetchSentInvitations();
-        } catch (error: any) {
-            handleError(error);
+        } catch (error) {
+            toast.error("Failed to send invitation.");
         }
     };
 
-    const handleRespondToInvitation = async (invitationId: number, status: 'ACCEPTED' | 'REJECTED') => {
+    const handleRespondToInvitation = async (invitationId: number, status: "ACCEPTED" | "REJECTED") => {
         try {
             await respondToInvitation(invitationId, status);
-            toast.success(
-                status === 'ACCEPTED' ? 'Friend invitation accepted!' : 'Friend invitation rejected.'
-            );
+            toast.success(status === "ACCEPTED" ? "Friend invitation accepted!" : "Friend invitation rejected.");
             fetchSentInvitations();
             fetchReceivedInvitations();
             fetchFriends();
-        } catch (error: any) {
-            handleError(error);
+        } catch (error) {
+            toast.error("Failed to respond to invitation.");
         }
     };
 
     const handleDeleteFriend = async (friendEmail: string) => {
         try {
             await deleteFriend(friendEmail);
-            toast.success('Friend removed successfully.');
+            toast.success("Friend removed successfully.");
             fetchFriends();
-        } catch (error: any) {
-            handleError(error);
-        }
-    };
-
-    const handleError = (error: any) => {
-        if (error.response) {
-            const errorResponse: ErrorResponse = error.response.data;
-            toast.error(errorResponse.cause || 'An unexpected error occurred.');
-        } else {
-            toast.error('Something went wrong. Please try again.');
+        } catch (error) {
+            toast.error("Failed to remove friend.");
         }
     };
 
     return (
-        <Container>
-            <Typography variant="h4" align="center" sx={{ my: 3 }}>
-                Friends
-            </Typography>
-            <Paper elevation={3} sx={{ p: 2 }}>
-                <Tabs value={tabIndex} onChange={(_, newValue) => setTabIndex(newValue)} centered>
-                    <Tab label="Friends" />
-                    <Tab label="Sent Invitations" />
-                    <Tab label="Received Invitations" />
-                </Tabs>
-                <Box sx={{ mt: 3 }}>
-                    {tabIndex === 0 && (
-                        <Box>
-                            <Box display="flex" gap={2} mb={3}>
-                                <TextField
-                                    label="Friend's Email"
-                                    variant="outlined"
-                                    fullWidth
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                                <Button variant="contained" onClick={handleSendInvitation}>
-                                    Send Invitation
-                                </Button>
-                            </Box>
+        <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-gray-100 to-gray-300">
+            <div className="w-full max-w-3xl bg-white shadow-xl rounded-xl p-8 min-h-[80vh] flex flex-col">
+                <h1 className="text-4xl font-bold text-center">Your Friends</h1>
+                <p className="text-center text-gray-500">Manage your friendships easily.</p>
 
-                            {friends.length > 0 ? (
-                                friends.map((friend) => (
-                                    <Paper key={friend.email} sx={{ p: 2, mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <Box>
-                                            <Typography variant="h6">{friend.firstName} {friend.lastName}</Typography>
-                                            <Typography color="textSecondary">{friend.email}</Typography>
-                                        </Box>
-                                        <Button
-                                            variant="contained"
-                                            color="error"
-                                            onClick={() => handleDeleteFriend(friend.email)}
-                                        >
-                                            Remove Friend
-                                        </Button>
-                                    </Paper>
-                                ))
-                            ) : (
-                                <Typography align="center">No friends yet.</Typography>
-                            )}
-                        </Box>
+                <div className="flex justify-center mt-6 space-x-6 border-b pb-3">
+                    <button className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "friends" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`} onClick={() => setTabIndex("friends")}>
+                        <IconFriends /> Friends
+                    </button>
+                    <button className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "received" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`} onClick={() => setTabIndex("received")}>
+                        <IconInvitations /> Received Invitations
+                    </button>
+                    <button className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "sent" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`} onClick={() => setTabIndex("sent")}>
+                        <IconSent /> Sent Invitations
+                    </button>
+                </div>
+
+                <div className="mt-6 flex-1">
+                    {tabIndex === "friends" && (
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                            <div className="p-6 bg-gray-100 rounded-lg shadow">
+                                <h2 className="text-xl font-semibold">Add a Friend</h2>
+                                <div className="mt-4 flex gap-3">
+                                    <input
+                                        type="email"
+                                        placeholder="Enter email"
+                                        className="p-3 w-full bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 text-lg"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                    <button className="bg-blue-500 text-white px-6 py-3 rounded-lg" onClick={handleSendInvitation}>
+                                        Send
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="p-6 bg-gray-100 rounded-lg shadow">
+                                <h2 className="text-xl font-semibold">Your Friends</h2>
+                                {friends.length > 0 ? (
+                                    friends.map((friend) => (
+                                        <div key={friend.email} className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg shadow">
+                                            <span className="text-lg font-semibold">{friend.firstName} {friend.lastName}</span>
+                                            <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={() => handleDeleteFriend(friend.email)}>
+                                                Remove
+                                            </button>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-center text-gray-500 mt-2">No friends yet.</p>
+                                )}
+                            </div>
+                        </motion.div>
                     )}
 
-                    {tabIndex === 1 && (
-                        <Box>
-                            {sentInvitations.length > 0 ? (
-                                sentInvitations.map((inv) => (
-                                    <Paper key={inv.id} sx={{ p: 2, mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <Box>
-                                            <Typography variant="h6">{inv.recipientFirstName} {inv.recipientLastName}</Typography>
-                                            <Typography color="textSecondary">Status: {inv.status}</Typography>
-                                        </Box>
-                                        <Button
-                                            variant="contained"
-                                            color="error"
-                                            onClick={() => handleRespondToInvitation(inv.id, 'REJECTED')}
-                                        >
-                                            Cancel
-                                        </Button>
-                                    </Paper>
-                                ))
-                            ) : (
-                                <Typography align="center">No sent invitations.</Typography>
-                            )}
-                        </Box>
+                    {tabIndex === "received" && (
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                            <div className="p-6 bg-gray-100 rounded-lg shadow">
+                                <h2 className="text-xl font-semibold">Received Invitations</h2>
+                                {receivedInvitations.length > 0 ? (
+                                    receivedInvitations.map((inv) => (
+                                        <div key={inv.id} className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg shadow">
+                                            <span className="text-lg">{inv.senderFirstName} {inv.senderLastName}</span>
+                                            <div className="space-x-2">
+                                                <button className="bg-green-500 text-white px-4 py-2 rounded-lg" onClick={() => handleRespondToInvitation(inv.id, "ACCEPTED")}>
+                                                    Accept
+                                                </button>
+                                                <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={() => handleRespondToInvitation(inv.id, "REJECTED")}>
+                                                    Reject
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-center text-gray-500 mt-2">No invitations.</p>
+                                )}
+                            </div>
+                        </motion.div>
                     )}
 
-                    {tabIndex === 2 && (
-                        <Box>
-                            {receivedInvitations.length > 0 ? (
-                                receivedInvitations.map((inv) => (
-                                    <Paper key={inv.id} sx={{ p: 2, mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <Box>
-                                            <Typography variant="h6">{inv.senderFirstName} {inv.senderLastName}</Typography>
-                                            <Typography color="textSecondary">Sent: {new Date(inv.createdAt).toLocaleDateString()}</Typography>
-                                        </Box>
-                                        <Box>
-                                            <Button
-                                                variant="contained"
-                                                color="success"
-                                                sx={{ mr: 1 }}
-                                                onClick={() => handleRespondToInvitation(inv.id, 'ACCEPTED')}
-                                            >
-                                                Accept
-                                            </Button>
-                                            <Button
-                                                variant="contained"
-                                                color="error"
-                                                onClick={() => handleRespondToInvitation(inv.id, 'REJECTED')}
-                                            >
-                                                Reject
-                                            </Button>
-                                        </Box>
-                                    </Paper>
-                                ))
-                            ) : (
-                                <Typography align="center">No received invitations.</Typography>
-                            )}
-                        </Box>
+                    {tabIndex === "sent" && (
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                            <div className="p-6 bg-gray-100 rounded-lg shadow">
+                                <h2 className="text-xl font-semibold">Sent Invitations</h2>
+                                {sentInvitations.length > 0 ? (
+                                    sentInvitations.map((inv) => (
+                                        <div key={inv.id} className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg shadow">
+                                            <span className="text-lg">{inv.recipientFirstName} {inv.recipientLastName}</span>
+                                            <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={() => handleRespondToInvitation(inv.id, "REJECTED")}>
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-center text-gray-500 mt-2">No sent invitations.</p>
+                                )}
+                            </div>
+                        </motion.div>
                     )}
-                </Box>
-            </Paper>
-        </Container>
+                </div>
+            </div>
+        </div>
     );
 };
 
