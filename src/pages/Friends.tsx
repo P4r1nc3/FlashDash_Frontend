@@ -4,7 +4,8 @@ import { User } from "../interfaces/User";
 import { FriendInvitationResponse } from "../interfaces/FriendInvitation";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
-import { AiOutlineUser, AiOutlineMail, AiOutlineSend } from "react-icons/ai";
+import {AiOutlineUser, AiOutlineUserAdd, AiOutlineMail, AiOutlineSend,  AiOutlinePlus} from "react-icons/ai";
+import { LiaUserFriendsSolid } from "react-icons/lia";
 
 const Friends = () => {
     const [tabIndex, setTabIndex] = useState("friends");
@@ -86,9 +87,10 @@ const Friends = () => {
                 <h1 className="text-4xl font-bold text-center">Your Friends</h1>
                 <p className="text-center text-gray-500">Manage your friendships easily.</p>
 
+                {/* Nawigacja */}
                 <div className="flex justify-center mt-6 space-x-6 border-b pb-3">
                     {[
-                        { id: "friends", icon: <AiOutlineUser size={22} />, label: "Friends" },
+                        { id: "friends", icon: <LiaUserFriendsSolid size={22} />, label: "Friends" },
                         { id: "received", icon: <AiOutlineMail size={22} />, label: `Received Invitations (${receivedInvitations.length})` },
                         { id: "sent", icon: <AiOutlineSend size={22} />, label: `Sent Invitations (${sentInvitations.length})` },
                     ].map(({ id, icon, label }) => (
@@ -108,7 +110,9 @@ const Friends = () => {
                     {tabIndex === "friends" && (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                             <div className="p-6 bg-gray-100 rounded-lg shadow">
-                                <h2 className="text-xl font-semibold">Add a Friend</h2>
+                                <h2 className="text-xl font-semibold flex items-center gap-2">
+                                    <AiOutlineUserAdd size={22} /> Add a Friend
+                                </h2>
                                 <div className="mt-4 flex gap-3">
                                     <input
                                         type="email"
@@ -126,7 +130,7 @@ const Friends = () => {
                             <div className="p-6 bg-gray-100 rounded-lg shadow">
                                 <div className="flex items-center justify-between">
                                     <h2 className="text-xl font-semibold flex items-center gap-2">
-                                        <AiOutlineUser size={22} /> Your Friends
+                                        <LiaUserFriendsSolid size={22} /> Your Friends
                                         <span className="w-6 h-6 flex items-center justify-center bg-gray-300 text-gray-700 text-lg font-bold rounded-full">
                                             {friends.length}
                                         </span>
@@ -152,7 +156,9 @@ const Friends = () => {
                     {tabIndex === "received" && (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                             <div className="p-6 bg-gray-100 rounded-lg shadow">
-                                <h2 className="text-xl font-semibold">Received Invitations</h2>
+                                <h2 className="text-xl font-semibold flex items-center gap-2">
+                                    <AiOutlineMail size={22} /> Received Invitations
+                                </h2>
                                 {receivedInvitations.length > 0 ? (
                                     receivedInvitations.map((inv) => (
                                         <div key={inv.id} className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg shadow">
@@ -177,7 +183,9 @@ const Friends = () => {
                     {tabIndex === "sent" && (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                             <div className="p-6 bg-gray-100 rounded-lg shadow">
-                                <h2 className="text-xl font-semibold">Sent Invitations</h2>
+                                <h2 className="text-xl font-semibold flex items-center gap-2">
+                                    <AiOutlineSend size={22} /> Sent Invitations
+                                </h2>
                                 {sentInvitations.length > 0 ? (
                                     sentInvitations.map((inv) => (
                                         <div key={inv.id} className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg shadow">

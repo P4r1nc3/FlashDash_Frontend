@@ -3,7 +3,14 @@ import { getUserInfo, changeUserPassword, deleteUserAccount } from "../api/user"
 import { User } from "../interfaces/User";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
-import { AiOutlineUser, AiOutlineSetting, AiOutlineEye, AiOutlineEyeInvisible, AiOutlineDelete } from "react-icons/ai";
+import {
+    AiOutlineUser,
+    AiOutlineSetting,
+    AiOutlineEye,
+    AiOutlineEyeInvisible,
+    AiOutlineUserDelete
+} from "react-icons/ai";
+import { RiLockPasswordLine } from "react-icons/ri";
 
 const Account = () => {
     const [user, setUser] = useState<User | null>(null);
@@ -79,7 +86,9 @@ const Account = () => {
                 <div className="mt-6 flex-1">
                     {tabIndex === "profile" && (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="p-6 bg-gray-100 rounded-lg shadow">
-                            <h2 className="text-xl font-semibold">Profile Information</h2>
+                            <h2 className="text-xl font-semibold flex items-center gap-2">
+                                <AiOutlineUser size={22} /> Profile Information
+                            </h2>
                             <div className="mt-4 space-y-4">
                                 <div>
                                     <p className="text-gray-500 text-sm">First Name</p>
@@ -104,7 +113,9 @@ const Account = () => {
                     {tabIndex === "settings" && (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                             <div className="p-6 bg-gray-100 rounded-lg shadow">
-                                <h2 className="text-xl font-semibold">Change Password</h2>
+                                <h2 className="text-xl font-semibold flex items-center gap-2">
+                                    <RiLockPasswordLine size={22} /> Change Password
+                                </h2>
                                 <div className="mt-4">
                                     <label className="text-gray-700 font-semibold block mb-1">Old Password</label>
                                     <div className="relative">
@@ -138,7 +149,9 @@ const Account = () => {
                                 {passwordError && <p className="text-red-500 mt-2">{passwordError}</p>}
                                 <button className="mt-4 bg-blue-500 text-white py-3 px-6 rounded-lg w-full" onClick={handleChangePassword}>Change Password</button>
                             </div><div className="p-6 bg-gray-100 rounded-lg shadow">
-                            <h2 className="text-xl font-semibold text-red-500">Delete Account</h2>
+                            <h2 className="text-xl font-semibold text-red-500 flex items-center gap-2">
+                                <AiOutlineUserDelete size={22} /> Delete Account
+                            </h2>
                             <p className="text-gray-500 mt-2">This action cannot be undone.</p>
                             <button className="mt-4 bg-red-500 text-white py-3 px-6 rounded-lg w-full" onClick={() => setModalOpen(true)}>Confirm Delete</button>
                         </div>
