@@ -3,10 +3,7 @@ import { getUserInfo, changeUserPassword, deleteUserAccount } from "../api/user"
 import { User } from "../interfaces/User";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-
-const IconProfile = () => <span className="text-2xl">👤</span>;
-const IconSettings = () => <span className="text-2xl">⚙️</span>;
+import { AiOutlineUser, AiOutlineSetting, AiOutlineEye, AiOutlineEyeInvisible, AiOutlineDelete } from "react-icons/ai";
 
 const Account = () => {
     const [user, setUser] = useState<User | null>(null);
@@ -59,17 +56,24 @@ const Account = () => {
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-gray-100 to-gray-300">
             <div className="w-full max-w-4xl bg-white shadow-xl rounded-xl p-8 min-h-[80vh] flex flex-col">
                 <h1 className="text-4xl font-bold text-center">Welcome, {user?.firstName}!</h1>
-                <p className="text-center text-gray-500">
-                    It is great to see You again!
-                </p>
+                <p className="text-center text-gray-500">It is great to see you again!</p>
 
+                {/* Nawigacja */}
                 <div className="flex justify-center mt-6 space-x-6 border-b pb-3">
-                    <button className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "profile" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`} onClick={() => setTabIndex("profile")}>
-                        <IconProfile /> Profile
-                    </button>
-                    <button className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "settings" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`} onClick={() => setTabIndex("settings")}>
-                        <IconSettings /> Settings
-                    </button>
+                    {[
+                        { id: "profile", icon: <AiOutlineUser size={22} />, label: "Profile" },
+                        { id: "settings", icon: <AiOutlineSetting size={22} />, label: "Settings" },
+                    ].map(({ id, icon, label }) => (
+                        <button
+                            key={id}
+                            className={`px-6 py-3 flex items-center gap-2 rounded-lg transition-all ${
+                                tabIndex === id ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"
+                            }`}
+                            onClick={() => setTabIndex(id)}
+                        >
+                            {icon} {label}
+                        </button>
+                    ))}
                 </div>
 
                 <div className="mt-6 flex-1">

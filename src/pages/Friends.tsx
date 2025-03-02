@@ -4,29 +4,7 @@ import { User } from "../interfaces/User";
 import { FriendInvitationResponse } from "../interfaces/FriendInvitation";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
-
-const IconFriends = () => <span className="text-2xl">👥</span>;
-const IconInvitations = ({ count }: { count: number }) => (
-    <span className="relative text-2xl">
-        📩
-        {count > 0 && (
-            <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs font-semibold w-5 h-5 flex items-center justify-center rounded-full">
-                {count}
-            </span>
-        )}
-    </span>
-);
-
-const IconSent = ({ count }: { count: number }) => (
-    <span className="relative text-2xl">
-        📤
-        {count > 0 && (
-            <span className="absolute -top-2 -right-3 bg-orange-500 text-white text-xs font-semibold w-5 h-5 flex items-center justify-center rounded-full">
-                {count}
-            </span>
-        )}
-    </span>
-);
+import { AiOutlineUser, AiOutlineMail, AiOutlineSend } from "react-icons/ai";
 
 const Friends = () => {
     const [tabIndex, setTabIndex] = useState("friends");
@@ -109,21 +87,21 @@ const Friends = () => {
                 <p className="text-center text-gray-500">Manage your friendships easily.</p>
 
                 <div className="flex justify-center mt-6 space-x-6 border-b pb-3">
-                    <button className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "friends" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`} onClick={() => setTabIndex("friends")}>
-                        <IconFriends /> Friends
-                    </button>
-                    <button
-                        className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "received" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`}
-                        onClick={() => setTabIndex("received")}
-                    >
-                        <IconInvitations count={receivedInvitations.length} /> Received Invitations
-                    </button>
-                    <button
-                        className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "sent" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`}
-                        onClick={() => setTabIndex("sent")}
-                    >
-                        <IconSent count={sentInvitations.length} /> Sent Invitations
-                    </button>
+                    {[
+                        { id: "friends", icon: <AiOutlineUser size={22} />, label: "Friends" },
+                        { id: "received", icon: <AiOutlineMail size={22} />, label: `Received Invitations (${receivedInvitations.length})` },
+                        { id: "sent", icon: <AiOutlineSend size={22} />, label: `Sent Invitations (${sentInvitations.length})` },
+                    ].map(({ id, icon, label }) => (
+                        <button
+                            key={id}
+                            className={`px-6 py-3 flex items-center gap-2 rounded-lg transition-all ${
+                                tabIndex === id ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"
+                            }`}
+                            onClick={() => setTabIndex(id)}
+                        >
+                            {icon} {label}
+                        </button>
+                    ))}
                 </div>
 
                 <div className="mt-6 flex-1">
@@ -148,7 +126,7 @@ const Friends = () => {
                             <div className="p-6 bg-gray-100 rounded-lg shadow">
                                 <div className="flex items-center justify-between">
                                     <h2 className="text-xl font-semibold flex items-center gap-2">
-                                        Your Friends
+                                        <AiOutlineUser size={22} /> Your Friends
                                         <span className="w-6 h-6 flex items-center justify-center bg-gray-300 text-gray-700 text-lg font-bold rounded-full">
                                             {friends.length}
                                         </span>

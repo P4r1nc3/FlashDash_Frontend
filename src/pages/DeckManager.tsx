@@ -4,10 +4,7 @@ import { getDecks, createDeck, updateDeck, deleteDeck } from "../api/decks";
 import { Deck } from "../interfaces/Deck";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
-import { AiOutlinePlus, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
-
-const IconLibrary = () => <span className="text-2xl">📚</span>;
-const IconShared = () => <span className="text-2xl">🔗</span>;
+import { AiOutlinePlus, AiOutlineEdit, AiOutlineDelete, AiOutlineBook, AiOutlineShareAlt } from "react-icons/ai";
 
 const DeckManager = () => {
     const [tabIndex, setTabIndex] = useState("yourDecks");
@@ -96,7 +93,7 @@ const DeckManager = () => {
     const openEditModal = (deck: Deck) => {
         setEditingDeck(deck);
         setName(deck.name);
-        setDescription(deck.description || ""); // Ustaw pusty string jeśli brak opisu
+        setDescription(deck.description || "");
         setError("");
         setModalOpen(true);
     };
@@ -108,18 +105,20 @@ const DeckManager = () => {
                 <p className="text-center text-gray-500">Manage your learning materials.</p>
 
                 <div className="flex justify-center mt-6 space-x-6 border-b pb-3">
-                    <button
-                        className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "yourDecks" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`}
-                        onClick={() => setTabIndex("yourDecks")}
-                    >
-                        <IconLibrary /> Your Decks
-                    </button>
-                    <button
-                        className={`px-6 py-3 rounded-lg transition-all ${tabIndex === "sharedDecks" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"}`}
-                        onClick={() => setTabIndex("sharedDecks")}
-                    >
-                        <IconShared /> Shared Decks
-                    </button>
+                    {[
+                        { id: "yourDecks", icon: <AiOutlineBook size={22} />, label: "Your Decks" },
+                        { id: "sharedDecks", icon: <AiOutlineShareAlt size={22} />, label: "Shared Decks" },
+                    ].map(({ id, icon, label }) => (
+                        <button
+                            key={id}
+                            className={`px-6 py-3 flex items-center gap-2 rounded-lg transition-all ${
+                                tabIndex === id ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"
+                            }`}
+                            onClick={() => setTabIndex(id)}
+                        >
+                            {icon} {label}
+                        </button>
+                    ))}
                 </div>
 
                 <div className="flex justify-between mt-6 mb-4 items-center space-x-4">
