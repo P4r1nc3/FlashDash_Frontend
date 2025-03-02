@@ -90,7 +90,7 @@ const Friends = () => {
                 {/* Nawigacja */}
                 <div className="flex justify-center mt-6 space-x-6 border-b pb-3">
                     {[
-                        { id: "friends", icon: <LiaUserFriendsSolid size={22} />, label: "Friends" },
+                        { id: "friends", icon: <LiaUserFriendsSolid size={22} />, label: `Friends (${friends.length})` },
                         { id: "received", icon: <AiOutlineMail size={22} />, label: `Received Invitations (${receivedInvitations.length})` },
                         { id: "sent", icon: <AiOutlineSend size={22} />, label: `Sent Invitations (${sentInvitations.length})` },
                     ].map(({ id, icon, label }) => (
@@ -131,9 +131,6 @@ const Friends = () => {
                                 <div className="flex items-center justify-between">
                                     <h2 className="text-xl font-semibold flex items-center gap-2">
                                         <LiaUserFriendsSolid size={22} /> Your Friends
-                                        <span className="w-6 h-6 flex items-center justify-center bg-gray-300 text-gray-700 text-lg font-bold rounded-full">
-                                            {friends.length}
-                                        </span>
                                     </h2>
                                 </div>
 
