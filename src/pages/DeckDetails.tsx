@@ -146,14 +146,13 @@ const DeckDetails = () => {
 
                     {tabIndex === "questions" && (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-                            <div className="p-6 bg-gray-100 rounded-lg shadow">
+                            <div className="p-6 bg-gray-100 rounded-lg shadow relative">
                                 <h2 className="text-xl font-semibold flex items-center gap-2">
                                     <AiOutlineQuestionCircle size={22} /> Questions
                                 </h2>
-                                <button className="mt-4 bg-blue-500 text-white py-3 px-6 rounded-lg" onClick={openAddModal}>
+                                <button className="absolute top-4 right-6 bg-blue-500 text-white py-2 px-4 rounded-lg flex items-center gap-2" onClick={openAddModal}>
                                     <AiOutlinePlus size={20} /> Add Question
                                 </button>
-
                                 {questions.length > 0 ? (
                                     questions.map((q) => (
                                         <div key={q.questionId} className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg shadow">
