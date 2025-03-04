@@ -1,5 +1,5 @@
 export interface Deck {
-    id: number;
+    deckId: number;
     name: string;
     description: string;
     createdAt: string;

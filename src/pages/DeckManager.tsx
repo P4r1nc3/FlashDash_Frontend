@@ -63,7 +63,7 @@ const DeckManager = () => {
 
         try {
             if (editingDeck) {
-                await updateDeck(editingDeck.id, { name, description: description || "" });
+                await updateDeck(editingDeck.deckId, { name, description: description || "" });
                 toast.success("Deck updated!");
             } else {
                 await createDeck({ name, description: description || "" });
@@ -121,59 +121,69 @@ const DeckManager = () => {
                     ))}
                 </div>
 
-                <div className="flex justify-between mt-6 mb-4 items-center space-x-4">
-                    <select
-                        className="p-3 border rounded-lg"
-                        value={sortOption}
-                        onChange={(e) => setSortOption(e.target.value)}
-                    >
-                        <option value="recent">Recent</option>
-                        <option value="alphabetical">Alphabetical</option>
-                    </select>
-                    <input
-                        type="text"
-                        placeholder="Search decks..."
-                        className="p-3 flex-1 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    {tabIndex === "yourDecks" && (
-                        <button
-                            className="bg-blue-500 text-white px-4 py-3 rounded-lg flex items-center gap-2"
-                            onClick={() => { setModalOpen(true); setEditingDeck(null); setName(""); setDescription(""); setError(""); }}
-                        >
-                            <AiOutlinePlus size={20} /> Add Deck
-                        </button>
-                    )}
-                </div>
-
-                <div className="space-y-4">
-                    {filteredDecks.length > 0 ? (
-                        filteredDecks.map((deck) => (
-                            <motion.div
-                                key={deck.id}
-                                className="flex justify-between items-center p-4 bg-gray-100 rounded-lg shadow cursor-pointer hover:bg-gray-200"
-                                onClick={() => navigate(`/decks/${deck.id}`)}
-                                whileHover={{ scale: 1.02 }}
+                {tabIndex === "yourDecks" && (
+                    <>
+                        <div className="flex justify-between mt-6 mb-4 items-center space-x-4">
+                            <select
+                                className="p-3 border rounded-lg"
+                                value={sortOption}
+                                onChange={(e) => setSortOption(e.target.value)}
                             >
-                                <div>
-                                    <h2 className="text-xl font-semibold">{deck.name}</h2>
-                                    <p className="text-gray-600">{deck.description}</p>
-                                </div>
-                                <div className="flex space-x-3">
-                                    <button className="text-blue-500 hover:text-blue-700" onClick={(e) => { e.stopPropagation(); openEditModal(deck); }}>
-                                        <AiOutlineEdit size={22} />
-                                    </button>
-                                    <button className="text-red-500 hover:text-red-700" onClick={(e) => { e.stopPropagation(); setDeckToDelete(deck.id); handleDeleteDeck(deck.id); }}>
-                                        <AiOutlineDelete size={22} />
-                                    </button>
-                                </div>
-                            </motion.div>
-                        ))
-                    ) : (
-                        <p className="text-center text-gray-500">No decks found.</p>
-                    )}
-                </div>
+                                <option value="recent">Recent</option>
+                                <option value="alphabetical">Alphabetical</option>
+                            </select>
+                            <input
+                                type="text"
+                                placeholder="Search decks..."
+                                className="p-3 flex-1 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            {tabIndex === "yourDecks" && (
+                                <button
+                                    className="bg-blue-500 text-white px-4 py-3 rounded-lg flex items-center gap-2"
+                                    onClick={() => { setModalOpen(true); setEditingDeck(null); setName(""); setDescription(""); setError(""); }}
+                                >
+                                    <AiOutlinePlus size={20} /> Add Deck
+                                </button>
+                            )}
+                        </div>
+
+                        <div className="space-y-4">
+                            {filteredDecks.length > 0 ? (
+                                filteredDecks.map((deck) => (
+                                    <motion.div
+                                        key={deck.deckId}
+                                        className="flex justify-between items-center p-4 bg-gray-100 rounded-lg shadow cursor-pointer hover:bg-gray-200"
+                                        onClick={() => navigate(`/decks/${deck.deckId}`)}
+                                        whileHover={{ scale: 1.02 }}
+                                    >
+                                        <div>
+                                            <h2 className="text-xl font-semibold">{deck.name}</h2>
+                                            <p className="text-gray-600">{deck.description}</p>
+                                        </div>
+                                        <div className="flex space-x-3">
+                                            <button className="text-blue-500 hover:text-blue-700" onClick={(e) => { e.stopPropagation(); openEditModal(deck); }}>
+                                                <AiOutlineEdit size={22} />
+                                            </button>
+                                            <button className="text-red-500 hover:text-red-700" onClick={(e) => { e.stopPropagation(); setDeckToDelete(deck.deckId); handleDeleteDeck(deck.deckId); }}>
+                                                <AiOutlineDelete size={22} />
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                ))
+                            ) : (
+                                <p className="text-center text-gray-500">No decks found.</p>
+                            )}
+                        </div>
+                    </>
+                )}
+
+                {tabIndex === "sharedDecks" && (
+                    <div className="flex justify-center items-center h-full">
+                        <p className="text-gray-500 text-lg">Not implemented yet.</p>
+                    </div>
+                )}
             </div>
 
             {modalOpen && (
