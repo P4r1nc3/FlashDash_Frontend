@@ -59,7 +59,7 @@ const DeckDetails = () => {
 
     const openEditModal = (item: QuestionResponse) => {
         setIsEditing(true);
-        setEditItemId(item.questionId);
+        setEditItemId(item.questionFrn);
         setNewQuestion(item.question);
         setCorrectAnswers(item.correctAnswers);
         setIncorrectAnswers(item.incorrectAnswers);
@@ -155,13 +155,13 @@ const DeckDetails = () => {
                                 </button>
                                 {questions.length > 0 ? (
                                     questions.map((q) => (
-                                        <div key={q.questionId} className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg shadow">
+                                        <div key={q.questionFrn} className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg shadow">
                                             <span className="text-lg font-semibold">{q.question}</span>
                                             <div className="flex space-x-2">
                                                 <button className="text-blue-500 hover:text-blue-700" onClick={() => openEditModal(q)}>
                                                     <AiOutlineEdit size={22} />
                                                 </button>
-                                                <button className="text-red-500 hover:text-red-700" onClick={() => deleteCurrentQuestion(q.questionId)}>
+                                                <button className="text-red-500 hover:text-red-700" onClick={() => deleteCurrentQuestion(q.questionFrn)}>
                                                     <AiOutlineDelete size={22} />
                                                 </button>
                                             </div>
