@@ -1,5 +1,6 @@
 export interface Deck {
-    deckId: number;
+    deckId: string;
+    deckFrn: string;
     name: string;
     description: string;
     createdAt: string;

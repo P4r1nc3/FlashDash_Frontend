@@ -63,7 +63,7 @@ const DeckManager = () => {
 
         try {
             if (editingDeck) {
-                await updateDeck(editingDeck.deckId, { name, description: description || "" });
+                await updateDeck(editingDeck.deckFrn, { name, description: description || "" });
                 toast.success("Deck updated!");
             } else {
                 await createDeck({ name, description: description || "" });
@@ -153,9 +153,9 @@ const DeckManager = () => {
                             {filteredDecks.length > 0 ? (
                                 filteredDecks.map((deck) => (
                                     <motion.div
-                                        key={deck.deckId}
+                                        key={deck.deckFrn}
                                         className="flex justify-between items-center p-4 bg-gray-100 rounded-lg shadow cursor-pointer hover:bg-gray-200"
-                                        onClick={() => navigate(`/decks/${deck.deckId}`)}
+                                        onClick={() => navigate(`/decks/${deck.deckFrn}`)}
                                         whileHover={{ scale: 1.02 }}
                                     >
                                         <div>
@@ -166,7 +166,7 @@ const DeckManager = () => {
                                             <button className="text-blue-500 hover:text-blue-700" onClick={(e) => { e.stopPropagation(); openEditModal(deck); }}>
                                                 <AiOutlineEdit size={22} />
                                             </button>
-                                            <button className="text-red-500 hover:text-red-700" onClick={(e) => { e.stopPropagation(); setDeckToDelete(deck.deckId); handleDeleteDeck(deck.deckId); }}>
+                                            <button className="text-red-500 hover:text-red-700" onClick={(e) => { e.stopPropagation(); setDeckToDelete(deck.deckFrn); handleDeleteDeck(deck.deckFrn); }}>
                                                 <AiOutlineDelete size={22} />
                                             </button>
                                         </div>
