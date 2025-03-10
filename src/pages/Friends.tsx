@@ -59,10 +59,11 @@ const Friends = () => {
         }
     };
 
-    const handleRespondToInvitation = async (invitationId: number, status: "ACCEPTED" | "REJECTED") => {
+    const handleRespondToInvitation = async (invitationFrn: string, status: "ACCEPTED" | "REJECTED") => {
         try {
-            await respondToInvitation(invitationId, status);
+            await respondToInvitation(invitationFrn, status);
             toast.success(status === "ACCEPTED" ? "Friend invitation accepted!" : "Friend invitation rejected.");
+
             fetchSentInvitations();
             fetchReceivedInvitations();
             fetchFriends();
@@ -158,13 +159,19 @@ const Friends = () => {
                                 </h2>
                                 {receivedInvitations.length > 0 ? (
                                     receivedInvitations.map((inv) => (
-                                        <div key={inv.id} className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg shadow">
-                                            <span className="text-lg">{inv.senderFirstName} {inv.senderLastName}</span>
+                                        <div key={inv.invitationId} className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg shadow">
+                                            <span className="text-lg">{inv.sender?.firstName} {inv.sender?.lastName}</span>
                                             <div className="space-x-2">
-                                                <button className="bg-green-500 text-white px-4 py-2 rounded-lg" onClick={() => handleRespondToInvitation(inv.id, "ACCEPTED")}>
+                                                <button
+                                                    className="bg-green-500 text-white px-4 py-2 rounded-lg"
+                                                    onClick={() => handleRespondToInvitation(inv.invitationFrn, "ACCEPTED")}
+                                                >
                                                     Accept
                                                 </button>
-                                                <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={() => handleRespondToInvitation(inv.id, "REJECTED")}>
+                                                <button
+                                                    className="bg-red-500 text-white px-4 py-2 rounded-lg"
+                                                    onClick={() => handleRespondToInvitation(inv.invitationFrn, "REJECTED")}
+                                                >
                                                     Reject
                                                 </button>
                                             </div>
@@ -185,9 +192,9 @@ const Friends = () => {
                                 </h2>
                                 {sentInvitations.length > 0 ? (
                                     sentInvitations.map((inv) => (
-                                        <div key={inv.id} className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg shadow">
-                                            <span className="text-lg">{inv.recipientFirstName} {inv.recipientLastName}</span>
-                                            <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={() => handleRespondToInvitation(inv.id, "REJECTED")}>
+                                        <div key={inv.invitationId} className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg shadow">
+                                            <span className="text-lg">{inv.recipient?.firstName} {inv.recipient?.lastName}</span>
+                                            <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={() => respondToInvitation(inv.invitationFrn, "REJECTED")}>
                                                 Cancel
                                             </button>
                                         </div>
