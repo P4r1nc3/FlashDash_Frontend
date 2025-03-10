@@ -59,7 +59,7 @@ const Friends = () => {
         }
     };
 
-    const handleRespondToInvitation = async (invitationFrn: string, status: "ACCEPTED" | "REJECTED") => {
+    const handleRespondToInvitation = async (invitationFrn: string, status: "ACCEPTED" | "REJECTED" | "CANCELLED") => {
         try {
             await respondToInvitation(invitationFrn, status);
             toast.success(status === "ACCEPTED" ? "Friend invitation accepted!" : "Friend invitation rejected.");
@@ -194,7 +194,7 @@ const Friends = () => {
                                     sentInvitations.map((inv) => (
                                         <div key={inv.invitationId} className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg shadow">
                                             <span className="text-lg">{inv.recipient?.firstName} {inv.recipient?.lastName}</span>
-                                            <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={() => respondToInvitation(inv.invitationFrn, "REJECTED")}>
+                                            <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={() => handleRespondToInvitation(inv.invitationFrn, "CANCELLED")}>
                                                 Cancel
                                             </button>
                                         </div>

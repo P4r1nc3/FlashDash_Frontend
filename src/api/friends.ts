@@ -52,7 +52,7 @@ export const getReceivedInvitations = async (): Promise<FriendInvitationResponse
     return response.data;
 };
 
-export const respondToInvitation = async (invitationFrn: string, status: "ACCEPTED" | "REJECTED"): Promise<void> => {
+export const respondToInvitation = async (invitationFrn: string, status: "ACCEPTED" | "REJECTED" | "CANCELLED"): Promise<void> => {
     const token = getToken();
     await axiosInstance.put(`/friends/invitations/${invitationFrn}`, null, {
         params: { status },
