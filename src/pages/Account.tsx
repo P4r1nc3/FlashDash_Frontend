@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import {useContext, useEffect, useState} from "react";
 import { getUserInfo, changeUserPassword, deleteUserAccount } from "../api/user";
+import { AuthContext } from "../contexts/AuthContext";
 import { User } from "../interfaces/User";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
@@ -13,6 +14,7 @@ import {
 import { RiLockPasswordLine } from "react-icons/ri";
 
 const Account = () => {
+    const auth = useContext(AuthContext);
     const [user, setUser] = useState<User | null>(null);
     const [error, setError] = useState("");
     const [tabIndex, setTabIndex] = useState("profile");
@@ -53,6 +55,7 @@ const Account = () => {
         try {
             await deleteUserAccount();
             toast.error("Your account has been deleted.");
+            auth?.logout();
             window.location.href = "/";
         } catch (error) {
             toast.error("Failed to delete account.");
