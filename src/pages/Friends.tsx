@@ -72,9 +72,9 @@ const Friends = () => {
         }
     };
 
-    const handleDeleteFriend = async (friendEmail: string) => {
+    const handleDeleteFriend = async (friendFrn: string) => {
         try {
-            await deleteFriend(friendEmail);
+            await deleteFriend(friendFrn);
             toast.success("Friend removed successfully.");
             fetchFriends();
         } catch (error) {
@@ -139,7 +139,7 @@ const Friends = () => {
                                     friends.map((friend) => (
                                         <div key={friend.email} className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg shadow">
                                             <span className="text-lg font-semibold">{friend.firstName} {friend.lastName}</span>
-                                            <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={() => handleDeleteFriend(friend.email)}>
+                                            <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={() => handleDeleteFriend(friend.userFrn)}>
                                                 Remove
                                             </button>
                                         </div>
