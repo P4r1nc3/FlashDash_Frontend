@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getGameSession } from "../api/gameSession.ts";
 import { GameSessionResult } from "../interfaces/GameSession.ts";
 import { motion } from "framer-motion";
+import { AiOutlineArrowLeft, AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
 
 const GameSession = () => {
     const { deckId, gameSessionId } = useParams<{ deckId: string; gameSessionId: string }>();
@@ -33,10 +34,18 @@ const GameSession = () => {
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-gray-100 to-gray-300">
-            <div className="relative w-full max-w-3xl bg-white shadow-xl rounded-xl p-6 min-h-[80vh] flex flex-col">
+            <div className="relative w-full max-w-4xl bg-white shadow-xl rounded-xl p-8 min-h-[80vh] flex flex-col">
+
+                {/* Przycisk powrotu */}
+                <button
+                    className="absolute top-4 left-4 text-gray-600 hover:text-gray-800 flex items-center gap-2"
+                    onClick={() => navigate(`/decks/${deckId}`)}
+                >
+                    <AiOutlineArrowLeft size={20} /> Back
+                </button>
 
                 {/* Nagłówek Wyniku */}
-                <h2 className="text-2xl font-bold text-center mb-4">Game Results</h2>
+                <h2 className="text-3xl font-bold text-center mb-4">Game Results</h2>
 
                 {/* Podsumowanie */}
                 <motion.div
@@ -44,8 +53,8 @@ const GameSession = () => {
                     animate={{ opacity: 1, y: 0 }}
                     className="bg-gray-100 p-4 rounded-lg shadow-md text-center mb-6"
                 >
-                    <p className="text-lg font-semibold">Score: <span className="text-blue-600">{gameSession?.score}%</span></p>
-                    <p className="text-sm text-gray-600">{gameSession?.correctAnswers} / {gameSession?.totalQuestions} correct answers</p>
+                    <p className="text-xl font-semibold">Score: <span className="text-blue-600">{gameSession?.score}%</span></p>
+                    <p className="text-md text-gray-600">{gameSession?.correctAnswers} / {gameSession?.totalQuestions} correct answers</p>
                     <p className="text-sm text-gray-500">Duration: {gameSession?.duration}</p>
                 </motion.div>
 
@@ -63,7 +72,10 @@ const GameSession = () => {
                             }}
                         >
                             {/* Pytanie */}
-                            <h3 className="font-semibold">{index + 1}. {question.questionText}</h3>
+                            <h3 className="font-semibold flex items-center gap-2">
+                                {question.wasCorrect ? <AiOutlineCheckCircle className="text-green-500" /> : <AiOutlineCloseCircle className="text-red-500" />}
+                                {index + 1}. {question.questionText}
+                            </h3>
 
                             {/* Poprawne odpowiedzi */}
                             <p className="text-sm text-green-600 mt-2">✅ Correct: {question.correctAnswers.join(", ")}</p>
