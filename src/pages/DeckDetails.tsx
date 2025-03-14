@@ -15,6 +15,7 @@ import { getQuestionsInDeck, addQuestionToDeck, updateQuestion, deleteQuestion }
 import { getDeckDetails } from "../api/decks";
 import { QuestionResponse } from "../interfaces/Question";
 import { Difficulty } from "../enums/Difficulty";
+import StatisticsTab from "./StatisticsTab"; // Plik z wykresem statystyk
 
 const DeckDetails = () => {
     const { deckId } = useParams<{ deckId: string }>();
@@ -171,14 +172,7 @@ const DeckDetails = () => {
                         </motion.div>
                     )}
 
-                    {tabIndex === "statistics" && (
-                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="p-6 bg-gray-100 rounded-lg shadow">
-                            <h2 className="text-xl font-semibold flex items-center gap-2">
-                                <AiOutlineLineChart size={22} /> Statistics
-                            </h2>
-                            <p className="text-gray-500 mt-2">This section will display statistics related to your deck.</p>
-                        </motion.div>
-                    )}
+                    {tabIndex === "statistics" && <StatisticsTab />}
 
                     {tabIndex === "settings" && (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="p-6 bg-gray-100 rounded-lg shadow">
