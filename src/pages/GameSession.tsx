@@ -52,67 +52,79 @@ const GameSession = () => {
                             {gameSession?.correctAnswers} / {gameSession?.totalQuestions}
                         </p>
                     </div>
-                    <div className="bg-white p-4 shadow-md rounded-lg flex flex-col items-center">
+                    <div className="bg-white p-4 shadow-md rounded-lg">
                         <p className="text-gray-500">Duration</p>
                         <p className="text-xl font-bold">{gameSession?.duration}</p>
                     </div>
-                    <div className="bg-white p-4 shadow-md rounded-lg flex flex-col items-center">
+                    <div className="bg-white p-4 shadow-md rounded-lg">
                         <p className="text-gray-500">Date Played</p>
                         <p className="text-xl font-bold">{new Date(gameSession?.startTime!).toLocaleDateString()}</p>
                     </div>
                 </div>
 
                 <div className="mt-6 overflow-y-auto max-h-[35vh] pr-2 space-y-4">
-                    {gameSession?.sessionDetails.map((question, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                            className="p-4 bg-white rounded-lg shadow-md border-l-4"
-                            style={{ borderColor: question.wasCorrect ? "green" : "red" }}
-                        >
-                            <h3 className="font-semibold flex items-center gap-2 text-lg">
-                                {question.wasCorrect ? (
-                                    <AiOutlineCheckCircle className="text-green-500" />
-                                ) : (
-                                    <AiOutlineCloseCircle className="text-red-500" />
-                                )}
-                                Question {index + 1}
-                            </h3>
-                            <p className="text-gray-700 mt-2">{question.questionText}</p>
+                    {gameSession?.sessionDetails.map((question, index) => {
+                        const correctAnswers = question.correctAnswers;
+                        const userAnswers = question.userAnswers;
 
-                            <div className="mt-4">
-                                <p className="text-green-600 font-semibold">✅ Correct Answers:</p>
-                                <p className="text-gray-800">{question.correctAnswers.join(", ")}</p>
-                            </div>
+                        const allAnswers = new Set([...correctAnswers, ...userAnswers, ...question.incorrectAnswers]);
 
-                            <div className="mt-2">
-                                <p className={`font-semibold ${question.wasCorrect ? "text-green-500" : "text-red-500"}`}>
-                                    {question.wasCorrect ? "🎯 You answered correctly" : "❌ Your Answers:"}
-                                </p>
-                                <p className="text-gray-800">{question.userAnswers.join(", ") || "No answer provided"}</p>
-                            </div>
+                        return (
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                                className="p-4 bg-white rounded-lg shadow-md border-l-4"
+                                style={{ borderColor: question.wasCorrect ? "green" : "red" }}
+                            >
+                                <h3 className="font-semibold flex items-center gap-2 text-lg">
+                                    {question.wasCorrect ? (
+                                        <AiOutlineCheckCircle className="text-green-500" />
+                                    ) : (
+                                        <AiOutlineCloseCircle className="text-red-500" />
+                                    )}
+                                    Question {index + 1}
+                                </h3>
+                                <p className="text-gray-700 mt-2">{question.questionText}</p>
 
-                            {question.userAnswers.some(ans => !question.correctAnswers.includes(ans)) && (
-                                <div className="mt-2">
-                                    <p className="text-orange-500 font-semibold">⚠️ Incorrectly selected:</p>
-                                    <p className="text-gray-800">
-                                        {question.userAnswers.filter(ans => !question.correctAnswers.includes(ans)).join(", ")}
-                                    </p>
+                                <div className="mt-4 space-y-1">
+                                    {[...allAnswers].map((answer, i) => {
+                                        let textColor = "text-gray-800"
+                                        let bgColor = "bg-white";
+                                        let emoji = "";
+
+                                        if (correctAnswers.includes(answer) && userAnswers.includes(answer)) {
+                                            textColor = "text-green-600";
+                                            bgColor = "bg-green-100";
+                                            emoji = "✅";
+                                        } else if (!correctAnswers.includes(answer) && userAnswers.includes(answer)) {
+                                            textColor = "text-red-600";
+                                            bgColor = "bg-red-100";
+                                            emoji = "❌";
+                                        } else if (correctAnswers.includes(answer) && !userAnswers.includes(answer)) {
+                                            textColor = "text-yellow-600";
+                                            bgColor = "bg-yellow-100";
+                                            emoji = "⚠️";
+                                        } else if (!correctAnswers.includes(answer) && !userAnswers.includes(answer)) {
+                                            textColor = "text-gray-500";
+                                            bgColor = "bg-gray-100";
+                                            emoji = "⬜";
+                                        }
+
+                                        return (
+                                            <p
+                                                key={i}
+                                                className={`p-2 rounded-md font-medium ${textColor} ${bgColor}`}
+                                            >
+                                                {emoji} {answer}
+                                            </p>
+                                        );
+                                    })}
                                 </div>
-                            )}
-
-                            {question.correctAnswers.some(ans => !question.userAnswers.includes(ans)) && (
-                                <div className="mt-2">
-                                    <p className="text-blue-500 font-semibold">🔹 Missed Correct Answers:</p>
-                                    <p className="text-gray-800">
-                                        {question.correctAnswers.filter(ans => !question.userAnswers.includes(ans)).join(", ")}
-                                    </p>
-                                </div>
-                            )}
-                        </motion.div>
-                    ))}
+                            </motion.div>
+                        );
+                    })}
                 </div>
 
                 <button
