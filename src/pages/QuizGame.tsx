@@ -6,7 +6,7 @@ import { startGameSession, endGameSession } from "../api/gameSession.ts";
 import { QuestionRequest, QuestionResponse } from "../interfaces/Question.ts";
 import { GameSessionResult } from "../interfaces/GameSession.ts";
 
-const GameSession = () => {
+const QuizGame = () => {
     const { deckId } = useParams<{ deckId: string }>();
     const navigate = useNavigate();
 
@@ -190,4 +190,4 @@ const GameSession = () => {
     );
 };
 
-export default GameSession;
+export default QuizGame;

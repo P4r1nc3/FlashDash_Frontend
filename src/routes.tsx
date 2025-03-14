@@ -19,7 +19,7 @@ const AppRoutes = () => (
         <Route path="/decks" element={<ProtectedRoute><DeckManager /></ProtectedRoute>} />
         <Route path="/decks/:deckId" element={<ProtectedRoute><DeckDetails /></ProtectedRoute>} />
         <Route path="/decks/:deckId/quiz" element={<ProtectedRoute><QuizGame /></ProtectedRoute>} />
-        <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} /> {/* Nowa trasa */}
+        <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
     </Routes>
 );
