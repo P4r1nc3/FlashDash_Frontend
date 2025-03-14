@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { AiOutlineQuestionCircle, AiOutlineLineChart, AiOutlineSetting, AiOutlinePlayCircle } from "react-icons/ai";
+import { AiOutlineQuestionCircle, AiOutlineLineChart, AiOutlinePlayCircle } from "react-icons/ai";
 import { getDeckDetails } from "../../api/decks.ts";
 import StatisticsTab from "./StatisticsTab.tsx";
 import QuestionsTab from "./QuestionsTab.tsx";
+import GameModesTab from "./GameModesTab.tsx";
 import MainLayout from "../../components/MainLayout";
 
 const DeckDetails = () => {
@@ -40,19 +41,7 @@ const DeckDetails = () => {
             setActiveTab={setTabIndex}
             onBack={() => navigate("/decks")}
         >
-            {tabIndex === "gameModes" && (
-                <div className="p-6 bg-gray-100 rounded-lg shadow">
-                    <h2 className="text-xl font-semibold flex items-center gap-2">
-                        <AiOutlinePlayCircle size={22} /> Game Modes
-                    </h2>
-                    <button
-                        className="mt-4 bg-blue-500 text-white py-3 px-6 rounded-lg w-full"
-                        onClick={() => navigate(`/decks/${deckId}/quiz`)}
-                    >
-                        Start Quiz
-                    </button>
-                </div>
-            )}
+            {tabIndex === "gameModes" && <GameModesTab deckId={deckId!} />}
             {tabIndex === "questions" && <QuestionsTab deckId={deckId!} />}
             {tabIndex === "statistics" && <StatisticsTab />}
         </MainLayout>
