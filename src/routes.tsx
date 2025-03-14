@@ -6,7 +6,7 @@ import DeckManager from './pages/DeckManager';
 import DeckDetails from './pages/deckDetails/DeckDetails.tsx';
 import GameSession from './pages/GameSession';
 import QuizGame from './pages/QuizGame';
-import Account from './pages/Account';
+import Account from './pages/account/Account.tsx';
 import Friends from './pages/Friends';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
