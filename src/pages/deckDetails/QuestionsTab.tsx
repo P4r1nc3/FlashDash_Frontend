@@ -26,12 +26,14 @@ const QuestionsTab: React.FC<QuestionsTabProps> = ({ deckId }) => {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        const fetchQuestions = async () => {
-            if (!deckId) return;
-            setQuestions(await getQuestionsInDeck(deckId));
-        };
         fetchQuestions();
     }, [deckId]);
+
+    const fetchQuestions = async () => {
+        if (!deckId) return;
+        const fetchedQuestions = await getQuestionsInDeck(deckId);
+        setQuestions(fetchedQuestions);
+    };
 
     const openAddModal = () => {
         setIsEditing(false);
@@ -72,45 +74,91 @@ const QuestionsTab: React.FC<QuestionsTabProps> = ({ deckId }) => {
             await addQuestionToDeck(deckId, payload);
         }
 
-        setQuestions(await getQuestionsInDeck(deckId));
+        fetchQuestions();
         setModalOpen(false);
     };
 
     const deleteCurrentQuestion = async (itemId: string) => {
         if (!deckId) return;
         await deleteQuestion(deckId, itemId);
-        setQuestions(await getQuestionsInDeck(deckId));
+        fetchQuestions();
     };
 
     return (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-            <div className="p-6 bg-gray-100 rounded-lg shadow relative">
-                <h2 className="text-xl font-semibold flex items-center gap-2">
-                    <AiOutlineQuestionCircle size={22} /> Questions
-                </h2>
-                <button className="absolute top-4 right-6 bg-blue-500 text-white py-2 px-4 rounded-lg flex items-center gap-2" onClick={openAddModal}>
-                    <AiOutlinePlus size={20} /> Add Question
-                </button>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="p-6 bg-gray-100 rounded-lg shadow w-full h-full flex flex-col">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+                <AiOutlineQuestionCircle size={22} /> Questions
+            </h2>
+            <p className="text-gray-500 mt-2">Manage your questions in the deck.</p>
+
+            <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg flex items-center gap-2" onClick={openAddModal}>
+                <AiOutlinePlus size={20} /> Add Question
+            </button>
+
+            <div className="mt-6 overflow-y-auto max-h-[35vh] pr-2 space-y-4">
                 {questions.length > 0 ? (
-                    questions.map((q) => (
-                        <div key={q.questionFrn} className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg shadow">
-                            <span className="text-lg font-semibold">{q.question}</span>
-                            <div className="flex space-x-2">
-                                <button className="text-blue-500 hover:text-blue-700" onClick={() => openEditModal(q)}>
-                                    <AiOutlineEdit size={22} />
-                                </button>
-                                <button className="text-red-500 hover:text-red-700" onClick={() => deleteCurrentQuestion(q.questionFrn)}>
-                                    <AiOutlineDelete size={22} />
-                                </button>
-                            </div>
-                        </div>
-                    ))
+                    questions.map((q, index) => {
+                        const correctAnswers = q.correctAnswers;
+                        const allAnswers = new Set([...correctAnswers, ...q.incorrectAnswers]);
+
+                        return (
+                            <motion.div
+                                key={q.questionFrn}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                                className="p-4 bg-white rounded-lg shadow-md border-l-4 relative"
+                                style={{ borderColor: "grey" }}
+                            >
+                                <div className="absolute top-3 right-3 flex space-x-2">
+                                    <button className="text-blue-500 hover:text-blue-700" onClick={() => openEditModal(q)}>
+                                        <AiOutlineEdit size={22} />
+                                    </button>
+                                    <button className="text-red-500 hover:text-red-700" onClick={() => deleteCurrentQuestion(q.questionFrn)}>
+                                        <AiOutlineDelete size={22} />
+                                    </button>
+                                </div>
+
+                                <h3 className="font-semibold flex items-center gap-2 text-lg">
+                                    <AiOutlineQuestionCircle className="text-gray-800" />
+                                    Question {index + 1}
+                                </h3>
+                                <p className="text-gray-800 mt-2">{q.question}</p>
+
+                                <div className="mt-4 space-y-1">
+                                    {[...allAnswers].map((answer, i) => {
+                                        let textColor = "text-gray-800";
+                                        let bgColor = "bg-white";
+                                        let emoji = "";
+
+                                        if (correctAnswers.includes(answer)) {
+                                            textColor = "text-gray-500";
+                                            bgColor = "bg-gray-100";
+                                            emoji = "✅";
+                                        } else {
+                                            textColor = "text-gray-500";
+                                            bgColor = "bg-gray-100";
+                                            emoji = "⬜";
+                                        }
+
+                                        return (
+                                            <p
+                                                key={i}
+                                                className={`p-2 rounded-md font-medium ${textColor} ${bgColor}`}
+                                            >
+                                                {emoji} {answer}
+                                            </p>
+                                        );
+                                    })}
+                                </div>
+                            </motion.div>
+                        );
+                    })
                 ) : (
                     <p className="text-center text-gray-500 mt-2">No questions yet.</p>
                 )}
             </div>
 
-            {/* Modal for Adding/Editing Questions */}
             {modalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
                     <motion.div className="bg-white p-6 rounded-lg shadow-lg w-96">
