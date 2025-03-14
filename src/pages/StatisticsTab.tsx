@@ -5,7 +5,7 @@ import { GameSessionResult } from "../interfaces/GameSession.ts";
 import { motion } from "framer-motion";
 import { AiOutlineLineChart } from "react-icons/ai";
 import ReactECharts from "echarts-for-react";
-import { EChartsOption } from "echarts"; // ✅ Import typowania dla opcji wykresu
+import { EChartsOption } from "echarts";
 
 const StatisticsTab = () => {
     const { deckId } = useParams<{ deckId: string }>();
@@ -35,22 +35,25 @@ const StatisticsTab = () => {
     if (error) return <p className="text-center mt-6 text-red-500">{error}</p>;
     if (gameSessions.length === 0) return <p className="text-center text-gray-500">No game sessions available.</p>;
 
-    // 🔹 **Przygotowanie danych do wykresu**
     const chartData = gameSessions.map(session => ({
         date: new Date(session.startTime).toLocaleDateString(),
         score: session.score,
         accuracy: session.accuracy,
+        duration: session.duration,
         gameSessionFrn: session.gameSessionFrn,
     }));
 
-    // 🔹 **Obliczenia ogólnych statystyk**
     const totalGames = gameSessions.length;
     const avgAccuracy = chartData.reduce((acc, s) => acc + s.accuracy, 0) / totalGames;
     const firstGame = chartData[0]?.date || "N/A";
     const lastGame = chartData[chartData.length - 1]?.date || "N/A";
 
-    // 🔹 **Opcje wykresu (poprawione typowanie)**
     const chartOptions: EChartsOption = {
+        title: {
+            text: "Performance Over Time",
+            left: "center",
+            textStyle: { fontSize: 16, fontWeight: "bold" },
+        },
         tooltip: {
             trigger: "axis",
             backgroundColor: "white",
@@ -62,9 +65,10 @@ const StatisticsTab = () => {
                     const data = params[0].data;
                     return `
                         <div style="padding: 8px; border-radius: 6px;">
+                            <b>Click to see more details</b> <br/>
                             📅 <b>Date:</b> ${data.date}<br/>
-                            🏆 <b>Score:</b> ${data.score}%<br/>
-                            🎯 <b>Accuracy:</b> ${data.accuracy.toFixed(2)}%
+                            🎯 <b>Accuracy:</b> ${data.accuracy.toFixed(2)}%<br/>
+                            ⏳ <b>Duration:</b> ${data.duration}
                         </div>
                     `;
                 }
@@ -74,13 +78,21 @@ const StatisticsTab = () => {
         xAxis: {
             type: "category",
             data: chartData.map((d) => d.date),
-            axisLabel: { fontSize: 12 },
+            axisLabel: { fontSize: 12},
+            name: "Game Date",
+            nameLocation: "middle",
+            nameTextStyle: { fontSize: 14, padding: 0 },
+            nameGap: 30,
         },
         yAxis: {
             type: "value",
             min: 0,
             max: 100,
             axisLabel: { fontSize: 12 },
+            name: "Score (%)",
+            nameLocation: "middle",
+            nameTextStyle: { fontSize: 14, padding: 10 },
+            nameGap: 50,
         },
         series: [
             {
@@ -90,10 +102,11 @@ const StatisticsTab = () => {
                     value: d.score,
                     date: d.date,
                     accuracy: d.accuracy,
+                    duration: d.duration,
                     gameSessionFrn: d.gameSessionFrn,
                 })),
                 encode: { x: "date", y: "value" },
-                symbolSize: 10, // ✅ Większe punkty
+                symbolSize: 13,
                 symbol: "circle",
                 itemStyle: {
                     color: "#2563EB",
@@ -118,6 +131,7 @@ const StatisticsTab = () => {
             <h2 className="text-xl font-semibold flex items-center gap-2">
                 <AiOutlineLineChart size={22} /> Statistics
             </h2>
+            <p className="text-gray-500 mt-2">Analyze your progress and performance over time.</p>
 
             {/* 🔹 Podsumowanie statystyk */}
             <div className="grid grid-cols-4 gap-4 mt-4 text-center">
