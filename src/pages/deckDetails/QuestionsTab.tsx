@@ -132,8 +132,8 @@ const QuestionsTab: React.FC<QuestionsTabProps> = ({ deckId }) => {
                                         let emoji = "";
 
                                         if (correctAnswers.includes(answer)) {
-                                            textColor = "text-gray-500";
-                                            bgColor = "bg-gray-100";
+                                            textColor = "text-green-600";
+                                            bgColor = "bg-green-100";
                                             emoji = "✅";
                                         } else {
                                             textColor = "text-gray-500";
