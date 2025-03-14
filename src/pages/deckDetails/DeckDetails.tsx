@@ -8,9 +8,9 @@ import {
     AiOutlinePlayCircle,
     AiOutlineArrowLeft,
 } from "react-icons/ai";
-import { getDeckDetails } from "../api/decks";
-import StatisticsTab from "./StatisticsTab";
-import QuestionsTab from "./QuestionsTab";
+import { getDeckDetails } from "../../api/decks.ts";
+import StatisticsTab from "./StatisticsTab.tsx";
+import QuestionsTab from "./QuestionsTab.tsx";
 
 const DeckDetails = () => {
     const { deckId } = useParams<{ deckId: string }>();

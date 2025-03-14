@@ -6,9 +6,9 @@ import {
     AiOutlineDelete,
     AiOutlinePlus,
 } from "react-icons/ai";
-import { getQuestionsInDeck, addQuestionToDeck, updateQuestion, deleteQuestion } from "../api/questions";
-import { QuestionResponse } from "../interfaces/Question";
-import { Difficulty } from "../enums/Difficulty";
+import { getQuestionsInDeck, addQuestionToDeck, updateQuestion, deleteQuestion } from "../../api/questions.ts";
+import { QuestionResponse } from "../../interfaces/Question.ts";
+import { Difficulty } from "../../enums/Difficulty.ts";
 
 interface QuestionsTabProps {
     deckId: string;

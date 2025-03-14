@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getGameSessions } from "../api/gameSession.ts";
-import { GameSessionResult } from "../interfaces/GameSession.ts";
+import { getGameSessions } from "../../api/gameSession.ts";
+import { GameSessionResult } from "../../interfaces/GameSession.ts";
 import { motion } from "framer-motion";
 import { AiOutlineLineChart } from "react-icons/ai";
 import ReactECharts from "echarts-for-react";

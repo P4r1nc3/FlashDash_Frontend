@@ -3,7 +3,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import DeckManager from './pages/DeckManager';
-import DeckDetails from './pages/DeckDetails';
+import DeckDetails from './pages/deckDetails/DeckDetails.tsx';
 import GameSession from './pages/GameSession';
 import QuizGame from './pages/QuizGame';
 import Account from './pages/Account';
