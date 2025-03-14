@@ -35,13 +35,16 @@ const StatisticsTab = () => {
     if (error) return <p className="text-center mt-6 text-red-500">{error}</p>;
     if (gameSessions.length === 0) return <p className="text-center text-gray-500">No game sessions available.</p>;
 
-    const chartData = gameSessions.map(session => ({
-        date: new Date(session.startTime).toLocaleDateString(),
-        score: session.score,
-        accuracy: session.accuracy,
-        duration: session.duration,
-        gameSessionFrn: session.gameSessionFrn,
-    }));
+    const chartData = gameSessions
+        .map(session => ({
+            date: new Date(session.startTime).toLocaleDateString(),
+            timestamp: new Date(session.startTime).getTime(),
+            score: session.score,
+            accuracy: session.accuracy,
+            duration: session.duration,
+            gameSessionFrn: session.gameSessionFrn,
+        }))
+        .sort((a, b) => a.timestamp - b.timestamp);
 
     const totalGames = gameSessions.length;
     const avgAccuracy = chartData.reduce((acc, s) => acc + s.accuracy, 0) / totalGames;
@@ -78,7 +81,7 @@ const StatisticsTab = () => {
         xAxis: {
             type: "category",
             data: chartData.map((d) => d.date),
-            axisLabel: { fontSize: 12},
+            axisLabel: { fontSize: 12 },
             name: "Game Date",
             nameLocation: "middle",
             nameTextStyle: { fontSize: 14, padding: 0 },
@@ -133,7 +136,6 @@ const StatisticsTab = () => {
             </h2>
             <p className="text-gray-500 mt-2">Analyze your progress and performance over time.</p>
 
-            {/* 🔹 Podsumowanie statystyk */}
             <div className="grid grid-cols-4 gap-4 mt-4 text-center">
                 <div className="bg-white p-4 shadow-md rounded-lg">
                     <p className="text-gray-500">Total Games</p>
@@ -153,7 +155,6 @@ const StatisticsTab = () => {
                 </div>
             </div>
 
-            {/* 🔹 Wykres interaktywny */}
             <div className="bg-white p-6 rounded-lg shadow-md mt-6">
                 <ReactECharts
                     option={chartOptions}
