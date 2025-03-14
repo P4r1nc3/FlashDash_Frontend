@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import DeckManager from './pages/DeckManager';
 import DeckDetails from './pages/DeckDetails';
+import GameSession from './pages/GameSession';
 import QuizGame from './pages/QuizGame';
 import Account from './pages/Account';
 import Friends from './pages/Friends';
@@ -19,6 +20,7 @@ const AppRoutes = () => (
         <Route path="/decks" element={<ProtectedRoute><DeckManager /></ProtectedRoute>} />
         <Route path="/decks/:deckId" element={<ProtectedRoute><DeckDetails /></ProtectedRoute>} />
         <Route path="/decks/:deckId/quiz" element={<ProtectedRoute><QuizGame /></ProtectedRoute>} />
+        <Route path="/decks/:deckId/gameSession/:gameSessionId" element={<ProtectedRoute><GameSession /></ProtectedRoute>} />
         <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
     </Routes>
