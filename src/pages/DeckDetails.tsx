@@ -13,7 +13,6 @@ import {
 } from "react-icons/ai";
 import { getQuestionsInDeck, addQuestionToDeck, updateQuestion, deleteQuestion } from "../api/questions";
 import { getDeckDetails } from "../api/decks";
-import { startGameSession } from "../api/gameSession";
 import { QuestionResponse } from "../interfaces/Question";
 import { Difficulty } from "../enums/Difficulty";
 
@@ -44,12 +43,6 @@ const DeckDetails = () => {
         };
         fetchDeckDetails();
     }, [deckId]);
-
-    const handleStartQuiz = async () => {
-        if (!deckId) return;
-        await startGameSession(deckId);
-        navigate(`/decks/${deckId}/quiz`);
-    };
 
     const openAddModal = () => {
         setIsEditing(false);
@@ -138,9 +131,13 @@ const DeckDetails = () => {
                             <h2 className="text-xl font-semibold flex items-center gap-2">
                                 <AiOutlinePlayCircle size={22} /> Game Modes
                             </h2>
-                            <button className="mt-4 bg-blue-500 text-white py-3 px-6 rounded-lg w-full" onClick={handleStartQuiz}>
+                            <button
+                                className="mt-4 bg-blue-500 text-white py-3 px-6 rounded-lg w-full"
+                                onClick={() => navigate(`/decks/${deckId}/quiz`)}
+                            >
                                 Start Quiz
                             </button>
+
                         </motion.div>
                     )}
 
