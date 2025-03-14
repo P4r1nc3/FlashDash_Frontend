@@ -96,6 +96,7 @@ const QuizGame = () => {
         try {
             const result = await endGameSession(deckId, userAnswersList);
             setGameResult(result);
+            navigate(`/decks/${deckId}/gameSession/${result.gameSessionFrn}`);
         } catch (error) {
             console.error("Failed to end game session:", error);
         }
