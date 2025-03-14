@@ -34,7 +34,7 @@ export const sendFriendInvitation = async (recipientEmail: string): Promise<void
 
 export const getSentInvitations = async (): Promise<FriendInvitationResponse[]> => {
     const token = getToken();
-    const response: AxiosResponse<FriendInvitationResponse[]> = await axiosInstance.get('/friends/invitations/sent', {
+    const response: AxiosResponse<FriendInvitationResponse[]> = await axiosInstance.get("/friends/invitations/sent", {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -44,7 +44,7 @@ export const getSentInvitations = async (): Promise<FriendInvitationResponse[]> 
 
 export const getReceivedInvitations = async (): Promise<FriendInvitationResponse[]> => {
     const token = getToken();
-    const response: AxiosResponse<FriendInvitationResponse[]> = await axiosInstance.get('/friends/invitations/received', {
+    const response: AxiosResponse<FriendInvitationResponse[]> = await axiosInstance.get("/friends/invitations/received", {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -52,9 +52,10 @@ export const getReceivedInvitations = async (): Promise<FriendInvitationResponse
     return response.data;
 };
 
-export const respondToInvitation = async (invitationId: number, status: 'ACCEPTED' | 'REJECTED'): Promise<void> => {
+export const respondToInvitation = async (invitationFrn: string, status: "ACCEPTED" | "REJECTED" | "CANCELLED"): Promise<void> => {
     const token = getToken();
-    await axiosInstance.put(`/friends/invitations/${invitationId}?status=${status}`, null, {
+    await axiosInstance.put(`/friends/invitations/${invitationFrn}`, null, {
+        params: { status },
         headers: {
             Authorization: `Bearer ${token}`,
         },

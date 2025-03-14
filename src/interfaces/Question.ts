@@ -7,6 +7,7 @@ export interface QuestionRequest {
 
 export interface QuestionResponse {
     questionId: string;
+    questionFrn: string;
     question: string;
     correctAnswers: string[];
     incorrectAnswers: string[];
