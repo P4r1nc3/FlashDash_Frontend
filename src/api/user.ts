@@ -15,7 +15,7 @@ export const getUserInfo = async (): Promise<User> => {
 
 export const changeUserPassword = async (data: ChangePasswordRequest): Promise<void> => {
     const token = getToken();
-    await axiosInstance.put('/users/change-password', data, {
+    await axiosInstance.put('/users', data, {
         headers: { Authorization: `Bearer ${token}` },
     });
 };
