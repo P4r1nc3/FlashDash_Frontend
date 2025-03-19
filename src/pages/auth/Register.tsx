@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { register } from "../api/auth";
-import AuthForm from "../components/AuthForm";
+import { register } from "../../api/auth.ts";
+import AuthForm from "../../components/AuthForm.tsx";
 
 const Register = () => {
     const navigate = useNavigate();

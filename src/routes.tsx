@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import Login from './pages/auth/Login.tsx';
+import Register from './pages/auth/Register.tsx';
 import DeckManager from './pages/DeckManager';
 import DeckDetails from './pages/deckDetails/DeckDetails.tsx';
 import GameSession from './pages/GameSession';
