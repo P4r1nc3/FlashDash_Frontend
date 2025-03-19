@@ -9,7 +9,7 @@ const Home = () => {
     return (
         <main className="w-full">
             {/* Hero Section */}
-            <section className="h-screen bg-gradient-to-r from-blue-100 to-indigo-100 flex items-center justify-center">
+            <section className="h-screen bg-gradient-to-br from-white via-blue-50 to-indigo-50 flex items-center justify-center">
                 <div className="container mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center text-center lg:text-left">
                     {/* Text Section */}
                     <motion.div

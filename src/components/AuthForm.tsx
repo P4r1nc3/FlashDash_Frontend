@@ -21,7 +21,7 @@ const AuthForm = ({ title, subtitle, fields, onSubmit, submitLabel, footerText, 
     };
 
     return (
-        <main className="h-screen flex items-center justify-center bg-gradient-to-b from-white to-blue-50">
+        <main className="h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-indigo-50">
             <div className="container mx-auto px-6 lg:px-12 max-w-xl">
                 <motion.div
                     className="bg-white p-10 rounded-xl shadow-lg flex flex-col items-center text-center"
