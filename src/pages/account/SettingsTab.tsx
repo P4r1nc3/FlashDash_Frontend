@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { getNotificationSettings, enableNotifications, disableNotifications, changeUserPassword, deleteUserAccount } from "../../api/user.ts";
 import { AiOutlineBell, AiOutlineUserDelete } from "react-icons/ai";
@@ -70,7 +69,7 @@ const SettingsTab = () => {
                     toast.success("Notification time updated.");
                 } catch (error) {
                     toast.error("Failed to update notification time.");
-                    setTempNotificationTime(notificationTime); // Revert to original on failure
+                    setTempNotificationTime(notificationTime);
                 }
             }
         }
@@ -105,156 +104,222 @@ const SettingsTab = () => {
     };
 
     return (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-
+        <div className="space-y-6">
             {/* Notifications Settings */}
-            <div className="p-6 bg-gray-100 rounded-lg shadow flex items-center justify-between">
-                <h2 className="text-xl font-semibold flex items-center gap-2">
-                    <AiOutlineBell size={22} /> Daily Notifications
-                </h2>
+            <div className="bg-white rounded-xl shadow-md w-full">
+                <div className="h-1 w-full bg-gradient-to-r from-blue-400 to-indigo-400 rounded-t-xl"></div>
+                <div className="p-6">
+                    <h2 className="text-xl font-bold text-blue-600 flex items-center gap-2 mb-1">
+                        <AiOutlineBell size={22} className="text-indigo-500" /> Daily Notifications
+                    </h2>
+                    <div className="flex items-center justify-between gap-4">
+                        <p className="text-gray-500 text-sm">Receive daily reminders to practice your decks.</p>
+                        <div className="flex items-center space-x-3">
+                            <button
+                                onClick={handleTimePickerOpen}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${
+                                    notificationsEnabled
+                                        ? "bg-gradient-to-br from-blue-50 to-indigo-50 border-indigo-200 text-indigo-700 hover:bg-gradient-to-br hover:from-blue-100 hover:to-indigo-100"
+                                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                }`}
+                            >
+                                <FiClock className={notificationsEnabled ? "text-indigo-500" : "text-gray-400"} />
+                                <span className="font-medium">{notificationTime}</span>
+                            </button>
 
-                <div className="flex items-center space-x-4">
-                    {/* Improved Time Picker */}
-                    <div className="relative">
-                        <button
-                            onClick={handleTimePickerOpen}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${
-                                notificationsEnabled
-                                    ? "bg-white hover:bg-gray-50 border-blue-300 text-blue-700"
-                                    : "bg-gray-200 text-gray-500 cursor-not-allowed"
-                            }`}
-                        >
-                            <FiClock className={notificationsEnabled ? "text-blue-500" : "text-gray-500"} />
-                            <span className="font-medium">{notificationTime}</span>
-                        </button>
-
-                        {/* Dropdown Time Picker */}
-                        {showTimePicker && (
-                            <div className="absolute top-full mt-2 right-0 p-4 bg-white rounded-lg shadow-lg border border-gray-200 w-64 z-10">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <p className="text-sm text-gray-500 mb-2">Hours</p>
-                                        <div className="h-48 overflow-y-auto pr-2 grid grid-cols-3 gap-2">
-                                            {hours.map((hour) => (
-                                                <button
-                                                    key={hour}
-                                                    onClick={() => handleTimeSelect("hour", hour)}
-                                                    className={`p-2 rounded-md ${
-                                                        tempNotificationTime.split(":")[0] === hour
-                                                            ? "bg-blue-500 text-white"
-                                                            : "hover:bg-gray-100"
-                                                    }`}
-                                                >
-                                                    {hour}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-500 mb-2">Minutes</p>
-                                        <div className="flex flex-col space-y-2">
-                                            {minutes.map((minute) => (
-                                                <button
-                                                    key={minute}
-                                                    onClick={() => handleTimeSelect("minute", minute)}
-                                                    className={`p-2 rounded-md ${
-                                                        tempNotificationTime.split(":")[1] === minute
-                                                            ? "bg-blue-500 text-white"
-                                                            : "hover:bg-gray-100"
-                                                    }`}
-                                                >
-                                                    {minute}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                                <button
-                                    onClick={handleTimeConfirm}
-                                    className="mt-4 w-full py-2 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200"
-                                >
-                                    Done
-                                </button>
-                            </div>
-                        )}
+                            <button
+                                className={`relative w-14 h-7 rounded-full transition-all ${
+                                    notificationsEnabled
+                                        ? "bg-gradient-to-r from-blue-400 to-indigo-400"
+                                        : "bg-gray-300"
+                                }`}
+                                onClick={handleToggleNotifications}
+                            >
+                                <span
+                                    className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-white shadow-sm transition-all ${
+                                        notificationsEnabled ? "translate-x-7" : ""
+                                    }`}
+                                />
+                            </button>
+                        </div>
                     </div>
 
-                    {/* Toggle Button */}
-                    <button
-                        className={`relative w-16 h-8 rounded-full transition-all ${
-                            notificationsEnabled ? "bg-blue-500" : "bg-gray-400"
-                        }`}
-                        onClick={handleToggleNotifications}
-                    >
-                        <span
-                            className={`absolute top-1 left-1 w-6 h-6 rounded-full bg-white transition-all ${
-                                notificationsEnabled ? "translate-x-8" : ""
-                            }`}
-                        />
-                    </button>
+                    {/* Dropdown Time Picker */}
+                    {showTimePicker && (
+                        <div className="absolute top-full mt-2 left-0 p-4 bg-white rounded-lg shadow-lg border border-indigo-100 w-64 z-10">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p className="text-sm text-gray-500 mb-2">Hours</p>
+                                    <div className="h-48 overflow-y-auto pr-2 grid grid-cols-3 gap-2 custom-scrollbar">
+                                        {hours.map((hour) => (
+                                            <button
+                                                key={hour}
+                                                onClick={() => handleTimeSelect("hour", hour)}
+                                                className={`p-2 rounded-md ${
+                                                    tempNotificationTime.split(":")[0] === hour
+                                                        ? "bg-gradient-to-r from-blue-400 to-indigo-400 text-white"
+                                                        : "hover:bg-gray-100"
+                                                }`}
+                                            >
+                                                {hour}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500 mb-2">Minutes</p>
+                                    <div className="flex flex-col space-y-2">
+                                        {minutes.map((minute) => (
+                                            <button
+                                                key={minute}
+                                                onClick={() => handleTimeSelect("minute", minute)}
+                                                className={`p-2 rounded-md ${
+                                                    tempNotificationTime.split(":")[1] === minute
+                                                        ? "bg-gradient-to-r from-blue-400 to-indigo-400 text-white"
+                                                        : "hover:bg-gray-100"
+                                                }`}
+                                            >
+                                                {minute}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                            <button
+                                onClick={handleTimeConfirm}
+                                className="mt-4 w-full py-2 bg-gradient-to-r from-blue-400 to-indigo-400 text-white rounded-md hover:from-blue-500 hover:to-indigo-500 transition-colors"
+                            >
+                                Done
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
 
             {/* Change Password */}
-            <div className="p-6 bg-gray-100 rounded-lg shadow">
-                <h2 className="text-xl font-semibold flex items-center gap-2">
-                    <RiLockPasswordLine size={22} /> Change Password
-                </h2>
-                <div className="mt-4">
-                    <label className="text-gray-700 font-semibold block mb-1">Old Password</label>
-                    <input
-                        type="password"
-                        placeholder="Enter old password"
-                        className="p-3 w-full bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 text-lg"
-                        value={passwords.oldPassword}
-                        onChange={(e) => setPasswords({ ...passwords, oldPassword: e.target.value })}
-                    />
+            <div className="bg-white rounded-xl shadow-md w-full">
+                <div className="h-1 w-full bg-gradient-to-r from-blue-400 to-indigo-400 rounded-t-xl"></div>
+                <div className="p-6">
+                    <h2 className="text-xl font-bold text-blue-600 flex items-center gap-2 mb-1">
+                        <RiLockPasswordLine size={22} className="text-indigo-500" /> Change Password
+                    </h2>
+                    <p className="text-gray-500 mb-4 text-sm">Update your account password.</p>
+
+                    <div className="mb-4">
+                        <label className="text-gray-700 font-medium block mb-1 text-sm">Old Password</label>
+                        <input
+                            type={showPassword.old ? "text" : "password"}
+                            placeholder="Enter old password"
+                            className="p-2.5 w-full bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                            value={passwords.oldPassword}
+                            onChange={(e) => setPasswords({ ...passwords, oldPassword: e.target.value })}
+                        />
+                        <div className="flex justify-end">
+                            <button
+                                className="text-xs text-indigo-500 mt-1"
+                                onClick={() => setShowPassword({...showPassword, old: !showPassword.old})}
+                            >
+                                {showPassword.old ? 'Hide' : 'Show'} password
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="mb-6">
+                        <label className="text-gray-700 font-medium block mb-1 text-sm">New Password</label>
+                        <input
+                            type={showPassword.new ? "text" : "password"}
+                            placeholder="Enter new password"
+                            className="p-2.5 w-full bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                            value={passwords.newPassword}
+                            onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
+                        />
+                        <div className="flex justify-end">
+                            <button
+                                className="text-xs text-indigo-500 mt-1"
+                                onClick={() => setShowPassword({...showPassword, new: !showPassword.new})}
+                            >
+                                {showPassword.new ? 'Hide' : 'Show'} password
+                            </button>
+                        </div>
+                    </div>
+
+                    <button
+                        className="w-full bg-gradient-to-r from-blue-400 to-indigo-400 hover:from-blue-500 hover:to-indigo-500 text-white py-3 px-6 rounded-lg font-medium transition-colors shadow-sm"
+                        onClick={handleChangePassword}
+                    >
+                        Change Password
+                    </button>
                 </div>
-                <div className="mt-4">
-                    <label className="text-gray-700 font-semibold block mb-1">New Password</label>
-                    <input
-                        type="password"
-                        placeholder="Enter new password"
-                        className="p-3 w-full bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 text-lg"
-                        value={passwords.newPassword}
-                        onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
-                    />
-                </div>
-                <button className="mt-4 bg-blue-500 text-white py-3 px-6 rounded-lg w-full" onClick={handleChangePassword}>
-                    Change Password
-                </button>
             </div>
 
             {/* Delete Account */}
-            <div className="p-6 bg-gray-100 rounded-lg shadow">
-                <h2 className="text-xl font-semibold text-red-500 flex items-center gap-2">
-                    <AiOutlineUserDelete size={22} /> Delete Account
-                </h2>
-                <p className="text-gray-500 mt-2">This action cannot be undone.</p>
-                <button className="mt-4 bg-red-500 text-white py-3 px-6 rounded-lg w-full" onClick={() => setModalOpen(true)}>
-                    Confirm Delete
-                </button>
+            <div className="bg-white rounded-xl shadow-md w-full">
+                <div className="h-1 w-full bg-gradient-to-r from-red-400 to-red-500 rounded-t-xl"></div>
+                <div className="p-6">
+                    <h2 className="text-xl font-bold text-red-500 flex items-center gap-2 mb-1">
+                        <AiOutlineUserDelete size={22} /> Delete Account
+                    </h2>
+                    <p className="text-gray-500 mb-4 text-sm">Permanently delete your account and all associated data.</p>
+
+                    <button
+                        className="w-full bg-gradient-to-r from-red-400 to-red-500 hover:from-red-500 hover:to-red-600 text-white py-3 px-6 rounded-lg font-medium transition-colors shadow-sm"
+                        onClick={() => setModalOpen(true)}
+                    >
+                        Delete Account
+                    </button>
+                </div>
             </div>
 
             {/* Delete Account Modal */}
             {modalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white p-6 rounded-lg shadow-lg w-96"
-                    >
-                        <h2 className="text-lg font-semibold">Confirm Account Deletion</h2>
-                        <p className="text-gray-600 mt-3">Are you sure? This action cannot be undone.</p>
-                        <div className="flex justify-end mt-4 space-x-4">
-                            <button className="px-6 py-2 border rounded-lg" onClick={() => setModalOpen(false)}>Cancel</button>
-                            <button className="px-6 py-2 bg-red-500 text-white rounded-lg" onClick={handleDeleteAccount}>Delete</button>
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-w-full mx-4 relative">
+                        <div className="h-1 w-full bg-gradient-to-r from-red-400 to-red-500 absolute top-0 left-0 rounded-t-lg"></div>
+                        <h2 className="text-xl font-bold text-red-500 mt-2 mb-4">Confirm Account Deletion</h2>
+                        <p className="text-gray-600 mb-6">Are you sure you want to delete your account?</p>
+                        <div className="flex justify-end space-x-3">
+                            <button
+                                className="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+                                onClick={() => setModalOpen(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="px-4 py-2 bg-gradient-to-r from-red-400 to-red-500 hover:from-red-500 hover:to-red-600 text-white rounded-lg transition-colors"
+                                onClick={handleDeleteAccount}
+                            >
+                                Delete Account
+                            </button>
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
             )}
-        </motion.div>
+        </div>
     );
 };
+
+// Add custom scrollbar styles
+// Add custom scrollbar styles
+const style = document.createElement('style');
+style.innerHTML = `
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #60a5fa, #818cf8);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #3b82f6, #6366f1);
+}
+`;
+document.head.appendChild(style);
 
 export default SettingsTab;
