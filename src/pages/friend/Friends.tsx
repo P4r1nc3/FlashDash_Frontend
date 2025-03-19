@@ -112,25 +112,28 @@ const Friends = () => {
                         <div className="h-1 w-full bg-gradient-to-r from-blue-400 to-indigo-400 rounded-t-xl"></div>
 
                         <div className="p-6">
-                            <h2 className="text-xl font-bold text-blue-600 flex items-center gap-2 mb-1">
-                                <AiOutlineUserAdd size={22} className="text-indigo-500" /> Add a Friend
-                            </h2>
-                            <p className="text-gray-500 mb-4 text-sm">Send an invitation to connect with a friend.</p>
-
-                            <div className="flex gap-3">
-                                <input
-                                    type="email"
-                                    placeholder="Enter email address"
-                                    className="p-3 w-full bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 text-base"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                                <button
-                                    className="bg-gradient-to-r from-blue-400 to-indigo-400 hover:from-blue-500 hover:to-indigo-500 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-sm"
-                                    onClick={handleSendInvitation}
-                                >
-                                    Send
-                                </button>
+                            <div className="flex justify-between items-center mb-4">
+                                <div>
+                                    <h2 className="text-xl font-bold text-blue-600 flex items-center gap-2 mb-1">
+                                        <AiOutlineUserAdd size={22} className="text-indigo-500" /> Add a Friend
+                                    </h2>
+                                    <p className="text-gray-500 text-sm">Send an invitation to connect with a friend.</p>
+                                </div>
+                                <div className="flex gap-3">
+                                    <input
+                                        type="email"
+                                        placeholder="Enter email address"
+                                        className="p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 text-base"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                    <button
+                                        className="bg-gradient-to-r from-blue-400 to-indigo-400 hover:from-blue-500 hover:to-indigo-500 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-sm"
+                                        onClick={handleSendInvitation}
+                                    >
+                                        Send
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
