@@ -131,7 +131,7 @@ const Navbar = () => {
                 {/* Navigation Links with Active Highlighting */}
                 <Link
                     to="/decks"
-                    className={`flex items-center w-full text-lg font-medium transition-colors duration-200 rounded-lg py-2.5 px-2 ${
+                    className={`flex items-center w-full text-lg font-medium transition-colors duration-200 rounded-lg py-2.5 px-3 ${
                         isActive('/decks')
                             ? 'bg-indigo-50 text-indigo-500'
                             : 'text-gray-600 hover:text-indigo-500 hover:bg-blue-50'
@@ -149,7 +149,7 @@ const Navbar = () => {
 
                 <Link
                     to="/friends"
-                    className={`flex items-center w-full text-lg font-medium transition-colors duration-200 rounded-lg py-2.5 px-2 ${
+                    className={`flex items-center w-full text-lg font-medium transition-colors duration-200 rounded-lg py-2.5 px-3 ${
                         isActive('/friends')
                             ? 'bg-indigo-50 text-indigo-500'
                             : 'text-gray-600 hover:text-indigo-500 hover:bg-blue-50'
@@ -167,7 +167,7 @@ const Navbar = () => {
 
                 <Link
                     to="/account"
-                    className={`flex items-center w-full text-lg font-medium transition-colors duration-200 rounded-lg py-2.5 px-2 ${
+                    className={`flex items-center w-full text-lg font-medium transition-colors duration-200 rounded-lg py-2.5 px-3 ${
                         isActive('/account')
                             ? 'bg-indigo-50 text-indigo-500'
                             : 'text-gray-600 hover:text-indigo-500 hover:bg-blue-50'
@@ -187,7 +187,7 @@ const Navbar = () => {
                 <div className="border-t border-gray-100 w-full my-2"></div>
 
                 <button
-                    className="flex items-center text-gray-600 hover:text-red-500 hover:bg-red-50 w-full text-lg font-medium rounded-lg py-2.5 px-2 transition-colors duration-200"
+                    className="flex items-center text-gray-600 hover:text-red-500 hover:bg-red-50 w-full text-lg font-medium rounded-lg py-2.5 px-3 transition-colors duration-200"
                     onClick={(e) => {
                         e.stopPropagation();
                         auth.logout();
