@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getDecks, createDeck, updateDeck, deleteDeck } from "../api/decks";
-import { Deck } from "../interfaces/Deck";
+import { getDecks, createDeck, updateDeck, deleteDeck } from "../../api/decks.ts";
+import { Deck } from "../../interfaces/Deck.ts";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { AiOutlinePlus, AiOutlineEdit, AiOutlineDelete, AiOutlineBook, AiOutlineShareAlt } from "react-icons/ai";

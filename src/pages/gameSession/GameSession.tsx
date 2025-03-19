@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getGameSession } from "../api/gameSession.ts";
-import { GameSessionResult } from "../interfaces/GameSession.ts";
+import { getGameSession } from "../../api/gameSession.ts";
+import { GameSessionResult } from "../../interfaces/GameSession.ts";
 import { motion } from "framer-motion";
 import { AiOutlineLineChart, AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
-import MainLayout from "../components/MainLayout";
+import MainLayout from "../../components/MainLayout.tsx";
 
 const GameSession = () => {
     const { deckId, gameSessionId } = useParams<{ deckId: string; gameSessionId: string }>();

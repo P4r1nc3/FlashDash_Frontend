@@ -6,9 +6,9 @@ import {
     sendFriendInvitation,
     respondToInvitation,
     deleteFriend
-} from "../api/friends";
-import { User } from "../interfaces/User";
-import { FriendInvitationResponse } from "../interfaces/FriendInvitation";
+} from "../../api/friends.ts";
+import { User } from "../../interfaces/User.ts";
+import { FriendInvitationResponse } from "../../interfaces/FriendInvitation.ts";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import {
@@ -17,7 +17,7 @@ import {
     AiOutlineSend
 } from "react-icons/ai";
 import { LiaUserFriendsSolid } from "react-icons/lia";
-import MainLayout from "../components/MainLayout";
+import MainLayout from "../../components/MainLayout.tsx";
 
 const Friends = () => {
     const [tabIndex, setTabIndex] = useState("friends");

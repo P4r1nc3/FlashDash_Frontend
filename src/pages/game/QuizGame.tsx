@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AiOutlineArrowLeft } from "react-icons/ai";
-import { startGameSession, endGameSession } from "../api/gameSession.ts";
-import { QuestionRequest, QuestionResponse } from "../interfaces/Question.ts";
-import { GameSessionResult } from "../interfaces/GameSession.ts";
+import { startGameSession, endGameSession } from "../../api/gameSession.ts";
+import { QuestionRequest, QuestionResponse } from "../../interfaces/Question.ts";
+import { GameSessionResult } from "../../interfaces/GameSession.ts";
 
 const QuizGame = () => {
     const { deckId } = useParams<{ deckId: string }>();

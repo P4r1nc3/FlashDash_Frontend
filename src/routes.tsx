@@ -1,14 +1,14 @@
 import { Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
+import Home from './pages/home/Home.tsx';
 import Login from './pages/auth/Login.tsx';
 import Register from './pages/auth/Register.tsx';
-import DeckManager from './pages/DeckManager';
+import DeckManager from './pages/deckManager/DeckManager.tsx';
 import DeckDetails from './pages/deckDetails/DeckDetails.tsx';
-import GameSession from './pages/GameSession';
-import QuizGame from './pages/QuizGame';
+import GameSession from './pages/gameSession/GameSession.tsx';
+import QuizGame from './pages/game/QuizGame.tsx';
 import Account from './pages/account/Account.tsx';
-import Friends from './pages/Friends';
-import NotFound from './pages/NotFound';
+import Friends from './pages/friend/Friends.tsx';
+import NotFound from './pages/util/NotFound.tsx';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const AppRoutes = () => (
