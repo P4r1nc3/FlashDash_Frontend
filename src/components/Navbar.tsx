@@ -14,7 +14,6 @@ const Navbar = () => {
         const content = document.getElementById("content");
         if (content) {
             content.style.marginLeft = auth?.isAuthenticated ? (isExpanded ? "260px" : "80px") : "0";
-            // Add transition for smoother content movement
             content.style.transition = "margin-left 0.3s ease-in-out";
         }
     }, [isExpanded, auth?.isAuthenticated]);
@@ -31,36 +30,40 @@ const Navbar = () => {
         return (
             <nav className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
                 <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+                    {/* Updated Logo to match the expanded sidebar logo */}
                     <Link
                         to="/"
-                        className="text-2xl font-extrabold tracking-wide font-poppins"
+                        className="text-3xl font-extrabold tracking-wide font-poppins"
                     >
-                        Flash<span className="text-blue-400">Dash</span>
+                        <span className="text-gray-900">Flash</span>
+                        <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">Dash</span>
                     </Link>
 
                     <div className="flex space-x-8">
                         <Link
                             to="/login"
-                            className={`font-semibold text-lg transition-colors duration-200 ${
+                            className={`flex items-center font-medium text-lg transition-colors duration-200 px-3 py-2 rounded-lg ${
                                 location.pathname === '/login'
-                                    ? 'text-indigo-500'
-                                    : 'text-gray-700 hover:text-blue-400'
+                                    ? 'bg-indigo-50 text-indigo-500'
+                                    : 'text-gray-600 hover:text-indigo-500 hover:bg-blue-50'
                             }`}
                         >
                             Login
                         </Link>
                         <Link
                             to="/register"
-                            className={`font-semibold text-lg transition-colors duration-200 ${
+                            className={`flex items-center font-medium text-lg transition-colors duration-200 px-3 py-2 rounded-lg ${
                                 location.pathname === '/register'
-                                    ? 'text-indigo-500'
-                                    : 'text-gray-700 hover:text-blue-400'
+                                    ? 'bg-indigo-50 text-indigo-500'
+                                    : 'text-gray-600 hover:text-indigo-500 hover:bg-blue-50'
                             }`}
                         >
                             Register
                         </Link>
                     </div>
                 </div>
+                {/* Added bottom gradient line */}
+                <div className="h-1 w-full bg-gradient-to-r from-blue-200 to-indigo-200"></div>
             </nav>
         );
     }
@@ -73,14 +76,14 @@ const Navbar = () => {
         >
             {/* Toggle button with updated styling */}
             <button
-                className="absolute -right-3 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-1.5 shadow-md hover:shadow-lg z-10 transition-all duration-200 w-6 h-6 flex items-center justify-center border border-indigo-100 text-indigo-400 hover:text-blue-500"
+                className="absolute -right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg z-10 transition-all duration-200 w-8 h-8 flex items-center justify-center border border-indigo-100 text-indigo-400 hover:text-blue-500"
                 onClick={toggleSidebar}
                 aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
             >
                 {isExpanded ? (
-                    <IoChevronBackOutline className="w-3 h-3" />
+                    <IoChevronBackOutline className="w-4 h-4" />
                 ) : (
-                    <IoChevronForwardOutline className="w-3 h-3" />
+                    <IoChevronForwardOutline className="w-4 h-4" />
                 )}
             </button>
 
