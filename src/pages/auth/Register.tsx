@@ -6,8 +6,8 @@ import AuthForm from "../../components/AuthForm.tsx";
 const Register = () => {
     const navigate = useNavigate();
 
-    const handleRegister = async ({ firstName, lastName, email, password }) => {
-        await register({ firstName, lastName, email, password });
+    const handleRegister = async ({ firstName, lastName, username, email, password }) => {
+        await register({ firstName, lastName, username, email, password });
 
         toast.info(`Activation email sent to: ${email}`, {
             position: "bottom-right",
@@ -29,6 +29,7 @@ const Register = () => {
             fields={[
                 { name: 'firstName', label: 'First Name', type: 'text' },
                 { name: 'lastName', label: 'Last Name', type: 'text' },
+                { name: 'username', label: 'Username', type: 'text' },
                 { name: 'email', label: 'Email', type: 'email' },
                 { name: 'password', label: 'Password', type: 'password' }
             ]}
