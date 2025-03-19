@@ -107,17 +107,20 @@ const QuestionsTab: React.FC<QuestionsTabProps> = ({ deckId }) => {
             <div className="h-1 w-full bg-gradient-to-r from-blue-400 to-indigo-400 rounded-t-xl"></div>
 
             <div className="p-6">
-                <h2 className="text-xl font-bold text-blue-600 flex items-center gap-2 mb-1">
-                    <AiOutlineQuestionCircle size={22} className="text-indigo-500" /> Questions
-                </h2>
-                <p className="text-gray-500 mb-4 text-sm">Manage questions in this deck.</p>
-
-                <button
-                    className="bg-gradient-to-r from-blue-400 to-indigo-400 hover:from-blue-500 hover:to-indigo-500 text-white py-2 px-4 rounded-lg font-medium transition-colors shadow-sm flex items-center gap-2 mb-6"
-                    onClick={openAddModal}
-                >
-                    <AiOutlinePlus size={18} /> Add Question
-                </button>
+                <div className="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 className="text-xl font-bold text-blue-600 flex items-center gap-2 mb-1">
+                            <AiOutlineQuestionCircle size={22} className="text-indigo-500" /> Questions
+                        </h2>
+                        <p className="text-gray-500 text-sm">Manage questions in this deck.</p>
+                    </div>
+                    <button
+                        className="bg-gradient-to-r from-blue-400 to-indigo-400 hover:from-blue-500 hover:to-indigo-500 text-white py-2 px-4 rounded-lg font-medium transition-colors shadow-sm flex items-center gap-2"
+                        onClick={openAddModal}
+                    >
+                        <AiOutlinePlus size={18} /> Add Question
+                    </button>
+                </div>
 
                 <div className="max-h-[40vh] overflow-y-auto pr-2 space-y-4 custom-scrollbar">
                     {questions.length > 0 ? (
@@ -197,7 +200,7 @@ const QuestionsTab: React.FC<QuestionsTabProps> = ({ deckId }) => {
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-h-[90vh] overflow-y-auto">
                         {/* Top gradient line */}
-                        <div className="h-1 w-full bg-gradient-to-r from-blue-400 to-indigo-400 absolute top-0 left-0"></div>
+                        <div className="h-1 w-full bg-gradient-to-r from-blue-400 to-indigo-400 absolute top-0 left-0 rounded-t-lg"></div>
 
                         <h2 className="text-lg font-bold text-blue-600 mb-4 mt-2">
                             {isEditing ? "Edit Question" : "Add Question"}
