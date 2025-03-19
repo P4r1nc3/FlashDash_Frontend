@@ -24,7 +24,6 @@ const QuestionsTab: React.FC<QuestionsTabProps> = ({ deckId }) => {
     const [correctAnswers, setCorrectAnswers] = useState<string[]>([]);
     const [incorrectAnswers, setIncorrectAnswers] = useState<string[]>([]);
     const [difficulty, setDifficulty] = useState<Difficulty>(Difficulty.MEDIUM);
-    const [error, setError] = useState("");
 
     useEffect(() => {
         fetchQuestions();
@@ -58,12 +57,11 @@ const QuestionsTab: React.FC<QuestionsTabProps> = ({ deckId }) => {
         setCorrectAnswers([]);
         setIncorrectAnswers([]);
         setDifficulty(Difficulty.MEDIUM);
-        setError("");
     };
 
     const saveQuestion = async () => {
         if (!deckId || !newQuestion.trim()) {
-            setError("Question text is required.");
+            alert("Question text is required.");
             return;
         }
 
@@ -100,7 +98,7 @@ const QuestionsTab: React.FC<QuestionsTabProps> = ({ deckId }) => {
             default:
                 colors = "bg-blue-100 text-blue-700";
         }
-        return <span className={`px-2 py-1 rounded-full text-xs font-medium ${colors}`}>{difficulty}</span>;
+        return <span className={`px-3 py-1.5 rounded-md text-xs font-medium ${colors}`}>{difficulty}</span>;
     };
 
     return (
@@ -121,7 +119,7 @@ const QuestionsTab: React.FC<QuestionsTabProps> = ({ deckId }) => {
                     <AiOutlinePlus size={18} /> Add Question
                 </button>
 
-                <div className="max-h-[50vh] overflow-y-auto pr-2 space-y-4 custom-scrollbar">
+                <div className="max-h-[40vh] overflow-y-auto pr-2 space-y-4 custom-scrollbar">
                     {questions.length > 0 ? (
                         questions.map((q, index) => {
                             const correctAnswers = q.correctAnswers;
@@ -147,13 +145,13 @@ const QuestionsTab: React.FC<QuestionsTabProps> = ({ deckId }) => {
                                         </button>
                                     </div>
 
-                                    <div className="flex items-center justify-between mb-2 pr-16">
-                                        <h4 className="font-semibold flex items-center gap-2 text-base text-gray-800">
+                                    <div className="flex items-center mb-2">
+                                        <div className="flex items-center gap-2 mr-4">
                                             <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center">
                                                 <span className="text-blue-700 text-xs font-bold">{index + 1}</span>
                                             </div>
-                                            Question {index + 1}
-                                        </h4>
+                                            <h4 className="font-semibold text-base text-gray-800">Question {index + 1}</h4>
+                                        </div>
                                         {q.difficulty && getDifficultyBadge(q.difficulty)}
                                     </div>
                                     <p className="text-gray-700 mb-3 text-sm">{q.question}</p>
@@ -213,7 +211,6 @@ const QuestionsTab: React.FC<QuestionsTabProps> = ({ deckId }) => {
                             value={newQuestion}
                             onChange={(e) => setNewQuestion(e.target.value)}
                         />
-                        {error && <p className="text-red-500 text-sm mt-1 mb-4">{error}</p>}
 
                         <label className="block text-gray-700 font-medium mb-1">Difficulty</label>
                         <select
