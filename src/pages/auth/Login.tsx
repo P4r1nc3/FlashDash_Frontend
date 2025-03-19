@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
-import { login } from '../api/auth';
-import AuthForm from '../components/AuthForm';
+import { AuthContext } from '../../contexts/AuthContext.tsx';
+import { login } from '../../api/auth.ts';
+import AuthForm from '../../components/AuthForm.tsx';
 
 const Login = () => {
     const navigate = useNavigate();

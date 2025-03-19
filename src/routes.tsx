@@ -1,13 +1,14 @@
 import { Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import DeckManager from './pages/DeckManager';
-import DeckDetails from './pages/DeckDetails';
-import QuizGame from './pages/QuizGame';
-import Account from './pages/Account';
-import Friends from './pages/Friends';
-import NotFound from './pages/NotFound';
+import Home from './pages/home/Home.tsx';
+import Login from './pages/auth/Login.tsx';
+import Register from './pages/auth/Register.tsx';
+import DeckManager from './pages/deckManager/DeckManager.tsx';
+import DeckDetails from './pages/deckDetails/DeckDetails.tsx';
+import GameSession from './pages/gameSession/GameSession.tsx';
+import QuizGame from './pages/game/QuizGame.tsx';
+import Account from './pages/account/Account.tsx';
+import Friends from './pages/friend/Friends.tsx';
+import NotFound from './pages/util/NotFound.tsx';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const AppRoutes = () => (
@@ -19,7 +20,8 @@ const AppRoutes = () => (
         <Route path="/decks" element={<ProtectedRoute><DeckManager /></ProtectedRoute>} />
         <Route path="/decks/:deckId" element={<ProtectedRoute><DeckDetails /></ProtectedRoute>} />
         <Route path="/decks/:deckId/quiz" element={<ProtectedRoute><QuizGame /></ProtectedRoute>} />
-        <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} /> {/* Nowa trasa */}
+        <Route path="/decks/:deckId/gameSession/:gameSessionId" element={<ProtectedRoute><GameSession /></ProtectedRoute>} />
+        <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
     </Routes>
 );
