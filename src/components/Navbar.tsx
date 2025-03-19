@@ -1,12 +1,13 @@
 import { useContext, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import { FaLayerGroup, FaUsers, FaUser, FaSignOutAlt } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const Navbar = () => {
     const auth = useContext(AuthContext);
     const [isExpanded, setIsExpanded] = useState(false);
+    const location = useLocation();
 
     useEffect(() => {
         const content = document.getElementById("content");
@@ -17,6 +18,10 @@ const Navbar = () => {
 
     const toggleSidebar = () => {
         setIsExpanded(!isExpanded);
+    };
+
+    const isActive = (path) => {
+        return location.pathname.startsWith(path);
     };
 
     if (!auth?.isAuthenticated) {
@@ -31,10 +36,24 @@ const Navbar = () => {
                     </Link>
 
                     <div className="flex space-x-8">
-                        <Link to="/login" className="text-gray-700 font-semibold text-lg hover:text-blue-500">
+                        <Link
+                            to="/login"
+                            className={`font-semibold text-lg transition-colors duration-200 ${
+                                location.pathname === '/login'
+                                    ? 'text-blue-500'
+                                    : 'text-gray-700 hover:text-blue-500'
+                            }`}
+                        >
                             Login
                         </Link>
-                        <Link to="/register" className="text-gray-700 font-semibold text-lg hover:text-blue-500">
+                        <Link
+                            to="/register"
+                            className={`font-semibold text-lg transition-colors duration-200 ${
+                                location.pathname === '/register'
+                                    ? 'text-blue-500'
+                                    : 'text-gray-700 hover:text-blue-500'
+                            }`}
+                        >
                             Register
                         </Link>
                     </div>
@@ -95,13 +114,17 @@ const Navbar = () => {
             </div>
 
             <div className="flex flex-col space-y-8 w-full">
-                {/* Stop event propagation to prevent sidebar toggle when clicking on links */}
+                {/* Navigation Links with Active Highlighting */}
                 <Link
                     to="/decks"
-                    className="flex items-center text-gray-700 hover:text-gray-900 w-full text-xl font-semibold transition-all duration-300"
+                    className={`flex items-center w-full text-xl font-semibold transition-colors duration-200 ${
+                        isActive('/decks')
+                            ? 'text-blue-500' + (isExpanded ? ' bg-blue-50' : '')
+                            : 'text-gray-700 hover:text-gray-900' + (isExpanded ? ' hover:bg-gray-100' : '')
+                    } rounded-lg py-2 px-1`}
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <FaLayerGroup className="w-[32px] h-[32px] flex-shrink-0" />
+                    <FaLayerGroup className={`w-[32px] h-[32px] flex-shrink-0 ${isActive('/decks') ? 'text-blue-500' : ''}`} />
                     <span className={`ml-6 transition-all duration-300 ${isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0 overflow-hidden"}`}>
                         Decks
                     </span>
@@ -109,10 +132,14 @@ const Navbar = () => {
 
                 <Link
                     to="/friends"
-                    className="flex items-center text-gray-700 hover:text-gray-900 w-full text-xl font-semibold transition-all duration-300"
+                    className={`flex items-center w-full text-xl font-semibold transition-colors duration-200 ${
+                        isActive('/friends')
+                            ? 'text-blue-500' + (isExpanded ? ' bg-blue-50' : '')
+                            : 'text-gray-700 hover:text-gray-900' + (isExpanded ? ' hover:bg-gray-100' : '')
+                    } rounded-lg py-2 px-1`}
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <FaUsers className="w-[32px] h-[32px] flex-shrink-0" />
+                    <FaUsers className={`w-[32px] h-[32px] flex-shrink-0 ${isActive('/friends') ? 'text-blue-500' : ''}`} />
                     <span className={`ml-6 transition-all duration-300 ${isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0 overflow-hidden"}`}>
                         Friends
                     </span>
@@ -120,17 +147,23 @@ const Navbar = () => {
 
                 <Link
                     to="/account"
-                    className="flex items-center text-gray-700 hover:text-gray-900 w-full text-xl font-semibold transition-all duration-300"
+                    className={`flex items-center w-full text-xl font-semibold transition-colors duration-200 ${
+                        isActive('/account')
+                            ? 'text-blue-500' + (isExpanded ? ' bg-blue-50' : '')
+                            : 'text-gray-700 hover:text-gray-900' + (isExpanded ? ' hover:bg-gray-100' : '')
+                    } rounded-lg py-2 px-1`}
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <FaUser className="w-[32px] h-[32px] flex-shrink-0" />
+                    <FaUser className={`w-[32px] h-[32px] flex-shrink-0 ${isActive('/account') ? 'text-blue-500' : ''}`} />
                     <span className={`ml-6 transition-all duration-300 ${isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0 overflow-hidden"}`}>
                         Account
                     </span>
                 </Link>
 
                 <button
-                    className="flex items-center text-red-500 hover:text-red-600 w-full text-xl font-semibold transition-opacity duration-300"
+                    className={`flex items-center text-red-500 hover:text-red-600 w-full text-xl font-semibold transition-colors duration-200 rounded-lg py-2 px-1 ${
+                        isExpanded ? 'hover:bg-red-50' : ''
+                    }`}
                     onClick={(e) => {
                         e.stopPropagation();
                         auth.logout();
