@@ -142,22 +142,24 @@ const QuizGame = () => {
             onBack={() => navigate(`/decks/${deckId}`)}
         >
             {showCountdown ? (
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5 }}
-                    className="flex flex-col items-center justify-center flex-1"
-                >
-                    <div className="w-32 h-32 border-4 border-blue-500 rounded-full flex items-center justify-center">
-                        <span className="text-6xl font-bold text-blue-600">{countdown > 0 ? countdown : "GO!"}</span>
-                    </div>
-                    <p className="mt-6 text-2xl font-semibold text-gray-700">
-                        {countdown === 3 && "Ready..."}
-                        {countdown === 2 && "Steady..."}
-                        {countdown === 1 && "Almost there..."}
-                        {countdown === 0 && "Go!"}
-                    </p>
-                </motion.div>
+                <div className="flex items-center justify-center h-full absolute inset-0">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="flex flex-col items-center justify-center"
+                    >
+                        <div className="w-32 h-32 border-4 border-blue-500 rounded-full flex items-center justify-center">
+                            <span className="text-6xl font-bold text-blue-600">{countdown > 0 ? countdown : "GO!"}</span>
+                        </div>
+                        <p className="mt-6 text-2xl font-semibold text-gray-700">
+                            {countdown === 3 && "Ready..."}
+                            {countdown === 2 && "Steady..."}
+                            {countdown === 1 && "Almost there..."}
+                            {countdown === 0 && "Go!"}
+                        </p>
+                    </motion.div>
+                </div>
             ) : showResult && gameResult ? (
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
