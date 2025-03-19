@@ -9,7 +9,7 @@ const Home = () => {
     return (
         <main className="w-full">
             {/* Hero Section */}
-            <section className="h-screen bg-gradient-to-b from-white to-blue-200 flex items-center justify-center">
+            <section className="h-screen bg-gradient-to-r from-blue-100 to-indigo-100 flex items-center justify-center">
                 <div className="container mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center text-center lg:text-left">
                     {/* Text Section */}
                     <motion.div
@@ -20,7 +20,7 @@ const Home = () => {
                     >
                         <h1 className="text-9xl lg:text-7xl font-extrabold tracking-wide font-poppins mb-12">
                             <span className="text-gray-900">Flash</span>
-                            <span className="text-blue-500">Dash</span>
+                            <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">Dash</span>
                         </h1>
                         <p className="text-2xl text-gray-700 mb-12">
                             Learn by solving quizzes and earn rewards through gamification mechanics!
@@ -29,7 +29,7 @@ const Home = () => {
                         </p>
                         <Link to="/register">
                             <motion.button
-                                className="bg-blue-500 lg:text-xl text-white px-10 py-6 rounded-full font-semibold shadow-lg hover:bg-blue-600 transition duration-300"
+                                className="bg-gradient-to-r from-blue-400 to-indigo-400 lg:text-xl text-white px-10 py-6 rounded-full font-semibold shadow-lg hover:shadow-xl transition duration-300"
                                 whileHover={{ scale: 1.10 }}
                                 whileTap={{ scale: 0.95 }}
                             >
@@ -134,7 +134,7 @@ const Home = () => {
             </section>
 
             {/* Footer Section */}
-            <footer className="h-[35vh] bg-gradient-to-b from-blue-400 to-blue-500 text-white flex flex-col items-center justify-center text-center">
+            <footer className="h-[35vh] bg-gradient-to-r from-blue-400 to-indigo-400 text-white flex flex-col items-center justify-center text-center">
                 <div className="container mx-auto px-6">
                     <p className="text-2xl mb-8">Join thousands of learners and start your journey today!</p>
                     <Link to="/register">
