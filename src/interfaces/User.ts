@@ -7,6 +7,7 @@ export interface User {
     lastName: string;
     createdAt: string;
     updatedAt: string;
+    studyTime: number;
     gamesPlayed: number;
     points: number;
     streak: number;
