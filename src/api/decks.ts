@@ -1,11 +1,11 @@
-import axiosInstance from '../utils/axiosConfig';
+import { axiosCoreInstance } from '../utils/axiosConfig';
 import { Deck, CreateDeckRequest } from '../interfaces/Deck';
 import { getToken } from '../utils/tokenUtils';
 import { AxiosResponse } from 'axios';
 
 export const getDecks = async (): Promise<Deck[]> => {
     const token = getToken();
-    const response: AxiosResponse<Deck[]> = await axiosInstance.get('/decks', {
+    const response: AxiosResponse<Deck[]> = await axiosCoreInstance.get('/decks', {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -15,7 +15,7 @@ export const getDecks = async (): Promise<Deck[]> => {
 
 export const getDeckDetails = async (deckId: string): Promise<Deck> => {
     const token = getToken();
-    const response = await axiosInstance.get(`/decks/${deckId}`, {
+    const response = await axiosCoreInstance.get(`/decks/${deckId}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -25,7 +25,7 @@ export const getDeckDetails = async (deckId: string): Promise<Deck> => {
 
 export const createDeck = async (data: CreateDeckRequest): Promise<Deck> => {
     const token = getToken();
-    const response: AxiosResponse<Deck> = await axiosInstance.post('/decks', data, {
+    const response: AxiosResponse<Deck> = await axiosCoreInstance.post('/decks', data, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -35,7 +35,7 @@ export const createDeck = async (data: CreateDeckRequest): Promise<Deck> => {
 
 export const updateDeck = async (deckId: number, data: CreateDeckRequest): Promise<Deck> => {
     const token = getToken();
-    const response: AxiosResponse<Deck> = await axiosInstance.put(`/decks/${deckId}`, data, {
+    const response: AxiosResponse<Deck> = await axiosCoreInstance.put(`/decks/${deckId}`, data, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -45,7 +45,7 @@ export const updateDeck = async (deckId: number, data: CreateDeckRequest): Promi
 
 export const deleteDeck = async (deckId: number): Promise<void> => {
     const token = getToken();
-    await axiosInstance.delete(`/decks/${deckId}`, {
+    await axiosCoreInstance.delete(`/decks/${deckId}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },

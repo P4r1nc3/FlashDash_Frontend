@@ -1,4 +1,4 @@
-import axiosInstance from '../utils/axiosConfig';
+import { axiosCoreInstance } from '../utils/axiosConfig';
 import { GameSessionResult } from '../interfaces/GameSession';
 import {QuestionRequest, QuestionResponse} from '../interfaces/Question';
 import { getToken } from '../utils/tokenUtils';
@@ -6,7 +6,7 @@ import { AxiosResponse } from 'axios';
 
 export const startGameSession = async (deckFrn: string): Promise<QuestionResponse[]> => {
     const token = getToken();
-    const response: AxiosResponse<QuestionResponse[]> = await axiosInstance.post(`/decks/${deckFrn}/gameSessions/start`, {}, {
+    const response: AxiosResponse<QuestionResponse[]> = await axiosCoreInstance.post(`/decks/${deckFrn}/gameSessions/start`, {}, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -16,7 +16,7 @@ export const startGameSession = async (deckFrn: string): Promise<QuestionRespons
 
 export const endGameSession = async (deckFrn: string, userAnswers: QuestionRequest[]): Promise<GameSessionResult> => {
     const token = getToken();
-    const response: AxiosResponse<GameSessionResult> = await axiosInstance.post(`/decks/${deckFrn}/gameSessions/end`, userAnswers, {
+    const response: AxiosResponse<GameSessionResult> = await axiosCoreInstance.post(`/decks/${deckFrn}/gameSessions/end`, userAnswers, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -26,7 +26,7 @@ export const endGameSession = async (deckFrn: string, userAnswers: QuestionReque
 
 export const getGameSessions = async (deckFrn: string): Promise<GameSessionResult[]> => {
     const token = getToken();
-    const response = await axiosInstance.get(`/decks/${deckFrn}/gameSessions`, {
+    const response = await axiosCoreInstance.get(`/decks/${deckFrn}/gameSessions`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -36,7 +36,7 @@ export const getGameSessions = async (deckFrn: string): Promise<GameSessionResul
 
 export const getGameSession = async (deckFrn: string, gameSessionFrn: string): Promise<GameSessionResult> => {
     const token = getToken();
-    const response = await axiosInstance.get(`/decks/${deckFrn}/gameSessions/${gameSessionFrn}`, {
+    const response = await axiosCoreInstance.get(`/decks/${deckFrn}/gameSessions/${gameSessionFrn}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
