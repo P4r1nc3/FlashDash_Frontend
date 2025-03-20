@@ -35,6 +35,7 @@ const YourDecksTab = () => {
             const data = await getDecks();
             setDecks(data);
         } catch (error) {
+            console.error("Error while fetching decks:", error);
             toast.error("Failed to fetch decks.");
         }
     };
@@ -77,6 +78,7 @@ const YourDecksTab = () => {
             fetchDecks();
             setModalOpen(false);
         } catch (error) {
+            console.error("Error while saving the deck:", error);
             toast.error("Failed to save deck.");
         }
     };
@@ -87,6 +89,7 @@ const YourDecksTab = () => {
             toast.success("Deck deleted successfully.");
             fetchDecks();
         } catch (error) {
+            console.error("Error while deleting the deck:", error);
             toast.error("Failed to delete deck.");
         }
     };

@@ -21,7 +21,8 @@ const StatisticsTab = () => {
             try {
                 const sessions = await getGameSessions(deckId);
                 setGameSessions(sessions);
-            } catch (err) {
+            } catch (error) {
+                console.error("Error while fetching game statistics:", error);
                 toast.error("Failed to fetch game statistics");
             }
         };
