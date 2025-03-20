@@ -42,6 +42,7 @@ const SettingsTab = () => {
             setNotificationTime(time);
             setTempNotificationTime(time);
         } catch (error) {
+            console.error("Error while fetching notifications settings:", error);
             toast.error("Failed to fetch notifications settings");
         }
     };
@@ -57,6 +58,7 @@ const SettingsTab = () => {
             }
             setNotificationsEnabled(!notificationsEnabled);
         } catch (error) {
+            console.error("Error while turning on notifications:", error);
             toast.error("Failed to update notifications.");
         }
     };
@@ -84,6 +86,7 @@ const SettingsTab = () => {
                     await enableNotifications(tempNotificationTime);
                     toast.success("Notification time updated.");
                 } catch (error) {
+                    console.error("Error while updating notification time:", error);
                     toast.error("Failed to update notification time.");
                     setTempNotificationTime(notificationTime);
                 }
@@ -114,6 +117,7 @@ const SettingsTab = () => {
             setPasswords({ oldPassword: "", newPassword: "" });
             toast.success("Password changed successfully.");
         } catch (error) {
+            console.error("Error while changing password:", error);
             toast.error("Failed to change password.");
         }
     };
@@ -124,6 +128,7 @@ const SettingsTab = () => {
             toast.error("Your account has been deleted.");
             window.location.href = "/";
         } catch (error) {
+            console.error("Error while deleting an account:", error);
             toast.error("Failed to delete account.");
         }
     };
