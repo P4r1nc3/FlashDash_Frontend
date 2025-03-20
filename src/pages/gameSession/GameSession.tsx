@@ -82,7 +82,7 @@ const GameSession = () => {
                                 </div>
                             </div>
                             <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
-                                {gameSession?.score}%
+                                {gameSession?.score}
                             </p>
                         </div>
 
