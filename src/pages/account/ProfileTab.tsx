@@ -38,8 +38,8 @@ const ProfileTab = () => {
         const remainingMinutes = minutes % 60;
 
         if (hours === 0) return `${remainingMinutes} min`;
-        if (remainingMinutes === 0) return `${hours} godz`;
-        return `${hours} godz ${remainingMinutes} min`;
+        if (remainingMinutes === 0) return `${hours} hrs`;
+        return `${hours} hrs ${remainingMinutes} min`;
     };
 
     if (loading) {
@@ -105,7 +105,7 @@ const ProfileTab = () => {
                                             <AiOutlineUser className="mr-1" /> {user.username}
                                         </div>
                                         <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
-                                            <AiOutlineCalendar className="mr-1" /> Dołączono {formatDate(user.createdAt).split(' ').slice(0, 2).join(' ')}
+                                            <AiOutlineCalendar className="mr-1" /> Joined {formatDate(user.createdAt).split(' ').slice(0, 2).join(' ')}
                                         </div>
                                     </div>
                                 </div>
