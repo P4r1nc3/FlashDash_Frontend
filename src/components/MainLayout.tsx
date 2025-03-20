@@ -1,6 +1,8 @@
 import { ReactNode } from "react";
 import { AiOutlineArrowLeft } from "react-icons/ai";
 import { motion } from "framer-motion";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface MainLayoutProps {
     title: string;
@@ -28,6 +30,18 @@ const MainLayout = ({ title, description, tabs, activeTab, setActiveTab, onBack,
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 via-slate-50 to-indigo-50">
+            <ToastContainer
+                position="bottom-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+
             <motion.div
                 className="relative w-full max-w-4xl bg-white shadow-lg rounded-xl overflow-hidden min-h-[80vh] flex flex-col"
                 variants={pageVariants}
