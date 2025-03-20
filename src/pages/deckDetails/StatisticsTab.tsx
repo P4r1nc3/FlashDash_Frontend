@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getGameSessions } from "../../api/gameSession.ts";
 import { GameSessionResult } from "../../interfaces/GameSession.ts";
 import { AiOutlineLineChart } from "react-icons/ai";
-import { FaTrophy, FaRegClock, FaCalendarAlt, FaChartLine } from "react-icons/fa";
+import { FaTrophy, FaRegClock, FaCalendarAlt, FaCheckCircle } from "react-icons/fa";
 import ReactECharts from "echarts-for-react";
 import { EChartsOption } from "echarts";
 
@@ -64,9 +64,18 @@ const StatisticsTab = () => {
         );
     }
 
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString(undefined, {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    };
+
     const chartData = gameSessions
         .map(session => ({
-            date: new Date(session.startTime).toLocaleDateString(),
+            date: formatDate(session.startTime),
             timestamp: new Date(session.startTime).getTime(),
             score: session.score,
             accuracy: session.accuracy,
@@ -82,7 +91,7 @@ const StatisticsTab = () => {
 
     const chartOptions: EChartsOption = {
         title: {
-            text: "Performance Over Time",
+            text: "Accuracy Over Time",
             left: "center",
             textStyle: {
                 fontSize: 16,
@@ -135,7 +144,7 @@ const StatisticsTab = () => {
             min: 0,
             max: 100,
             axisLabel: { fontSize: 12, color: "#64748b" },
-            name: "Score (%)",
+            name: "Accuracy (%)",
             nameLocation: "middle",
             nameTextStyle: { fontSize: 14, padding: 10, color: "#64748b" },
             nameGap: 50,
@@ -157,10 +166,10 @@ const StatisticsTab = () => {
         },
         series: [
             {
-                name: "Score",
+                name: "Accuracy",
                 type: "line",
                 data: chartData.map((d) => ({
-                    value: d.score,
+                    value: d.accuracy,
                     date: d.date,
                     accuracy: d.accuracy,
                     duration: d.duration,
@@ -240,9 +249,9 @@ const StatisticsTab = () => {
                     {/* Average Accuracy Card */}
                     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
                         <div className="flex items-center justify-between mb-1">
-                            <p className="text-gray-600 font-medium text-sm">Avg. Accuracy</p>
+                            <p className="text-gray-600 font-medium text-sm">Accuracy</p>
                             <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-teal-400 rounded-full flex items-center justify-center shadow-sm">
-                                <FaChartLine className="text-white text-xs" />
+                                <FaCheckCircle className="text-white text-xs" />
                             </div>
                         </div>
                         <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-teal-500">
@@ -258,7 +267,7 @@ const StatisticsTab = () => {
                                 <FaCalendarAlt className="text-white text-xs" />
                             </div>
                         </div>
-                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
+                        <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
                             {firstGame}
                         </p>
                     </div>
@@ -271,7 +280,7 @@ const StatisticsTab = () => {
                                 <FaRegClock className="text-white text-xs" />
                             </div>
                         </div>
-                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
+                        <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
                             {lastGame}
                         </p>
                     </div>
