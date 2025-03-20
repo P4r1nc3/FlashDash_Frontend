@@ -162,20 +162,6 @@ const ProfileTab = () => {
                                 </div>
                             </div>
                         </div>
-
-
-
-                        {/* Card Footer */}
-                        <div className="p-6 bg-white border-t border-indigo-100">
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                    <FaRegLightbulb className="text-green-600" />
-                                </div>
-                                <div className="text-gray-600 text-sm">
-                                    <span className="font-medium text-green-600">Active Learner</span> - Keep up the great work!
-                                </div>
-                            </div>
-                        </div>
                     </motion.div>
                 ) : (
                     <motion.div
