@@ -1,19 +1,25 @@
 import axios from 'axios';
 
-const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
+const CORE_API_BASE_URL = import.meta.env.CORE_API_BASE_URL || 'http://localhost:8080';
+const ACTIVITY_API_BASE_URL = import.meta.env.ACTIVITY_API_BASE_URL || 'http://localhost:7070';
+
+export const axiosCoreInstance = axios.create({
+    baseURL: CORE_API_BASE_URL,
     headers: { 'Content-Type': 'application/json' },
 });
 
-axiosInstance.interceptors.response.use(
-    response => response,
-    error => {
-        if (error.response?.status === 401) {
-            localStorage.removeItem('token');
-            window.location.href = '/login';
-        }
-        return Promise.reject(error);
-    }
-);
+export const axiosActivityInstance = axios.create({
+    baseURL: ACTIVITY_API_BASE_URL,
+    headers: { 'Content-Type': 'application/json' },
+});
 
-export default axiosInstance;
+const responseInterceptor = (error: any) => {
+    if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+    }
+    return Promise.reject(error);
+};
+
+axiosCoreInstance.interceptors.response.use(response => response, responseInterceptor);
+axiosActivityInstance.interceptors.response.use(response => response, responseInterceptor);
