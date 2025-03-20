@@ -198,7 +198,7 @@ const AchievementsTab = () => {
                 </div>
 
                 {/* Achievement list with scrolling */}
-                <div className="max-h-[55vh] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
+                <div className="max-h-[45vh] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
                     {achievementSchemas
                         .filter(schema => selectedAchievementType === "ALL" || schema.achievementType === selectedAchievementType)
                         .map((schema: AchievementSchema, index: number) => {
