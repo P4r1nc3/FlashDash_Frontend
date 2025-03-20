@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getUserInfo } from "../../api/user.ts";
+import {User} from "../../interfaces/User.ts";
 import { motion } from "framer-motion";
 import { AiOutlineUser, AiOutlineMail, AiOutlineCalendar } from "react-icons/ai";
 import { FaRegStar, FaFire, FaRegClock, FaGamepad } from "react-icons/fa";
@@ -9,21 +10,25 @@ import GradientButton from "../../components/ui/GradientButton";
 import { toast } from "react-toastify";
 
 const ProfileTab = () => {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
                 const data = await getUserInfo();
                 setUser(data);
-            } catch (err) {
+            } catch (error) {
+                console.error("Error fetching user info:", error);
                 toast.error("Failed to fetch user information");
             }
         };
-        fetchUserInfo();
+
+        fetchUserInfo().catch(error => {
+            console.error("Unhandled error in fetchUserInfo:", error);
+        });
     }, []);
 
-    const formatDate = (dateString) => {
+    const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toLocaleDateString(undefined, {
             year: 'numeric',
@@ -32,7 +37,7 @@ const ProfileTab = () => {
         });
     };
 
-    const formatStudyTime = (minutes) => {
+    const formatStudyTime = (minutes: number) => {
         if (!minutes) return "0 min";
 
         const hours = Math.floor(minutes / 60);
@@ -76,7 +81,7 @@ const ProfileTab = () => {
                     <div className="flex flex-col sm:flex-row sm:items-center gap-6">
                         <div className="w-24 h-24 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full flex items-center justify-center shadow-lg mx-auto sm:mx-0">
                             <span className="text-3xl font-bold text-white">
-                                {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
+                                {user.firstName.charAt(0)}{user.lastName.charAt(0)}
                             </span>
                         </div>
                         <div className="text-center sm:text-left">
