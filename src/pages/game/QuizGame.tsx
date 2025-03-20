@@ -29,7 +29,7 @@ const QuizGame = () => {
     const [deckName, setDeckName] = useState("Quiz");
     const [timeSpent, setTimeSpent] = useState(0);
     const [startTime, setStartTime] = useState<number | null>(null);
-    const [progress, setProgress] = useState(0);
+    const [setProgress] = useState(0);
 
     useEffect(() => {
         handleStartGameSession();
@@ -74,6 +74,7 @@ const QuizGame = () => {
                 shuffleAnswers(fetchedQuestions[0]);
             }
         } catch (error) {
+
             toast.error("Failed to start game session");
         }
     };

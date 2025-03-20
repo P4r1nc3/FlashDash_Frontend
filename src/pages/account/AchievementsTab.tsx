@@ -26,7 +26,8 @@ const AchievementsTab = () => {
 
                 setAchievementSchemas(schemas);
                 setUserAchievements(achievements);
-            } catch (err) {
+            } catch (error) {
+                console.error("Error while fetching achievement data:", error);
                 toast.error("Failed to fetch achievement data");
             }
         };

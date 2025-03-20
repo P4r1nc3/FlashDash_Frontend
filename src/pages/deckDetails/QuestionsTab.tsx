@@ -38,6 +38,7 @@ const QuestionsTab = () => {
             const fetchedQuestions = await getQuestionsInDeck(deckId);
             setQuestions(fetchedQuestions);
         } catch (error) {
+            console.error("Error while loading the question:", error);
             toast.error("Failed to load questions.");
         }
     };
@@ -86,6 +87,7 @@ const QuestionsTab = () => {
             fetchQuestions();
             setModalOpen(false);
         } catch (error) {
+            console.error("Error when saving the question:", error);
             toast.error("Failed to save question.");
         }
     };
@@ -97,6 +99,7 @@ const QuestionsTab = () => {
             toast.success("Question deleted successfully.");
             fetchQuestions();
         } catch (error) {
+            console.error("Error while deleting the question:", error);
             toast.error("Failed to delete question.");
         }
     };
