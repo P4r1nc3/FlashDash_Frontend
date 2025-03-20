@@ -5,8 +5,12 @@ import { startGameSession, endGameSession } from "../../api/gameSession.ts";
 import { QuestionRequest, QuestionResponse } from "../../interfaces/Question.ts";
 import { GameSessionResult } from "../../interfaces/GameSession.ts";
 import MainLayout from "../../components/MainLayout";
+import GradientButton from "../../components/ui/GradientButton";
+import EmptyState from "../../components/ui/EmptyState";
+import { toast } from "react-toastify";
 import { BsLightbulb, BsCheck2Circle, BsXCircle } from "react-icons/bs";
 import { FaRegClock, FaTrophy, FaBrain, FaChartLine } from "react-icons/fa";
+
 
 const QuizGame = () => {
     const { deckId } = useParams<{ deckId: string }>();
@@ -66,11 +70,11 @@ const QuizGame = () => {
 
             // Get deck name from the first question
             if (fetchedQuestions && fetchedQuestions.length > 0) {
-                setDeckName(fetchedQuestions[0].deckName || "Quiz Game");
+                setDeckName("Quiz Game");
                 shuffleAnswers(fetchedQuestions[0]);
             }
         } catch (error) {
-            console.error("Failed to start game session:", error);
+            toast.error("Failed to start game session");
         }
     };
 
@@ -133,7 +137,7 @@ const QuizGame = () => {
             setGameResult(result);
             navigate(`/decks/${deckId}/gameSession/${result.gameSessionFrn}`);
         } catch (error) {
-            console.error("Failed to end game session:", error);
+            toast.error("Failed to end game session");
         }
     };
 
@@ -152,6 +156,227 @@ const QuizGame = () => {
         }
     };
 
+    const renderCountdown = () => (
+        <div className="flex items-center justify-center h-full absolute inset-0">
+            <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="flex flex-col items-center justify-center"
+            >
+                <div className="w-40 h-40 bg-gradient-to-br from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-lg">
+                    <div className="w-36 h-36 bg-white rounded-full flex items-center justify-center">
+                        <span className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
+                            {countdown > 0 ? countdown : "GO!"}
+                        </span>
+                    </div>
+                </div>
+                <motion.p
+                    className="mt-8 text-3xl font-semibold text-gray-700"
+                    key={countdown}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    {countdown === 3 && "Ready..."}
+                    {countdown === 2 && "Steady..."}
+                    {countdown === 1 && "Almost there..."}
+                    {countdown === 0 && "Go!"}
+                </motion.p>
+            </motion.div>
+        </div>
+    );
+
+    const renderQuizResults = () => (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center text-center p-8"
+        >
+            <div className="w-32 h-32 bg-gradient-to-br from-blue-400 to-indigo-400 rounded-full flex items-center justify-center mb-6 shadow-lg">
+                <div className="w-28 h-28 bg-white rounded-full flex items-center justify-center">
+                    <FaTrophy size={54} className="text-yellow-500" />
+                </div>
+            </div>
+
+            <h2 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mb-8">
+                Quiz Completed!
+            </h2>
+
+            <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md relative overflow-hidden">
+                {/* Decorative elements */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-400"></div>
+                <div className="absolute -top-10 -right-10 w-20 h-20 bg-indigo-50 rounded-full opacity-50"></div>
+                <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-blue-50 rounded-full opacity-50"></div>
+
+                <div className="grid grid-cols-2 gap-6 mb-8">
+                    <motion.div
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.1 }}
+                        className="flex flex-col items-center bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-lg shadow-sm"
+                    >
+                        <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 mb-2">
+                            {gameResult?.score}/{gameResult?.totalQuestions}
+                        </div>
+                        <div className="text-sm text-gray-600 flex items-center gap-1">
+                            <FaChartLine />
+                            <span>Score</span>
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                        className="flex flex-col items-center bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-lg shadow-sm"
+                    >
+                        <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-teal-500 mb-2">
+                            {gameResult?.accuracy}%
+                        </div>
+                        <div className="text-sm text-gray-600 flex items-center gap-1">
+                            <FaBrain />
+                            <span>Accuracy</span>
+                        </div>
+                    </motion.div>
+                </div>
+
+                <motion.div
+                    className="flex items-center justify-center gap-3 text-lg text-gray-700 mb-8 bg-blue-50 py-3 px-6 rounded-full"
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                >
+                    <FaRegClock className="text-indigo-500" />
+                    <span>Time: {gameResult?.duration}</span>
+                </motion.div>
+
+                <GradientButton
+                    onClick={() => window.location.reload()}
+                    className="w-full py-3 px-6 relative overflow-hidden"
+                    startColor="from-blue-500"
+                    endColor="to-indigo-500"
+                    hoverStartColor="from-blue-600"
+                    hoverEndColor="to-indigo-600"
+                >
+                    Try Again
+                    <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 animate-shine"></div>
+                </GradientButton>
+            </div>
+        </motion.div>
+    );
+
+    const renderEmptyState = () => (
+        <EmptyState
+            icon={<BsXCircle size={40} className="text-blue-500" />}
+            title="No questions available for this quiz."
+        />
+    );
+
+    const renderQuizContent = () => (
+        <>
+            {/* Progress bar */}
+            <div className="relative h-2 w-full bg-gray-100 rounded-full mb-6 overflow-hidden">
+                <motion.div
+                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full"
+                    initial={{ width: `${(currentIndex / questions.length) * 100}%` }}
+                    animate={{ width: `${(currentIndex / questions.length) * 100}%` }}
+                    transition={{ duration: 0.3 }}
+                />
+            </div>
+
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center">
+                    <span className="text-sm font-bold bg-gradient-to-r from-blue-400 to-indigo-400 text-white px-4 py-1.5 rounded-full shadow-sm">
+                        {currentIndex + 1}/{questions.length}
+                    </span>
+                </div>
+
+                {questions[currentIndex]?.difficulty && (
+                    <span className={`text-base font-medium px-4 py-1.5 rounded-full ${getDifficultyColor(questions[currentIndex].difficulty)} shadow-sm`}>
+                        {questions[currentIndex].difficulty}
+                    </span>
+                )}
+
+                <div className="flex items-center bg-indigo-50 px-4 py-1.5 rounded-full">
+                    <FaRegClock className="text-indigo-400 mr-2" />
+                    <span className="text-indigo-600 font-medium">{formatTime(timeSpent)}</span>
+                </div>
+            </div>
+
+            <motion.div
+                key={currentIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-8"
+            >
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-sm mb-8 border border-blue-100">
+                    <div className="flex items-start gap-4">
+                        <div className="bg-white p-2 rounded-lg shadow-sm">
+                            <BsLightbulb className="text-blue-500 text-2xl" />
+                        </div>
+                        <p className="text-xl font-medium text-gray-800 leading-relaxed">{questions[currentIndex].question}</p>
+                    </div>
+                </div>
+
+                <div className="space-y-4">
+                    {shuffledAnswers.map((answer, index) => {
+                        const isSelected = selectedAnswers.includes(answer);
+                        const isMultipleChoice = questions[currentIndex].correctAnswers.length > 1;
+
+                        return (
+                            <motion.button
+                                key={index}
+                                whileHover={{ scale: 1.02, boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)" }}
+                                whileTap={{ scale: 0.98 }}
+                                className={`flex items-center w-full py-4 px-5 rounded-xl text-left transition-all ${
+                                    isSelected
+                                        ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md"
+                                        : "bg-white hover:bg-gray-50 text-gray-800 border border-gray-200"
+                                }`}
+                                onClick={() => handleAnswerSelect(answer)}
+                            >
+                                {isMultipleChoice ? (
+                                    <div className={`w-6 h-6 mr-4 flex items-center justify-center ${
+                                        isSelected
+                                            ? "bg-white"
+                                            : "border-2 border-gray-300"
+                                    } rounded-md`}>
+                                        {isSelected && <BsCheck2Circle className="text-indigo-500" size={16} />}
+                                    </div>
+                                ) : (
+                                    <div className={`w-6 h-6 mr-4 rounded-full flex items-center justify-center ${
+                                        isSelected
+                                            ? "bg-white"
+                                            : "border-2 border-gray-300"
+                                    }`}>
+                                        {isSelected && <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400"></div>}
+                                    </div>
+                                )}
+                                <span className={`text-lg ${isSelected ? 'font-medium' : ''}`}>{answer}</span>
+                            </motion.button>
+                        );
+                    })}
+                </div>
+            </motion.div>
+
+            <div className="flex justify-end mt-6">
+                <GradientButton
+                    onClick={handleNextQuestion}
+                    disabled={selectedAnswers.length === 0}
+                    className="px-8 py-3 relative overflow-hidden"
+                    startColor="from-blue-500"
+                    endColor="to-indigo-500"
+                    hoverStartColor="from-blue-600"
+                    hoverEndColor="to-indigo-600"
+                >
+                    {currentIndex + 1 === questions.length ? "Finish Quiz" : "Next Question"}
+                    <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 animate-shine"></div>
+                </GradientButton>
+            </div>
+        </>
+    );
+
     return (
         <MainLayout
             title={deckName}
@@ -159,243 +384,16 @@ const QuizGame = () => {
             onBack={() => navigate(`/decks/${deckId}`)}
         >
             {showCountdown ? (
-                <div className="flex items-center justify-center h-full absolute inset-0">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5 }}
-                        className="flex flex-col items-center justify-center"
-                    >
-                        <div className="w-40 h-40 bg-gradient-to-br from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-lg">
-                            <div className="w-36 h-36 bg-white rounded-full flex items-center justify-center">
-                                <span className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
-                                    {countdown > 0 ? countdown : "GO!"}
-                                </span>
-                            </div>
-                        </div>
-                        <motion.p
-                            className="mt-8 text-3xl font-semibold text-gray-700"
-                            key={countdown}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3 }}
-                        >
-                            {countdown === 3 && "Ready..."}
-                            {countdown === 2 && "Steady..."}
-                            {countdown === 1 && "Almost there..."}
-                            {countdown === 0 && "Go!"}
-                        </motion.p>
-                    </motion.div>
-                </div>
+                renderCountdown()
             ) : showResult && gameResult ? (
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex flex-col items-center justify-center text-center p-8"
-                >
-                    <div className="w-32 h-32 bg-gradient-to-br from-blue-400 to-indigo-400 rounded-full flex items-center justify-center mb-6 shadow-lg">
-                        <div className="w-28 h-28 bg-white rounded-full flex items-center justify-center">
-                            <FaTrophy size={54} className="text-yellow-500" />
-                        </div>
-                    </div>
-
-                    <h2 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mb-8">
-                        Quiz Completed!
-                    </h2>
-
-                    <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md relative overflow-hidden">
-                        {/* Decorative elements */}
-                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-400"></div>
-                        <div className="absolute -top-10 -right-10 w-20 h-20 bg-indigo-50 rounded-full opacity-50"></div>
-                        <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-blue-50 rounded-full opacity-50"></div>
-
-                        <div className="grid grid-cols-2 gap-6 mb-8">
-                            <motion.div
-                                className="flex flex-col items-center bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-lg shadow-sm"
-                                initial={{ scale: 0.9, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                transition={{ delay: 0.1 }}
-                            >
-                                <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 mb-2">
-                                    {gameResult.score}/{gameResult.totalQuestions}
-                                </div>
-                                <div className="text-sm text-gray-600 flex items-center gap-1">
-                                    <FaChartLine />
-                                    <span>Score</span>
-                                </div>
-                            </motion.div>
-
-                            <motion.div
-                                className="flex flex-col items-center bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-lg shadow-sm"
-                                initial={{ scale: 0.9, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                transition={{ delay: 0.2 }}
-                            >
-                                <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-teal-500 mb-2">
-                                    {gameResult.accuracy}%
-                                </div>
-                                <div className="text-sm text-gray-600 flex items-center gap-1">
-                                    <FaBrain />
-                                    <span>Accuracy</span>
-                                </div>
-                            </motion.div>
-                        </div>
-
-                        <motion.div
-                            className="flex items-center justify-center gap-3 text-lg text-gray-700 mb-8 bg-blue-50 py-3 px-6 rounded-full"
-                            initial={{ y: 10, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.3 }}
-                        >
-                            <FaRegClock className="text-indigo-500" />
-                            <span>Time: {gameResult.duration}</span>
-                        </motion.div>
-
-                        <motion.button
-                            className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-bold py-3 px-6 rounded-lg transition-all shadow-md hover:shadow-lg relative overflow-hidden"
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => window.location.reload()}
-                            initial={{ y: 10, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.4 }}
-                        >
-                            Try Again
-                            <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 animate-shine"></div>
-                        </motion.button>
-                    </div>
-                </motion.div>
+                renderQuizResults()
             ) : questions.length === 0 ? (
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex flex-col items-center justify-center text-center p-8"
-                >
-                    <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-6">
-                        <BsXCircle size={40} className="text-blue-500" />
-                    </div>
-                    <p className="text-xl text-gray-500">No questions available for this quiz.</p>
-                </motion.div>
+                renderEmptyState()
             ) : (
-                <>
-                    {/* Progress bar */}
-                    <div className="relative h-2 w-full bg-gray-100 rounded-full mb-6 overflow-hidden">
-                        <motion.div
-                            className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full"
-                            initial={{ width: `${(currentIndex / questions.length) * 100}%` }}
-                            animate={{ width: `${(currentIndex / questions.length) * 100}%` }}
-                            transition={{ duration: 0.3 }}
-                        />
-                    </div>
-
-                    <div className="flex justify-between items-center mb-6">
-                        <div className="flex items-center">
-                            <span className="text-sm font-bold bg-gradient-to-r from-blue-400 to-indigo-400 text-white px-4 py-1.5 rounded-full shadow-sm">
-                                {currentIndex + 1}/{questions.length}
-                            </span>
-                        </div>
-
-                        {questions[currentIndex]?.difficulty && (
-                            <span className={`text-base font-medium px-4 py-1.5 rounded-full ${getDifficultyColor(questions[currentIndex].difficulty)} shadow-sm`}>
-                                {questions[currentIndex].difficulty}
-                            </span>
-                        )}
-
-                        <div className="flex items-center bg-indigo-50 px-4 py-1.5 rounded-full">
-                            <FaRegClock className="text-indigo-400 mr-2" />
-                            <span className="text-indigo-600 font-medium">{formatTime(timeSpent)}</span>
-                        </div>
-                    </div>
-
-                    <motion.div
-                        key={currentIndex}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mb-8"
-                    >
-                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-sm mb-8 border border-blue-100">
-                            <div className="flex items-start gap-4">
-                                <div className="bg-white p-2 rounded-lg shadow-sm">
-                                    <BsLightbulb className="text-blue-500 text-2xl" />
-                                </div>
-                                <p className="text-xl font-medium text-gray-800 leading-relaxed">{questions[currentIndex].question}</p>
-                            </div>
-                        </div>
-
-                        <div className="space-y-4">
-                            {shuffledAnswers.map((answer, index) => {
-                                const isSelected = selectedAnswers.includes(answer);
-                                const isMultipleChoice = questions[currentIndex].correctAnswers.length > 1;
-
-                                return (
-                                    <motion.button
-                                        key={index}
-                                        whileHover={{ scale: 1.02, boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)" }}
-                                        whileTap={{ scale: 0.98 }}
-                                        className={`flex items-center w-full py-4 px-5 rounded-xl text-left transition-all ${
-                                            isSelected
-                                                ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md"
-                                                : "bg-white hover:bg-gray-50 text-gray-800 border border-gray-200"
-                                        }`}
-                                        onClick={() => handleAnswerSelect(answer)}
-                                    >
-                                        {isMultipleChoice ? (
-                                            <div className={`w-6 h-6 mr-4 flex items-center justify-center ${
-                                                isSelected
-                                                    ? "bg-white"
-                                                    : "border-2 border-gray-300"
-                                            } rounded-md`}>
-                                                {isSelected && <BsCheck2Circle className="text-indigo-500" size={16} />}
-                                            </div>
-                                        ) : (
-                                            <div className={`w-6 h-6 mr-4 rounded-full flex items-center justify-center ${
-                                                isSelected
-                                                    ? "bg-white"
-                                                    : "border-2 border-gray-300"
-                                            }`}>
-                                                {isSelected && <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400"></div>}
-                                            </div>
-                                        )}
-                                        <span className={`text-lg ${isSelected ? 'font-medium' : ''}`}>{answer}</span>
-                                    </motion.button>
-                                );
-                            })}
-                        </div>
-                    </motion.div>
-
-                    <div className="flex justify-end mt-6">
-                        <motion.button
-                            whileHover={{ scale: 1.03, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)" }}
-                            whileTap={{ scale: 0.98 }}
-                            className="px-8 py-3 rounded-lg text-white font-semibold bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 shadow-md relative overflow-hidden"
-                            onClick={handleNextQuestion}
-                            disabled={selectedAnswers.length === 0}
-                        >
-                            {currentIndex + 1 === questions.length ? "Finish Quiz" : "Next Question"}
-                            <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 animate-shine"></div>
-                        </motion.button>
-                    </div>
-                </>
+                renderQuizContent()
             )}
         </MainLayout>
     );
 };
-
-// Add keyframes for the shine animation
-const style = document.createElement('style');
-style.innerHTML = `
-@keyframes shine {
-  from {
-    left: -100%;
-  }
-  to {
-    left: 100%;
-  }
-}
-.animate-shine {
-  animation: shine 3s infinite;
-}
-`;
-document.head.appendChild(style);
 
 export default QuizGame;

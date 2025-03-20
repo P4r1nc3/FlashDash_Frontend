@@ -6,13 +6,14 @@ import { AiOutlineLineChart } from "react-icons/ai";
 import { FaTrophy, FaRegClock, FaCalendarAlt, FaCheckCircle, FaChartLine } from "react-icons/fa";
 import ReactECharts from "echarts-for-react";
 import { EChartsOption } from "echarts";
+import Card from "../../components/ui/Card";
+import EmptyState from "../../components/ui/EmptyState";
+import { toast } from "react-toastify";
 
 const StatisticsTab = () => {
     const { deckId } = useParams<{ deckId: string }>();
     const navigate = useNavigate();
-
     const [gameSessions, setGameSessions] = useState<GameSessionResult[]>([]);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchGameSessions = async () => {
@@ -21,46 +22,26 @@ const StatisticsTab = () => {
                 const sessions = await getGameSessions(deckId);
                 setGameSessions(sessions);
             } catch (err) {
-                console.error("Failed to fetch game statistics");
-            } finally {
-                setLoading(false);
+                toast.error("Failed to fetch game statistics");
             }
         };
 
         fetchGameSessions();
     }, [deckId]);
 
-    if (loading) {
-        return (
-            <div className="bg-white rounded-xl shadow-md w-full">
-                <div className="h-1 w-full bg-gradient-to-r from-blue-400 to-indigo-400 rounded-t-xl"></div>
-                <div className="p-6 flex justify-center items-center h-64">
-                    <div className="animate-pulse flex flex-col items-center">
-                        <div className="h-8 w-32 bg-blue-100 rounded mb-4"></div>
-                        <div className="h-4 w-48 bg-gray-100 rounded"></div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
     if (gameSessions.length === 0) {
         return (
-            <div className="bg-white rounded-xl shadow-md w-full">
-                <div className="h-1 w-full bg-gradient-to-r from-blue-400 to-indigo-400 rounded-t-xl"></div>
-                <div className="p-6">
-                    <h2 className="text-xl font-bold text-blue-600 flex items-center gap-2 mb-1">
-                        <AiOutlineLineChart size={22} className="text-indigo-500" /> Statistics
-                    </h2>
-                    <p className="text-gray-500 mb-6 text-sm">Analyze your progress and performance over time.</p>
-
-                    <div className="flex flex-col items-center justify-center py-12 text-gray-500">
-                        <FaChartLine size={48} className="text-gray-300 mb-4" />
-                        <p className="text-center">No game sessions available yet.</p>
-                        <p className="text-center text-sm mt-2">Complete some quizzes to see your statistics here.</p>
-                    </div>
-                </div>
-            </div>
+            <Card
+                title="Statistics"
+                description="Analyze your progress and performance over time."
+                icon={<AiOutlineLineChart size={22} />}
+            >
+                <EmptyState
+                    icon={<FaChartLine size={48} />}
+                    title="No game sessions available yet."
+                    description="Complete some quizzes to see your statistics here."
+                />
+            </Card>
         );
     }
 
@@ -222,89 +203,83 @@ const StatisticsTab = () => {
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-md w-full">
-            {/* Top gradient line */}
-            <div className="h-1 w-full bg-gradient-to-r from-blue-400 to-indigo-400 rounded-t-xl"></div>
-
-            <div className="p-6">
-                <h2 className="text-xl font-bold text-blue-600 flex items-center gap-2 mb-1">
-                    <AiOutlineLineChart size={22} className="text-indigo-500" /> Statistics
-                </h2>
-                <p className="text-gray-500 mb-4 text-sm">Analyze your progress and performance over time.</p>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                    {/* Total Games Card */}
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
-                        <div className="flex items-center justify-between mb-1">
-                            <p className="text-gray-600 font-medium text-sm">Total Games</p>
-                            <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-sm">
-                                <FaTrophy className="text-white text-xs" />
-                            </div>
+        <Card
+            title="Statistics"
+            description="Analyze your progress and performance over time."
+            icon={<AiOutlineLineChart size={22} />}
+        >
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                {/* Total Games Card */}
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
+                    <div className="flex items-center justify-between mb-1">
+                        <p className="text-gray-600 font-medium text-sm">Total Games</p>
+                        <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-sm">
+                            <FaTrophy className="text-white text-xs" />
                         </div>
-                        <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
-                            {totalGames}
-                        </p>
                     </div>
-
-                    {/* Average Accuracy Card */}
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
-                        <div className="flex items-center justify-between mb-1">
-                            <p className="text-gray-600 font-medium text-sm">Accuracy</p>
-                            <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-teal-400 rounded-full flex items-center justify-center shadow-sm">
-                                <FaCheckCircle className="text-white text-xs" />
-                            </div>
-                        </div>
-                        <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-teal-500">
-                            {avgAccuracy.toFixed(2)}%
-                        </p>
-                    </div>
-
-                    {/* First Game Card */}
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
-                        <div className="flex items-center justify-between mb-1">
-                            <p className="text-gray-600 font-medium text-sm">First Game</p>
-                            <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-sm">
-                                <FaCalendarAlt className="text-white text-xs" />
-                            </div>
-                        </div>
-                        <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
-                            {firstGame}
-                        </p>
-                    </div>
-
-                    {/* Last Game Card */}
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
-                        <div className="flex items-center justify-between mb-1">
-                            <p className="text-gray-600 font-medium text-sm">Last Game</p>
-                            <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-sm">
-                                <FaRegClock className="text-white text-xs" />
-                            </div>
-                        </div>
-                        <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
-                            {lastGame}
-                        </p>
-                    </div>
+                    <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
+                        {totalGames}
+                    </p>
                 </div>
 
-                <div className="bg-white border border-gray-100 rounded-lg shadow-sm p-4">
-                    <ReactECharts
-                        option={chartOptions}
-                        style={{ width: "100%", height: "300px" }}
-                        onEvents={{
-                            click: (params) => {
-                                if (params.data?.gameSessionFrn) {
-                                    navigate(`/decks/${deckId}/gameSession/${params.data.gameSessionFrn}`);
-                                }
-                            },
-                        }}
-                    />
+                {/* Average Accuracy Card */}
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
+                    <div className="flex items-center justify-between mb-1">
+                        <p className="text-gray-600 font-medium text-sm">Accuracy</p>
+                        <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-teal-400 rounded-full flex items-center justify-center shadow-sm">
+                            <FaCheckCircle className="text-white text-xs" />
+                        </div>
+                    </div>
+                    <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-teal-500">
+                        {avgAccuracy.toFixed(2)}%
+                    </p>
                 </div>
 
-                <div className="flex justify-center mt-4">
-                    <p className="text-sm text-gray-500 italic">Click on any data point to view detailed results</p>
+                {/* First Game Card */}
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
+                    <div className="flex items-center justify-between mb-1">
+                        <p className="text-gray-600 font-medium text-sm">First Game</p>
+                        <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-sm">
+                            <FaCalendarAlt className="text-white text-xs" />
+                        </div>
+                    </div>
+                    <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
+                        {firstGame}
+                    </p>
+                </div>
+
+                {/* Last Game Card */}
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
+                    <div className="flex items-center justify-between mb-1">
+                        <p className="text-gray-600 font-medium text-sm">Last Game</p>
+                        <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-sm">
+                            <FaRegClock className="text-white text-xs" />
+                        </div>
+                    </div>
+                    <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
+                        {lastGame}
+                    </p>
                 </div>
             </div>
-        </div>
+
+            <div className="bg-white border border-gray-100 rounded-lg shadow-sm p-4">
+                <ReactECharts
+                    option={chartOptions}
+                    style={{ width: "100%", height: "300px" }}
+                    onEvents={{
+                        click: (params) => {
+                            if (params.data?.gameSessionFrn) {
+                                navigate(`/decks/${deckId}/gameSession/${params.data.gameSessionFrn}`);
+                            }
+                        },
+                    }}
+                />
+            </div>
+
+            <div className="flex justify-center mt-4">
+                <p className="text-sm text-gray-500 italic">Click on any data point to view detailed results</p>
+            </div>
+        </Card>
     );
 };
 
