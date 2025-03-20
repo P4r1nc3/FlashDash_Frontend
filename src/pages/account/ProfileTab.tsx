@@ -128,12 +128,12 @@ const ProfileTab = () => {
 
                             <div className="bg-white p-5">
                                 <div className="flex items-center gap-3 mb-2">
-                                    <div className="w-10 h-10 bg-gradient-to-r from-orange-400 to-red-400 rounded-full flex items-center justify-center shadow-sm">
-                                        <FaFire className="text-white" />
+                                    <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-amber-400 rounded-full flex items-center justify-center shadow-sm">
+                                        <FaGamepad className="text-white" />
                                     </div>
                                     <div>
-                                        <p className="text-gray-500 text-xs">Streak</p>
-                                        <p className="text-xl font-bold text-orange-500">{user.streak || 0} days</p>
+                                        <p className="text-gray-500 text-xs">Games Played</p>
+                                        <p className="text-xl font-bold text-yellow-600">{user.gamesPlayed || 0}</p>
                                     </div>
                                 </div>
                             </div>
@@ -152,12 +152,12 @@ const ProfileTab = () => {
 
                             <div className="bg-white p-5">
                                 <div className="flex items-center gap-3 mb-2">
-                                    <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-amber-400 rounded-full flex items-center justify-center shadow-sm">
-                                        <FaGamepad className="text-white" />
+                                    <div className="w-10 h-10 bg-gradient-to-r from-orange-400 to-red-400 rounded-full flex items-center justify-center shadow-sm">
+                                        <FaFire className="text-white" />
                                     </div>
                                     <div>
-                                        <p className="text-gray-500 text-xs">Games Played</p>
-                                        <p className="text-xl font-bold text-yellow-600">{user.gamesPlayed || 0}</p>
+                                        <p className="text-gray-500 text-xs">Streak</p>
+                                        <p className="text-xl font-bold text-orange-500">{user.streak || 0} days</p>
                                     </div>
                                 </div>
                             </div>
