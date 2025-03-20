@@ -7,7 +7,6 @@ export interface User {
     lastName: string;
     createdAt: string;
     updatedAt: string;
-    dailyNotifications: boolean;
     gamesPlayed: number;
     points: number;
     streak: number;

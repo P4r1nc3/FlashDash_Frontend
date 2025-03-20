@@ -19,14 +19,26 @@ const Login = () => {
             title="Welcome Back!"
             subtitle="Login to continue your journey"
             fields={[
-                { name: 'email', label: 'Email', type: 'email' },
-                { name: 'password', label: 'Password', type: 'password' }
+                {
+                    name: 'email',
+                    label: 'Email',
+                    type: 'email',
+                    placeholder: 'your.own@email.com'
+                },
+                {
+                    name: 'password',
+                    label: 'Password',
+                    type: 'password',
+                    placeholder: '••••••••'
+                }
             ]}
             submitLabel="Login"
             onSubmit={handleLogin}
             footerText="Don't have an account?"
             footerLink="Register"
             footerHref="/register"
+            columns={1}
+            validatePasswords={false}
         />
     );
 };
