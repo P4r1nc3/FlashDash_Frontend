@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getGameSessions } from "../../api/gameSession.ts";
 import { GameSessionResult } from "../../interfaces/GameSession.ts";
 import { AiOutlineLineChart } from "react-icons/ai";
-import { FaTrophy, FaRegClock, FaCalendarAlt, FaCheckCircle } from "react-icons/fa";
+import { FaTrophy, FaRegClock, FaCalendarAlt, FaCheckCircle, FaChartLine } from "react-icons/fa";
 import ReactECharts from "echarts-for-react";
 import { EChartsOption } from "echarts";
 
