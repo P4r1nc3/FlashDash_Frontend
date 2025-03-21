@@ -250,6 +250,8 @@ const AchievementsTab = () => {
                     {userAchievements.length} / {achievementSchemas.length} Unlocked
                 </div>
             }
+            scrollable={true}
+            maxHeight="max-h-[35vh]"
         >
             {/* Filter buttons */}
             <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2">
@@ -275,10 +277,7 @@ const AchievementsTab = () => {
                 ))}
             </div>
 
-            {/* Achievement list with scrolling */}
-            <div className="max-h-[45vh] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
-                {renderAchievementList()}
-            </div>
+            {renderAchievementList()}
         </Card>
     );
 };
