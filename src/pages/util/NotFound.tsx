@@ -1,55 +1,46 @@
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../../components/MainLayout';
-import { motion } from 'framer-motion';
-import { BiError } from 'react-icons/bi';
+import { BiErrorCircle } from 'react-icons/bi';
+import Card from '../../components/ui/Card';
+import EmptyState from '../../components/ui/EmptyState';
+import GradientButton from '../../components/ui/GradientButton';
+import {AiOutlineBook} from "react-icons/ai";
 
 const NotFound = () => {
     const navigate = useNavigate();
 
-    const handleBackToAccount = () => {
-        navigate('/account');
-    };
-
     return (
         <MainLayout
-            title="404 - Page Not Found"
-            description="The page you're looking for doesn't exist."
+            title="Page Not Found"
+            description="We couldn't find the page you were looking for."
+            setActiveTab={() => {}}
         >
-            <motion.div
-                className="flex flex-col items-center justify-center py-12 text-center"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-            >
-                <BiError className="text-red-500 mb-6" size={120} />
-
-                <h2 className="text-2xl font-semibold mb-4">Oops! This page has gone missing.</h2>
-
-                <p className="text-gray-600 mb-8 max-w-md">
-                    The page you're trying to access doesn't exist or has been moved.
-                    Please check the URL or return to the dashboard.
-                </p>
-
-                <div className="flex gap-4">
-                    <motion.button
-                        className="px-6 py-3 bg-blue-500 text-white rounded-lg shadow-md"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => navigate('/')}
-                    >
-                        Go to Dashboard
-                    </motion.button>
-
-                    <motion.button
-                        className="px-6 py-3 border border-gray-300 rounded-lg shadow-md"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={handleBackToAccount}
-                    >
-                        Go to Account
-                    </motion.button>
-                </div>
-            </motion.div>
+            <div className="space-y-6">
+                <Card
+                    title="Page Not Found"
+                    description="The requested page does not exist."
+                    icon={<BiErrorCircle size={22} />}
+                    scrollable={true}
+                    maxHeight="max-h-[50vh]"
+                >
+                    <EmptyState
+                        icon={<div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center shadow-sm">
+                            <BiErrorCircle size={48} className="text-gray-400" />
+                        </div>}
+                        title="This page has gone missing."
+                        description="The page you're trying to access doesn't exist or has been moved. Please check the URL or return to the dashboard."
+                        action={
+                            <GradientButton
+                                onClick={() => navigate('/decks')}
+                                icon={<AiOutlineBook size={22} />}
+                                className="mt-2 py-3 px-6 w-full"
+                            >
+                                Go to Dashboard
+                            </GradientButton>
+                        }
+                    />
+                </Card>
+            </div>
         </MainLayout>
     );
 };
