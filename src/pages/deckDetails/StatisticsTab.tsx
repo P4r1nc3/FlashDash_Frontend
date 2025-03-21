@@ -10,6 +10,23 @@ import Card from "../../components/ui/Card";
 import EmptyState from "../../components/ui/EmptyState";
 import { toast } from "react-toastify";
 
+interface ChartDataItem {
+    date: string;
+    timestamp: number;
+    score: number;
+    accuracy: number;
+    duration: string;
+    gameSessionFrn: string;
+}
+
+interface TooltipParams {
+    data: {
+        date: string;
+        accuracy: number;
+        duration: string;
+    };
+}
+
 const StatisticsTab = () => {
     const { deckFrn } = useParams<{ deckFrn: string }>();
     const navigate = useNavigate();
@@ -30,6 +47,7 @@ const StatisticsTab = () => {
         fetchGameSessions();
     }, [deckFrn]);
 
+    // Show empty state if no sessions available
     if (gameSessions.length === 0) {
         return (
             <Card
@@ -46,6 +64,7 @@ const StatisticsTab = () => {
         );
     }
 
+    // Helper function to format dates
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toLocaleDateString(undefined, {
@@ -55,6 +74,7 @@ const StatisticsTab = () => {
         });
     };
 
+    // Prepare chart data
     const chartData = gameSessions
         .map(session => ({
             date: formatDate(session.startTime),
@@ -66,11 +86,13 @@ const StatisticsTab = () => {
         }))
         .sort((a, b) => a.timestamp - b.timestamp);
 
+    // Calculate summary statistics
     const totalGames = gameSessions.length;
     const avgAccuracy = chartData.reduce((acc, s) => acc + s.accuracy, 0) / totalGames;
     const firstGame = chartData[0]?.date || "N/A";
     const lastGame = chartData[chartData.length - 1]?.date || "N/A";
 
+    // Chart configuration
     const chartOptions: EChartsOption = {
         title: {
             text: "Accuracy Over Time",
@@ -87,7 +109,7 @@ const StatisticsTab = () => {
             borderColor: "#818cf8",
             borderWidth: 1,
             textStyle: { color: "#333" },
-            formatter: function (params: any) {
+            formatter: function (params: TooltipParams[]) {
                 if (params.length > 0) {
                     const data = params[0].data;
                     return `
@@ -110,16 +132,8 @@ const StatisticsTab = () => {
             nameLocation: "middle",
             nameTextStyle: { fontSize: 14, padding: 0, color: "#64748b" },
             nameGap: 30,
-            axisLine: {
-                lineStyle: {
-                    color: "#e2e8f0"
-                }
-            },
-            axisTick: {
-                lineStyle: {
-                    color: "#e2e8f0"
-                }
-            }
+            axisLine: { lineStyle: { color: "#e2e8f0" } },
+            axisTick: { lineStyle: { color: "#e2e8f0" } }
         },
         yAxis: {
             type: "value",
@@ -130,21 +144,9 @@ const StatisticsTab = () => {
             nameLocation: "middle",
             nameTextStyle: { fontSize: 14, padding: 10, color: "#64748b" },
             nameGap: 50,
-            axisLine: {
-                lineStyle: {
-                    color: "#e2e8f0"
-                }
-            },
-            axisTick: {
-                lineStyle: {
-                    color: "#e2e8f0"
-                }
-            },
-            splitLine: {
-                lineStyle: {
-                    color: "#f1f5f9"
-                }
-            }
+            axisLine: { lineStyle: { color: "#e2e8f0" } },
+            axisTick: { lineStyle: { color: "#e2e8f0" } },
+            splitLine: { lineStyle: { color: "#f1f5f9" } }
         },
         series: [
             {
@@ -169,10 +171,7 @@ const StatisticsTab = () => {
                     width: 3,
                     color: {
                         type: 'linear',
-                        x: 0,
-                        y: 0,
-                        x2: 1,
-                        y2: 0,
+                        x: 0, y: 0, x2: 1, y2: 0,
                         colorStops: [
                             { offset: 0, color: '#60a5fa' },
                             { offset: 1, color: '#818cf8' }
@@ -182,10 +181,7 @@ const StatisticsTab = () => {
                 areaStyle: {
                     color: {
                         type: 'linear',
-                        x: 0,
-                        y: 0,
-                        x2: 0,
-                        y2: 1,
+                        x: 0, y: 0, x2: 0, y2: 1,
                         colorStops: [
                             { offset: 0, color: 'rgba(129, 140, 248, 0.3)' },
                             { offset: 1, color: 'rgba(129, 140, 248, 0.05)' }
@@ -203,12 +199,20 @@ const StatisticsTab = () => {
         },
     };
 
+    // Chart click handler
+    const handleChartClick = (params: { data: ChartDataItem }) => {
+        if (params.data?.gameSessionFrn) {
+            navigate(`/decks/${deckFrn}/gameSession/${params.data.gameSessionFrn}`);
+        }
+    };
+
     return (
         <Card
             title="Statistics"
             description="Analyze your progress and performance over time."
             icon={<AiOutlineLineChart size={22} />}
         >
+            {/* Summary Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                 {/* Total Games Card */}
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
@@ -263,22 +267,15 @@ const StatisticsTab = () => {
                 </div>
             </div>
 
+            {/* Chart */}
             <div className="bg-white border border-gray-100 rounded-lg shadow-sm p-4">
                 <ReactECharts
                     option={chartOptions}
                     style={{ width: "100%", height: "300px" }}
                     onEvents={{
-                        click: (params) => {
-                            if (params.data?.gameSessionFrn) {
-                                navigate(`/decks/${deckFrn}/gameSession/${params.data.gameSessionFrn}`);
-                            }
-                        },
+                        click: handleChartClick
                     }}
                 />
-            </div>
-
-            <div className="flex justify-center mt-4">
-                <p className="text-sm text-gray-500 italic">Click on any data point to view detailed results</p>
             </div>
         </Card>
     );
