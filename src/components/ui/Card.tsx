@@ -49,10 +49,10 @@ const Card: React.FC<CardProps> = ({
             <div className="p-6">
                 <div className="flex justify-between items-start">
                     <div>
-                        <h2 className={`text-xl font-bold ${titleColorClass} flex items-center gap-2 mb-1`}>
+                        <h2 className={`text-xl font-bold ${titleColorClass} flex items-center gap-2 mb-2`}>
                             {icon && <span className={iconColorClass}>{icon}</span>} {title}
                         </h2>
-                        {description && <p className="text-gray-500 text-sm">{description}</p>}
+                        {description && <p className="mb-3 text-gray-500 text-sm">{description}</p>}
                     </div>
                     {actions && <div>{actions}</div>}
                 </div>
