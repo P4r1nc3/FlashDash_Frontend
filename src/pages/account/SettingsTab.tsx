@@ -290,9 +290,7 @@ const SettingsTab = () => {
                 description="Receive daily reminders to practice your decks."
                 icon={<AiOutlineBell size={22} />}
                 actions={renderNotificationActions()}
-            >
-                {/* Card content empty as all actions moved to the actions prop */}
-            </Card>
+            />
 
             {/* Change Password */}
             <Card
@@ -300,25 +298,16 @@ const SettingsTab = () => {
                 description="Update your account password."
                 icon={<RiLockPasswordLine size={22} />}
                 actions={renderPasswordChangeAction()}
-            >
-                {/* Empty content as we're using a modal now */}
-            </Card>
+            />
 
             {/* Delete Account */}
-            <div className="bg-white rounded-xl shadow-md w-full">
-                <div className="h-1 w-full bg-gradient-to-r from-red-400 to-red-500 rounded-t-xl"></div>
-                <div className="p-6">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <h2 className="text-xl font-bold text-red-500 flex items-center gap-2 mb-1">
-                                <AiOutlineUserDelete size={22} /> Delete Account
-                            </h2>
-                            <p className="text-gray-500 text-sm">Permanently delete your account and all associated data.</p>
-                        </div>
-                        {renderDeleteAccountAction()}
-                    </div>
-                </div>
-            </div>
+            <Card
+                title="Delete Account"
+                description="Permanently delete your account and all associated data."
+                icon={<AiOutlineUserDelete size={22} />}
+                actions={renderDeleteAccountAction()}
+                colorScheme="danger"
+            />
 
             {/* Password Change Modal */}
             <Modal

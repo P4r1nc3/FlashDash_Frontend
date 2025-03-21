@@ -4,11 +4,13 @@ interface CardProps {
     title: string;
     description?: string;
     icon?: React.ReactNode;
-    children: React.ReactNode;
+    children?: React.ReactNode;
     actions?: React.ReactNode;
     scrollable?: boolean;
     maxHeight?: string;
     className?: string;
+    colorScheme?: 'default' | 'danger' | string;
+    titleColor?: string;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -19,18 +21,36 @@ const Card: React.FC<CardProps> = ({
                                        actions,
                                        scrollable = false,
                                        maxHeight = 'max-h-[50vh]',
-                                       className = ''
+                                       className = '',
+                                       colorScheme = 'default',
+                                       titleColor
                                    }) => {
+    let gradientClasses = "from-blue-400 to-indigo-400";
+    let titleColorClass = "text-blue-600";
+    let iconColorClass = "text-indigo-500";
+
+    if (colorScheme === 'danger') {
+        gradientClasses = "from-red-400 to-red-500";
+        titleColorClass = "text-red-500";
+        iconColorClass = "text-red-500";
+    } else if (colorScheme.includes('from-') && colorScheme.includes('to-')) {
+        gradientClasses = colorScheme;
+    }
+
+    if (titleColor) {
+        titleColorClass = titleColor;
+    }
+
     return (
         <div className={`bg-white rounded-xl shadow-md w-full ${className}`}>
             {/* Top gradient line */}
-            <div className="h-1 w-full bg-gradient-to-r from-blue-400 to-indigo-400 rounded-t-xl"></div>
+            <div className={`h-1 w-full bg-gradient-to-r ${gradientClasses} rounded-t-xl`}></div>
 
             <div className="p-6">
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex justify-between items-start">
                     <div>
-                        <h2 className="text-xl font-bold text-blue-600 flex items-center gap-2 mb-1">
-                            {icon && <span className="text-indigo-500">{icon}</span>} {title}
+                        <h2 className={`text-xl font-bold ${titleColorClass} flex items-center gap-2 mb-1`}>
+                            {icon && <span className={iconColorClass}>{icon}</span>} {title}
                         </h2>
                         {description && <p className="text-gray-500 text-sm">{description}</p>}
                     </div>
