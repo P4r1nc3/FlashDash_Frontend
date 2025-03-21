@@ -3,9 +3,9 @@ import { QuestionRequest, QuestionResponse } from '../interfaces/Question';
 import { getToken } from '../utils/tokenUtils';
 import { AxiosResponse } from 'axios';
 
-export const addQuestionToDeck = async (deckId: string, data: QuestionRequest): Promise<QuestionResponse> => {
+export const addQuestionToDeck = async (deckFrn: string, data: QuestionRequest): Promise<QuestionResponse> => {
     const token = getToken();
-    const response: AxiosResponse<QuestionResponse> = await axiosCoreInstance.post(`/decks/${deckId}/questions`, data, {
+    const response: AxiosResponse<QuestionResponse> = await axiosCoreInstance.post(`/decks/${deckFrn}/questions`, data, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -13,9 +13,9 @@ export const addQuestionToDeck = async (deckId: string, data: QuestionRequest): 
     return response.data;
 };
 
-export const getQuestionsInDeck = async (deckId: string): Promise<QuestionResponse[]> => {
+export const getQuestionsInDeck = async (deckFrn: string): Promise<QuestionResponse[]> => {
     const token = getToken();
-    const response: AxiosResponse<QuestionResponse[]> = await axiosCoreInstance.get(`/decks/${deckId}/questions`, {
+    const response: AxiosResponse<QuestionResponse[]> = await axiosCoreInstance.get(`/decks/${deckFrn}/questions`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -23,9 +23,9 @@ export const getQuestionsInDeck = async (deckId: string): Promise<QuestionRespon
     return response.data;
 };
 
-export const getQuestionDetails = async (deckId: string, questionId: string): Promise<QuestionResponse> => {
+export const getQuestionDetails = async (deckFrn: string, questionId: string): Promise<QuestionResponse> => {
     const token = getToken();
-    const response: AxiosResponse<QuestionResponse> = await axiosCoreInstance.get(`/decks/${deckId}/questions/${questionId}`, {
+    const response: AxiosResponse<QuestionResponse> = await axiosCoreInstance.get(`/decks/${deckFrn}/questions/${questionId}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -33,9 +33,9 @@ export const getQuestionDetails = async (deckId: string, questionId: string): Pr
     return response.data;
 };
 
-export const updateQuestion = async (deckId: string, questionId: string, data: QuestionRequest): Promise<QuestionResponse> => {
+export const updateQuestion = async (deckFrn: string, questionId: string, data: QuestionRequest): Promise<QuestionResponse> => {
     const token = getToken();
-    const response: AxiosResponse<QuestionResponse> = await axiosCoreInstance.put(`/decks/${deckId}/questions/${questionId}`, data, {
+    const response: AxiosResponse<QuestionResponse> = await axiosCoreInstance.put(`/decks/${deckFrn}/questions/${questionId}`, data, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -43,9 +43,9 @@ export const updateQuestion = async (deckId: string, questionId: string, data: Q
     return response.data;
 };
 
-export const deleteQuestion = async (deckId: string, questionId: string): Promise<void> => {
+export const deleteQuestion = async (deckFrn: string, questionId: string): Promise<void> => {
     const token = getToken();
-    await axiosCoreInstance.delete(`/decks/${deckId}/questions/${questionId}`, {
+    await axiosCoreInstance.delete(`/decks/${deckFrn}/questions/${questionId}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },

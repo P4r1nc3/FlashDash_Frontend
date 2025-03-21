@@ -13,9 +13,9 @@ export const getDecks = async (): Promise<Deck[]> => {
     return response.data;
 };
 
-export const getDeckDetails = async (deckId: string): Promise<Deck> => {
+export const getDeckDetails = async (deckFrn: string): Promise<Deck> => {
     const token = getToken();
-    const response = await axiosCoreInstance.get(`/decks/${deckId}`, {
+    const response = await axiosCoreInstance.get(`/decks/${deckFrn}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -33,9 +33,9 @@ export const createDeck = async (data: CreateDeckRequest): Promise<Deck> => {
     return response.data;
 };
 
-export const updateDeck = async (deckId: number, data: CreateDeckRequest): Promise<Deck> => {
+export const updateDeck = async (deckFrn: number, data: CreateDeckRequest): Promise<Deck> => {
     const token = getToken();
-    const response: AxiosResponse<Deck> = await axiosCoreInstance.put(`/decks/${deckId}`, data, {
+    const response: AxiosResponse<Deck> = await axiosCoreInstance.put(`/decks/${deckFrn}`, data, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -43,9 +43,9 @@ export const updateDeck = async (deckId: number, data: CreateDeckRequest): Promi
     return response.data;
 };
 
-export const deleteDeck = async (deckId: number): Promise<void> => {
+export const deleteDeck = async (deckFrn: number): Promise<void> => {
     const token = getToken();
-    await axiosCoreInstance.delete(`/decks/${deckId}`, {
+    await axiosCoreInstance.delete(`/decks/${deckFrn}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },

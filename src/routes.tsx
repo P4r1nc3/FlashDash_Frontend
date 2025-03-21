@@ -18,9 +18,9 @@ const AppRoutes = () => (
         <Route path="/register" element={<Register />} />
         <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
         <Route path="/decks" element={<ProtectedRoute><DeckManager /></ProtectedRoute>} />
-        <Route path="/decks/:deckId" element={<ProtectedRoute><DeckDetails /></ProtectedRoute>} />
-        <Route path="/decks/:deckId/quiz" element={<ProtectedRoute><QuizGame /></ProtectedRoute>} />
-        <Route path="/decks/:deckId/gameSession/:gameSessionId" element={<ProtectedRoute><GameSession /></ProtectedRoute>} />
+        <Route path="/decks/:deckFrn" element={<ProtectedRoute><DeckDetails /></ProtectedRoute>} />
+        <Route path="/decks/:deckFrn/quiz" element={<ProtectedRoute><QuizGame /></ProtectedRoute>} />
+        <Route path="/decks/:deckFrn/gameSession/:gameSessionId" element={<ProtectedRoute><GameSession /></ProtectedRoute>} />
         <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
     </Routes>

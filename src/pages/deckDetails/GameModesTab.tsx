@@ -5,7 +5,7 @@ import Card from "../../components/ui/Card";
 import GradientButton from "../../components/ui/GradientButton";
 
 const GameModesTab = () => {
-    const { deckId } = useParams<{ deckId: string }>();
+    const { deckFrn } = useParams<{ deckFrn: string }>();
     const navigate = useNavigate();
 
     return (
@@ -25,7 +25,7 @@ const GameModesTab = () => {
                     </div>
                 </div>
                 <GradientButton
-                    onClick={() => navigate(`/decks/${deckId}/quiz`)}
+                    onClick={() => navigate(`/decks/${deckFrn}/quiz`)}
                     className="mt-2 py-3 px-6 w-full"
                 >
                     Start Quiz

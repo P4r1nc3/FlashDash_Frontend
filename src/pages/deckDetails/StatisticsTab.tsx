@@ -11,15 +11,15 @@ import EmptyState from "../../components/ui/EmptyState";
 import { toast } from "react-toastify";
 
 const StatisticsTab = () => {
-    const { deckId } = useParams<{ deckId: string }>();
+    const { deckFrn } = useParams<{ deckFrn: string }>();
     const navigate = useNavigate();
     const [gameSessions, setGameSessions] = useState<GameSessionResult[]>([]);
 
     useEffect(() => {
         const fetchGameSessions = async () => {
-            if (!deckId) return;
+            if (!deckFrn) return;
             try {
-                const sessions = await getGameSessions(deckId);
+                const sessions = await getGameSessions(deckFrn);
                 setGameSessions(sessions);
             } catch (error) {
                 console.error("Error while fetching game statistics:", error);
@@ -28,7 +28,7 @@ const StatisticsTab = () => {
         };
 
         fetchGameSessions();
-    }, [deckId]);
+    }, [deckFrn]);
 
     if (gameSessions.length === 0) {
         return (
@@ -270,7 +270,7 @@ const StatisticsTab = () => {
                     onEvents={{
                         click: (params) => {
                             if (params.data?.gameSessionFrn) {
-                                navigate(`/decks/${deckId}/gameSession/${params.data.gameSessionFrn}`);
+                                navigate(`/decks/${deckFrn}/gameSession/${params.data.gameSessionFrn}`);
                             }
                         },
                     }}

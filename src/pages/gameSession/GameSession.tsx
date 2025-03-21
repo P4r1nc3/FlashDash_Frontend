@@ -11,15 +11,15 @@ import GradientButton from "../../components/ui/GradientButton";
 import { toast } from "react-toastify";
 
 const GameSession = () => {
-    const { deckId, gameSessionId } = useParams<{ deckId: string; gameSessionId: string }>();
+    const { deckFrn, gameSessionId } = useParams<{ deckFrn: string; gameSessionId: string }>();
     const navigate = useNavigate();
     const [gameSession, setGameSession] = useState<GameSessionResult | null>(null);
 
     useEffect(() => {
         const fetchGameSession = async () => {
-            if (!deckId || !gameSessionId) return;
+            if (!deckFrn || !gameSessionId) return;
             try {
-                const sessionData = await getGameSession(deckId, gameSessionId);
+                const sessionData = await getGameSession(deckFrn, gameSessionId);
                 setGameSession(sessionData);
             } catch {
                 toast.error("Failed to fetch game session.");
@@ -27,7 +27,7 @@ const GameSession = () => {
         };
 
         fetchGameSession();
-    }, [deckId, gameSessionId]);
+    }, [deckFrn, gameSessionId]);
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -42,7 +42,7 @@ const GameSession = () => {
         <MainLayout
             title="Quiz Results"
             description="Review your answers and performance"
-            onBack={() => navigate(`/decks/${deckId}`)}
+            onBack={() => navigate(`/decks/${deckFrn}`)}
         >
             <Card
                 title="Game Overview"
@@ -174,7 +174,7 @@ const GameSession = () => {
                 </div>
 
                 <GradientButton
-                    onClick={() => navigate(`/decks/${deckId}`)}
+                    onClick={() => navigate(`/decks/${deckFrn}`)}
                     className="w-full"
                 >
                     Back to Deck

@@ -83,9 +83,9 @@ const YourDecksTab = () => {
         }
     };
 
-    const handleDeleteDeck = async (deckId: number) => {
+    const handleDeleteDeck = async (deckFrn: number) => {
         try {
-            await deleteDeck(deckId);
+            await deleteDeck(deckFrn);
             toast.success("Deck deleted successfully.");
             fetchDecks();
         } catch (error) {

@@ -18,7 +18,7 @@ import {useParams} from "react-router-dom";
 
 
 const QuestionsTab = () => {
-    const { deckId } = useParams<{ deckId: string }>();
+    const { deckFrn } = useParams<{ deckFrn: string }>();
     const [questions, setQuestions] = useState<QuestionResponse[]>([]);
     const [modalOpen, setModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -30,12 +30,12 @@ const QuestionsTab = () => {
 
     useEffect(() => {
         fetchQuestions();
-    }, [deckId]);
+    }, [deckFrn]);
 
     const fetchQuestions = async () => {
-        if (!deckId) return;
+        if (!deckFrn) return;
         try {
-            const fetchedQuestions = await getQuestionsInDeck(deckId);
+            const fetchedQuestions = await getQuestionsInDeck(deckFrn);
             setQuestions(fetchedQuestions);
         } catch (error) {
             console.error("Error while loading the question:", error);
@@ -68,7 +68,7 @@ const QuestionsTab = () => {
     };
 
     const saveQuestion = async () => {
-        if (!deckId || !newQuestion.trim()) {
+        if (!deckFrn || !newQuestion.trim()) {
             toast.error("Question text is required.");
             return;
         }
@@ -77,10 +77,10 @@ const QuestionsTab = () => {
             const payload = { question: newQuestion, correctAnswers, incorrectAnswers, difficulty };
 
             if (isEditing && editItemId) {
-                await updateQuestion(deckId, editItemId, payload);
+                await updateQuestion(deckFrn, editItemId, payload);
                 toast.success("Question updated successfully!");
             } else {
-                await addQuestionToDeck(deckId, payload);
+                await addQuestionToDeck(deckFrn, payload);
                 toast.success("Question added successfully!");
             }
 
@@ -93,9 +93,9 @@ const QuestionsTab = () => {
     };
 
     const deleteCurrentQuestion = async (itemId: string) => {
-        if (!deckId) return;
+        if (!deckFrn) return;
         try {
-            await deleteQuestion(deckId, itemId);
+            await deleteQuestion(deckFrn, itemId);
             toast.success("Question deleted successfully.");
             fetchQuestions();
         } catch (error) {

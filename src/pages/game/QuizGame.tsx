@@ -13,7 +13,7 @@ import { FaRegClock, FaTrophy, FaBrain, FaChartLine } from "react-icons/fa";
 
 
 const QuizGame = () => {
-    const { deckId } = useParams<{ deckId: string }>();
+    const { deckFrn } = useParams<{ deckFrn: string }>();
     const navigate = useNavigate();
 
     const [questions, setQuestions] = useState<QuestionResponse[]>([]);
@@ -33,7 +33,7 @@ const QuizGame = () => {
 
     useEffect(() => {
         handleStartGameSession();
-    }, [deckId]);
+    }, [deckFrn]);
 
     useEffect(() => {
         if (countdown > 0) {
@@ -63,9 +63,9 @@ const QuizGame = () => {
     }, [currentIndex, questions]);
 
     const handleStartGameSession = async () => {
-        if (!deckId) return;
+        if (!deckFrn) return;
         try {
-            const fetchedQuestions = await startGameSession(deckId);
+            const fetchedQuestions = await startGameSession(deckFrn);
             setQuestions(fetchedQuestions || []);
 
             // Get deck name from the first question
@@ -131,11 +131,11 @@ const QuizGame = () => {
     }, [showResult]);
 
     const handleEndGameSession = async () => {
-        if (!deckId || userAnswersList.length === 0) return;
+        if (!deckFrn || userAnswersList.length === 0) return;
         try {
-            const result = await endGameSession(deckId, userAnswersList);
+            const result = await endGameSession(deckFrn, userAnswersList);
             setGameResult(result);
-            navigate(`/decks/${deckId}/gameSession/${result.gameSessionFrn}`);
+            navigate(`/decks/${deckFrn}/gameSession/${result.gameSessionFrn}`);
         } catch (error) {
             toast.error("Failed to end game session");
         }
@@ -382,7 +382,7 @@ const QuizGame = () => {
         <MainLayout
             title={deckName}
             description={showCountdown ? "Prepare for quiz" : showResult ? "Quiz results" : "Choose the correct answer"}
-            onBack={() => navigate(`/decks/${deckId}`)}
+            onBack={() => navigate(`/decks/${deckFrn}`)}
         >
             {showCountdown ? (
                 renderCountdown()
