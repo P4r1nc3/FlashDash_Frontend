@@ -16,6 +16,7 @@ const SettingsTab = () => {
     const [tempNotificationTime, setTempNotificationTime] = useState<string>("08:00");
     const [showTimePicker, setShowTimePicker] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
+    const [passwordModalOpen, setPasswordModalOpen] = useState(false);
     const timePickerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -137,7 +138,7 @@ const SettingsTab = () => {
         showTimePicker && (
             <div
                 ref={timePickerRef}
-                className="absolute mt-2 right-10 p-4 bg-white rounded-lg shadow-lg border border-indigo-100 w-80 z-10"
+                className="absolute mt-2 right-0 p-4 bg-white rounded-lg shadow-lg border border-indigo-100 w-80 z-10"
             >
                 <h3 className="text-md font-semibold text-gray-700 mb-3">Set notification time</h3>
 
@@ -222,6 +223,65 @@ const SettingsTab = () => {
         )
     );
 
+    // Create notification actions component
+    const renderNotificationActions = () => (
+        <div className="flex items-center space-x-3 relative">
+            <button
+                onClick={handleTimePickerOpen}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${
+                    notificationsEnabled
+                        ? "bg-gradient-to-br from-blue-50 to-indigo-50 border-indigo-200 text-indigo-700 hover:bg-gradient-to-br hover:from-blue-100 hover:to-indigo-100"
+                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                }`}
+                disabled={!notificationsEnabled}
+            >
+                <FiClock className={notificationsEnabled ? "text-indigo-500" : "text-gray-400"} size={16} />
+                <span className="font-medium text-sm">{notificationTime}</span>
+            </button>
+
+            <button
+                className={`relative w-12 h-6 rounded-full transition-all ${
+                    notificationsEnabled
+                        ? "bg-gradient-to-r from-blue-400 to-indigo-400"
+                        : "bg-gray-300"
+                }`}
+                onClick={handleToggleNotifications}
+                aria-label={notificationsEnabled ? "Disable notifications" : "Enable notifications"}
+            >
+                <span
+                    className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white shadow-sm transition-all ${
+                        notificationsEnabled ? "translate-x-6" : ""
+                    }`}
+                />
+            </button>
+            {renderTimePicker()}
+        </div>
+    );
+
+    // Create password change action button
+    const renderPasswordChangeAction = () => (
+        <GradientButton
+            onClick={() => setPasswordModalOpen(true)}
+            className="px-4 py-2 text-sm font-medium min-w-[140px]"
+        >
+            Change Password
+        </GradientButton>
+    );
+
+    // Create delete account action button
+    const renderDeleteAccountAction = () => (
+        <GradientButton
+            onClick={() => setModalOpen(true)}
+            className="px-4 py-2 text-sm font-medium min-w-[140px]"
+            startColor="from-red-400"
+            endColor="to-red-500"
+            hoverStartColor="from-red-500"
+            hoverEndColor="to-red-600"
+        >
+            Delete Account
+        </GradientButton>
+    );
+
     return (
         <div className="space-y-6">
             {/* Notifications Settings */}
@@ -229,39 +289,9 @@ const SettingsTab = () => {
                 title="Daily Notifications"
                 description="Receive daily reminders to practice your decks."
                 icon={<AiOutlineBell size={22} />}
+                actions={renderNotificationActions()}
             >
-                <div className="flex justify-end items-center space-x-3">
-                    <button
-                        onClick={handleTimePickerOpen}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${
-                            notificationsEnabled
-                                ? "bg-gradient-to-br from-blue-50 to-indigo-50 border-indigo-200 text-indigo-700 hover:bg-gradient-to-br hover:from-blue-100 hover:to-indigo-100"
-                                : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        }`}
-                        disabled={!notificationsEnabled}
-                    >
-                        <FiClock className={notificationsEnabled ? "text-indigo-500" : "text-gray-400"} />
-                        <span className="font-medium">{notificationTime}</span>
-                    </button>
-
-                    <button
-                        className={`relative w-14 h-7 rounded-full transition-all ${
-                            notificationsEnabled
-                                ? "bg-gradient-to-r from-blue-400 to-indigo-400"
-                                : "bg-gray-300"
-                        }`}
-                        onClick={handleToggleNotifications}
-                        aria-label={notificationsEnabled ? "Disable notifications" : "Enable notifications"}
-                    >
-                        <span
-                            className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-white shadow-sm transition-all ${
-                                notificationsEnabled ? "translate-x-7" : ""
-                            }`}
-                        />
-                    </button>
-                </div>
-
-                {renderTimePicker()}
+                {/* Card content empty as all actions moved to the actions prop */}
             </Card>
 
             {/* Change Password */}
@@ -269,6 +299,29 @@ const SettingsTab = () => {
                 title="Change Password"
                 description="Update your account password."
                 icon={<RiLockPasswordLine size={22} />}
+                actions={renderPasswordChangeAction()}
+            >
+                {/* Empty content as we're using a modal now */}
+            </Card>
+
+            {/* Delete Account */}
+            <Card
+                title="Delete Account"
+                description="Permanently delete your account and all associated data."
+                icon={<AiOutlineUserDelete size={22} />}
+                actions={renderDeleteAccountAction()}
+            >
+                {/* Empty content as we're using a modal now */}
+            </Card>
+
+            {/* Password Change Modal */}
+            <Modal
+                isOpen={passwordModalOpen}
+                onClose={() => setPasswordModalOpen(false)}
+                title="Change Password"
+                onSave={handleChangePassword}
+                saveText="Change Password"
+                width="w-96"
             >
                 <div className="mb-4">
                     <label className="text-gray-700 font-medium block mb-1 text-sm">Old Password</label>
@@ -290,7 +343,7 @@ const SettingsTab = () => {
                     </div>
                 </div>
 
-                <div className="mb-6">
+                <div className="mb-2">
                     <label className="text-gray-700 font-medium block mb-1 text-sm">New Password</label>
                     <div className="relative">
                         <input
@@ -309,36 +362,7 @@ const SettingsTab = () => {
                         </button>
                     </div>
                 </div>
-
-                <GradientButton
-                    onClick={handleChangePassword}
-                    className="w-full py-3 px-6"
-                >
-                    Change Password
-                </GradientButton>
-            </Card>
-
-            {/* Delete Account */}
-            <div className="bg-white rounded-xl shadow-md w-full">
-                <div className="h-1 w-full bg-gradient-to-r from-red-400 to-red-500 rounded-t-xl"></div>
-                <div className="p-6">
-                    <h2 className="text-xl font-bold text-red-500 flex items-center gap-2 mb-1">
-                        <AiOutlineUserDelete size={22} /> Delete Account
-                    </h2>
-                    <p className="text-gray-500 mb-4 text-sm">Permanently delete your account and all associated data.</p>
-
-                    <GradientButton
-                        onClick={() => setModalOpen(true)}
-                        className="w-full py-3 px-6"
-                        startColor="from-red-400"
-                        endColor="to-red-500"
-                        hoverStartColor="from-red-500"
-                        hoverEndColor="to-red-600"
-                    >
-                        Delete Account
-                    </GradientButton>
-                </div>
-            </div>
+            </Modal>
 
             {/* Delete Account Modal */}
             <Modal
