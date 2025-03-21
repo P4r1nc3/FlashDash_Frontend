@@ -300,7 +300,7 @@ const QuestionsTab = () => {
                     </GradientButton>
                 }
                 scrollable={true}
-                maxHeight="max-h-[40vh]"
+                maxHeight="max-h-[36vh]"
             >
                 {renderQuestionsList()}
             </Card>

@@ -125,7 +125,7 @@ const Friends = () => {
                 description="People you are connected with."
                 icon={<LiaUserFriendsSolid size={22} />}
                 scrollable={true}
-                maxHeight="max-h-[50vh]"
+                maxHeight="max-h-[36vh]"
             >
                 {friends.length > 0 ? (
                     <div className="space-y-3">
@@ -170,7 +170,7 @@ const Friends = () => {
             description="Friend requests waiting for your response."
             icon={<AiOutlineMail size={22} />}
             scrollable={true}
-            maxHeight="max-h-[50vh]"
+            maxHeight="max-h-[36vh]"
         >
             {receivedInvitations.length > 0 ? (
                 <div className="space-y-3">
@@ -223,7 +223,7 @@ const Friends = () => {
             description="Pending invitations you've sent to others."
             icon={<AiOutlineSend size={22} />}
             scrollable={true}
-            maxHeight="max-h-[50vh]"
+            maxHeight="max-h-[36vh]"
         >
             {sentInvitations.length > 0 ? (
                 <div className="space-y-3">

@@ -169,6 +169,8 @@ const YourDecksTab = () => {
                     Add Deck
                 </GradientButton>
             }
+            scrollable={true}
+            maxHeight="max-h-[36vh]"
         >
             <div className="flex justify-between mb-6 items-center gap-3">
                 <div className="relative flex-grow">

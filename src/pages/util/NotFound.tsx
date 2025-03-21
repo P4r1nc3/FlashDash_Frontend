@@ -21,7 +21,7 @@ const NotFound = () => {
                     description="The requested page does not exist."
                     icon={<BiErrorCircle size={22} />}
                     scrollable={true}
-                    maxHeight="max-h-[50vh]"
+                    maxHeight="max-h-[36vh]"
                 >
                     <EmptyState
                         icon={<div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center shadow-sm">
