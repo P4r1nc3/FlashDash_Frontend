@@ -1,14 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import { AiOutlinePlayCircle } from "react-icons/ai";
 import { FaRocket } from "react-icons/fa";
 import Card from "../../components/ui/Card";
 import GradientButton from "../../components/ui/GradientButton";
 
-interface GameModesTabProps {
-    deckId: string;
-}
-
-const GameModesTab = ({ deckId }: GameModesTabProps) => {
+const GameModesTab = () => {
+    const { deckId } = useParams<{ deckId: string }>();
     const navigate = useNavigate();
 
     return (
