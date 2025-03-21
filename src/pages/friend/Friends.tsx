@@ -40,6 +40,7 @@ const Friends = () => {
             const data = await getFriends();
             setFriends(data);
         } catch (error) {
+            console.error("Error while fetching friends:", error);
             toast.error("Failed to load friends.");
         }
     };
@@ -49,6 +50,7 @@ const Friends = () => {
             const data = await getSentInvitations();
             setSentInvitations(data);
         } catch (error) {
+            console.error("Error while fetching sent invitations:", error);
             toast.error("Failed to load sent invitations.");
         }
     };
@@ -58,6 +60,7 @@ const Friends = () => {
             const data = await getReceivedInvitations();
             setReceivedInvitations(data);
         } catch (error) {
+            console.error("Error while fetching received invitations:", error);
             toast.error("Failed to load received invitations.");
         }
     };
@@ -70,6 +73,7 @@ const Friends = () => {
             toast.success("Friend invitation sent successfully!");
             fetchSentInvitations();
         } catch (error) {
+            console.error("Error while sending invitation:", error);
             toast.error("Failed to send invitation.");
         }
     };
@@ -82,6 +86,7 @@ const Friends = () => {
             fetchReceivedInvitations();
             fetchFriends();
         } catch (error) {
+            console.error(`Error while responding to invitation with status ${status}:`, error);
             toast.error("Failed to respond to invitation.");
         }
     };
@@ -92,9 +97,28 @@ const Friends = () => {
             toast.success("Friend removed successfully.");
             fetchFriends();
         } catch (error) {
+            console.error("Error while deleting friend:", error);
             toast.error("Failed to remove friend.");
         }
     };
+
+    const renderAddFriendAction = () => (
+        <div className="flex gap-3">
+            <input
+                type="email"
+                placeholder="Enter email address"
+                className="p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 text-base w-64"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+            />
+            <GradientButton
+                onClick={handleSendInvitation}
+                className="px-4 py-2.5 text-sm font-medium min-w-[100px]"
+            >
+                Send
+            </GradientButton>
+        </div>
+    );
 
     const renderFriendsTab = () => (
         <div className="space-y-6">
@@ -102,23 +126,8 @@ const Friends = () => {
                 title="Add a Friend"
                 description="Send an invitation to connect with a friend."
                 icon={<AiOutlineUserAdd size={22} />}
-            >
-                <div className="flex gap-3 justify-end">
-                    <input
-                        type="email"
-                        placeholder="Enter email address"
-                        className="p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 text-base flex-grow"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <GradientButton
-                        onClick={handleSendInvitation}
-                        className="px-6 py-3"
-                    >
-                        Send
-                    </GradientButton>
-                </div>
-            </Card>
+                actions={renderAddFriendAction()}
+            />
 
             <Card
                 title="Your Friends"
