@@ -262,7 +262,7 @@ const SettingsTab = () => {
     const renderPasswordChangeAction = () => (
         <GradientButton
             onClick={() => setPasswordModalOpen(true)}
-            className="px-4 py-2 text-sm font-medium min-w-[140px]"
+            className="px-4 py-2.5 text-sm font-medium min-w-[150px]"
         >
             Change Password
         </GradientButton>
@@ -272,7 +272,7 @@ const SettingsTab = () => {
     const renderDeleteAccountAction = () => (
         <GradientButton
             onClick={() => setModalOpen(true)}
-            className="px-4 py-2 text-sm font-medium min-w-[140px]"
+            className="px-4 py-2.5 text-sm font-medium min-w-[150px]"
             startColor="from-red-400"
             endColor="to-red-500"
             hoverStartColor="from-red-500"
@@ -305,14 +305,20 @@ const SettingsTab = () => {
             </Card>
 
             {/* Delete Account */}
-            <Card
-                title="Delete Account"
-                description="Permanently delete your account and all associated data."
-                icon={<AiOutlineUserDelete size={22} />}
-                actions={renderDeleteAccountAction()}
-            >
-                {/* Empty content as we're using a modal now */}
-            </Card>
+            <div className="bg-white rounded-xl shadow-md w-full">
+                <div className="h-1 w-full bg-gradient-to-r from-red-400 to-red-500 rounded-t-xl"></div>
+                <div className="p-6">
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <h2 className="text-xl font-bold text-red-500 flex items-center gap-2 mb-1">
+                                <AiOutlineUserDelete size={22} /> Delete Account
+                            </h2>
+                            <p className="text-gray-500 text-sm">Permanently delete your account and all associated data.</p>
+                        </div>
+                        {renderDeleteAccountAction()}
+                    </div>
+                </div>
+            </div>
 
             {/* Password Change Modal */}
             <Modal
