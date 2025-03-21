@@ -33,7 +33,7 @@ export const createDeck = async (data: CreateDeckRequest): Promise<Deck> => {
     return response.data;
 };
 
-export const updateDeck = async (deckFrn: number, data: CreateDeckRequest): Promise<Deck> => {
+export const updateDeck = async (deckFrn: string, data: CreateDeckRequest): Promise<Deck> => {
     const token = getToken();
     const response: AxiosResponse<Deck> = await axiosCoreInstance.put(`/decks/${deckFrn}`, data, {
         headers: {
@@ -43,7 +43,7 @@ export const updateDeck = async (deckFrn: number, data: CreateDeckRequest): Prom
     return response.data;
 };
 
-export const deleteDeck = async (deckFrn: number): Promise<void> => {
+export const deleteDeck = async (deckFrn: string): Promise<void> => {
     const token = getToken();
     await axiosCoreInstance.delete(`/decks/${deckFrn}`, {
         headers: {

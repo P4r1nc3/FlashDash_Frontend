@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDecks, createDeck, updateDeck, deleteDeck } from "../../api/decks.ts";
 import { Deck } from "../../interfaces/Deck.ts";
@@ -22,25 +22,8 @@ const YourDecksTab = () => {
     const [description, setDescription] = useState("");
     const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchDecks();
-    }, []);
-
-    useEffect(() => {
-        filterAndSortDecks();
-    }, [decks, searchTerm, sortOption]);
-
-    const fetchDecks = async () => {
-        try {
-            const data = await getDecks();
-            setDecks(data);
-        } catch (error) {
-            console.error("Error while fetching decks:", error);
-            toast.error("Failed to fetch decks.");
-        }
-    };
-
-    const filterAndSortDecks = () => {
+    // Define filterAndSortDecks with useCallback to use it in dependency array
+    const filterAndSortDecks = useCallback(() => {
         let filtered = decks;
 
         if (searchTerm) {
@@ -56,7 +39,25 @@ const YourDecksTab = () => {
         }
 
         setFilteredDecks(filtered);
+    }, [decks, searchTerm, sortOption]);
+
+    const fetchDecks = async () => {
+        try {
+            const data = await getDecks();
+            setDecks(data);
+        } catch (error) {
+            console.error("Error while fetching decks:", error);
+            toast.error("Failed to fetch decks.");
+        }
     };
+
+    useEffect(() => {
+        void fetchDecks();
+    }, []);
+
+    useEffect(() => {
+        filterAndSortDecks();
+    }, [filterAndSortDecks]);
 
     const handleCreateOrUpdateDeck = async () => {
         if (!name.trim()) {
@@ -75,7 +76,7 @@ const YourDecksTab = () => {
             setName("");
             setDescription("");
             setEditingDeck(null);
-            fetchDecks();
+            await fetchDecks();
             setModalOpen(false);
         } catch (error) {
             console.error("Error while saving the deck:", error);
@@ -83,11 +84,11 @@ const YourDecksTab = () => {
         }
     };
 
-    const handleDeleteDeck = async (deckFrn: number) => {
+    const handleDeleteDeck = async (deckFrn: string) => {
         try {
             await deleteDeck(deckFrn);
             toast.success("Deck deleted successfully.");
-            fetchDecks();
+            await fetchDecks();
         } catch (error) {
             console.error("Error while deleting the deck:", error);
             toast.error("Failed to delete deck.");
@@ -146,7 +147,10 @@ const YourDecksTab = () => {
                         </button>
                         <button
                             className="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-1.5 rounded-md transition-colors"
-                            onClick={(e) => { e.stopPropagation(); handleDeleteDeck(deck.deckFrn); }}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                void handleDeleteDeck(deck.deckFrn);
+                            }}
                         >
                             <AiOutlineDelete size={18} />
                         </button>
