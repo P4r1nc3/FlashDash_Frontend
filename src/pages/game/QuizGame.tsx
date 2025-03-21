@@ -269,8 +269,9 @@ const QuizGame = () => {
 
     const renderEmptyState = () => (
         <EmptyState
-            icon={<BsXCircle size={40} className="text-blue-500" />}
-            title="No questions available for this quiz."
+            icon={<BsXCircle size={48}/>}
+            title="No questions yet."
+            description="No questions available for this deck."
         />
     );
 
