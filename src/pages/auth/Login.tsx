@@ -1,15 +1,18 @@
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
-import { AuthContext } from '../../contexts/AuthContext.tsx';
-import { login } from '../../api/auth.ts';
-import AuthForm from '../../components/AuthForm.tsx';
+import { AuthContext } from '../../contexts/AuthContext';
+import { login } from '../../api/auth';
+import AuthForm from '../../components/AuthForm';
 
 const Login = () => {
     const navigate = useNavigate();
     const auth = useContext(AuthContext);
 
-    const handleLogin = async ({ email, password }) => {
-        const { token } = await login({ email, password });
+    const handleLogin = async (data: Record<string, string>) => {
+        const { token } = await login({
+            email: data.email,
+            password: data.password
+        });
         auth?.login(token);
         navigate('/account');
     };
