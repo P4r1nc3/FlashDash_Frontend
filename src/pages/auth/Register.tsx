@@ -76,7 +76,6 @@ const Register = () => {
             footerHref="/login"
             columns={2}
             validatePasswords={true}
-            buttonVariant="primary"
         />
     );
 };
