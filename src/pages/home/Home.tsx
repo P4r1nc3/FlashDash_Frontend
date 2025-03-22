@@ -4,11 +4,13 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
+import { Star, Award, Users, Zap, Book, Gift } from 'lucide-react';
 
 interface FeatureCardProps {
     title: string;
     description: string;
-    icon: string;
+    icon: React.ReactNode;
+    color: string;
 }
 
 interface TestimonialProps {
@@ -75,26 +77,55 @@ const Home = () => {
             </section>
 
             {/* Key Features Section */}
-            <section className="h-[65vh] py-20 bg-white text-center flex flex-col justify-center">
+            <section className="py-24 bg-white text-center">
                 <div className="container mx-auto px-6 lg:px-16">
-                    <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">Key Features</h2>
-                    <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto mb-6"></div>
-                    <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-10">Discover how FlashDash makes learning engaging and rewarding.</p>
-                    <div className="grid md:grid-cols-3 gap-12">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7 }}
+                        viewport={{ once: true }}
+                    >
+                        <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">Key Features</h2>
+                        <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto mb-6"></div>
+                        <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-16">Discover how FlashDash makes learning engaging and rewarding.</p>
+                    </motion.div>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
                         <FeatureCard
                             title="Engaging Quizzes"
                             description="Test your knowledge with thousands of interactive quizzes on various topics. Tailored difficulty levels and dynamic content ensure a fun learning experience."
-                            icon="📚"
+                            icon={<Book size={36} />}
+                            color="from-blue-400 to-blue-600"
                         />
                         <FeatureCard
                             title="Gamification Rewards"
                             description="Earn points, unlock exclusive achievements, and climb the leaderboards. Stay motivated with streaks, badges, and performance tracking."
-                            icon="🏆"
+                            icon={<Award size={36} />}
+                            color="from-indigo-400 to-indigo-600"
                         />
                         <FeatureCard
                             title="Compete with Friends"
                             description="Challenge your friends to quizzes, compare scores in real-time, and engage in friendly competition with social leaderboards."
-                            icon="👥"
+                            icon={<Users size={36} />}
+                            color="from-purple-400 to-purple-600"
+                        />
+                        <FeatureCard
+                            title="Daily Challenges"
+                            description="Keep your knowledge fresh with new daily challenges across different subjects. Build streaks and earn bonus rewards for consistent learning."
+                            icon={<Zap size={36} />}
+                            color="from-pink-400 to-pink-600"
+                        />
+                        <FeatureCard
+                            title="Personalized Learning"
+                            description="Our AI adapts to your strengths and weaknesses, creating a personalized learning path that helps you improve efficiently."
+                            icon={<Gift size={36} />}
+                            color="from-amber-400 to-amber-600"
+                        />
+                        <FeatureCard
+                            title="Create & Share"
+                            description="Create your own quizzes to share with friends or the community. Customize topics, difficulty, and question formats."
+                            icon={<Star size={36} />}
+                            color="from-teal-400 to-teal-600"
                         />
                     </div>
                 </div>
