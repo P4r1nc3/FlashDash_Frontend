@@ -42,18 +42,16 @@ const AuthForm = ({
     const [showPassword, setShowPassword] = useState(false);
     const [passwordsMatch, setPasswordsMatch] = useState(true);
 
-    const gridColumnsClass = `grid-cols-1 ${columns > 1 ? `md:grid-cols-${Math.min(columns, 4)}` : ''}`;
+    const gridColumnsClass = columns > 1 ? `grid-cols-1 md:grid-cols-${Math.min(columns, 4)}` : 'grid-cols-1';
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
 
         if (validatePasswords && (name === 'password' || name === 'confirmPassword')) {
-            setPasswordsMatch(
-                name === 'password'
-                    ? value === formData.confirmPassword || !formData.confirmPassword
-                    : value === formData.password
-            );
+            const otherField = name === 'password' ? 'confirmPassword' : 'password';
+            const otherValue = formData[otherField] || '';
+            setPasswordsMatch(!otherValue || value === otherValue);
         }
     };
 
@@ -70,11 +68,50 @@ const AuthForm = ({
             delete dataToSubmit.confirmPassword;
             await onSubmit(dataToSubmit);
         } catch (error) {
-            const errorMessage = error instanceof Error
-                ? error.message
-                : 'Something went wrong. Please try again.';
-            toast.error(errorMessage);
+            toast.error(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
         }
+    };
+
+    const renderField = (field: FormField) => {
+        const isPasswordField = field.type === 'password';
+        const hasPasswordError = validatePasswords && field.name === 'confirmPassword' && !passwordsMatch;
+
+        return (
+            <div key={field.name} className="mb-3">
+                <label className="text-gray-700 text-sm font-medium mb-1 block text-left">
+                    {field.label}
+                </label>
+
+                <div className={isPasswordField ? "relative" : ""}>
+                    <input
+                        type={isPasswordField && showPassword ? 'text' : field.type}
+                        name={field.name}
+                        placeholder={field.placeholder}
+                        className={`p-2 w-full bg-gray-50 border ${
+                            hasPasswordError ? 'border-red-300' : 'border-gray-200'
+                        } rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-300 transition-all duration-200`}
+                        onChange={handleChange}
+                        required={field.required !== false}
+                    />
+
+                    {isPasswordField && (
+                        <button
+                            type="button"
+                            className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-indigo-500"
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword ? <AiOutlineEyeInvisible size={18} /> : <AiOutlineEye size={18} />}
+                        </button>
+                    )}
+                </div>
+
+                {hasPasswordError && (
+                    <div className="text-red-500 text-xs mt-1 text-left">
+                        Passwords do not match
+                    </div>
+                )}
+            </div>
+        );
     };
 
     return (
@@ -92,52 +129,7 @@ const AuthForm = ({
 
                     <form onSubmit={handleSubmit} className="w-full flex flex-col">
                         <div className={`grid ${gridColumnsClass} gap-3`}>
-                            {fields.map((field) => (
-                                <div key={field.name} className="mb-3">
-                                    <label className="text-gray-700 text-sm font-medium mb-1 block text-left">
-                                        {field.label}
-                                    </label>
-
-                                    {field.type === 'password' ? (
-                                        <div className="relative">
-                                            <input
-                                                type={showPassword ? 'text' : 'password'}
-                                                name={field.name}
-                                                placeholder={field.placeholder}
-                                                className={`p-2 w-full bg-gray-50 border ${
-                                                    validatePasswords && field.name === 'confirmPassword' && !passwordsMatch
-                                                        ? 'border-red-300'
-                                                        : 'border-gray-200'
-                                                } rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-300 transition-all duration-200`}
-                                                onChange={handleChange}
-                                                required={field.required !== false}
-                                            />
-                                            <button
-                                                type="button"
-                                                className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-indigo-500"
-                                                onClick={() => setShowPassword(!showPassword)}
-                                            >
-                                                {showPassword ? <AiOutlineEyeInvisible size={18} /> : <AiOutlineEye size={18} />}
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <input
-                                            type={field.type}
-                                            name={field.name}
-                                            placeholder={field.placeholder}
-                                            className="p-2 w-full bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-300 transition-all duration-200"
-                                            onChange={handleChange}
-                                            required={field.required !== false}
-                                        />
-                                    )}
-
-                                    {validatePasswords && field.name === 'confirmPassword' && !passwordsMatch && (
-                                        <div className="text-red-500 text-xs mt-1 text-left">
-                                            Passwords do not match
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                            {fields.map(renderField)}
                         </div>
 
                         <GradientButton
