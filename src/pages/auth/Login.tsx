@@ -40,8 +40,6 @@ const Login = () => {
             footerText="Don't have an account?"
             footerLink="Register"
             footerHref="/register"
-            columns={1}
-            validatePasswords={false}
         />
     );
 };
