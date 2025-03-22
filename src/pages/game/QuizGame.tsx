@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 import { BsLightbulb, BsCheck2Circle, BsXCircle } from "react-icons/bs";
 import { FaRegClock, FaTrophy, FaBrain, FaChartLine } from "react-icons/fa";
 
-
 const QuizGame = () => {
     const { deckFrn } = useParams<{ deckFrn: string }>();
     const navigate = useNavigate();
@@ -29,15 +28,26 @@ const QuizGame = () => {
     const [deckName, setDeckName] = useState("Quiz");
     const [timeSpent, setTimeSpent] = useState(0);
     const [startTime, setStartTime] = useState<number | null>(null);
-    const [progress, setProgress] = useState(0);
 
+    // Initialize game session on component mount
     useEffect(() => {
-        handleStartGameSession();
+        if (deckFrn) {
+            startGameSession(deckFrn)
+                .then(fetchedQuestions => {
+                    setQuestions(fetchedQuestions || []);
+                    if (fetchedQuestions?.length > 0) {
+                        setDeckName("Quiz Game");
+                        shuffleAnswers(fetchedQuestions[0]);
+                    }
+                })
+                .catch(() => toast.error("Failed to start game session"));
+        }
     }, [deckFrn]);
 
+    // Handle countdown
     useEffect(() => {
         if (countdown > 0) {
-            const timer = setTimeout(() => setCountdown((prev) => prev - 1), 1000);
+            const timer = setTimeout(() => setCountdown(prev => prev - 1), 1000);
             return () => clearTimeout(timer);
         } else {
             setShowCountdown(false);
@@ -55,28 +65,20 @@ const QuizGame = () => {
         }
     }, [showCountdown, showResult, startTime]);
 
-    // Update progress bar
+    // Handle game completion
     useEffect(() => {
-        if (questions.length > 0) {
-            setProgress((currentIndex / questions.length) * 100);
-        }
-    }, [currentIndex, questions]);
-
-    const handleStartGameSession = async () => {
-        if (!deckFrn) return;
-        try {
-            const fetchedQuestions = await startGameSession(deckFrn);
-            setQuestions(fetchedQuestions || []);
-
-            // Get deck name from the first question
-            if (fetchedQuestions && fetchedQuestions.length > 0) {
-                setDeckName("Quiz Game");
-                shuffleAnswers(fetchedQuestions[0]);
+        if (showResult && !isSubmitting) {
+            setIsSubmitting(true);
+            if (deckFrn && userAnswersList.length > 0) {
+                endGameSession(deckFrn, userAnswersList)
+                    .then(result => {
+                        setGameResult(result);
+                        navigate(`/decks/${deckFrn}/gameSession/${result.gameSessionFrn}`);
+                    })
+                    .catch(() => toast.error("Failed to end game session"));
             }
-        } catch (error) {
-            toast.error("Failed to start game session");
         }
-    };
+    }, [showResult, isSubmitting]);
 
     const shuffleAnswers = (question: QuestionResponse) => {
         const allAnswers = [...question.correctAnswers, ...question.incorrectAnswers];
@@ -86,28 +88,27 @@ const QuizGame = () => {
     const handleAnswerSelect = (answer: string) => {
         const currentQuestion = questions[currentIndex];
 
-        // If question has multiple correct answers, allow multiple selections
-        // Otherwise, only one answer can be selected
         if (currentQuestion.correctAnswers.length > 1) {
-            setSelectedAnswers((prev) =>
-                prev.includes(answer) ? prev.filter((a) => a !== answer) : [...prev, answer]
+            setSelectedAnswers(prev =>
+                prev.includes(answer) ? prev.filter(a => a !== answer) : [...prev, answer]
             );
         } else {
             setSelectedAnswers([answer]);
         }
     };
 
-    const saveUserAnswer = () => {
+    const getCurrentQuestionAnswer = (): QuestionRequest => {
         const currentQuestion = questions[currentIndex];
-
-        const userAnswer: QuestionRequest = {
+        return {
             question: currentQuestion.question,
             correctAnswers: selectedAnswers,
             incorrectAnswers: shuffledAnswers.filter(answer => !selectedAnswers.includes(answer)),
             difficulty: currentQuestion.difficulty
         };
+    };
 
-        setUserAnswersList(prev => [...prev, userAnswer]);
+    const saveUserAnswer = () => {
+        setUserAnswersList(prev => [...prev, getCurrentQuestionAnswer()]);
     };
 
     const handleNextQuestion = () => {
@@ -119,25 +120,6 @@ const QuizGame = () => {
             shuffleAnswers(questions[currentIndex + 1]);
         } else {
             setShowResult(true);
-        }
-    };
-
-    useEffect(() => {
-        if (showResult && !isSubmitting) {
-            setIsSubmitting(true);
-            saveUserAnswer();
-            handleEndGameSession();
-        }
-    }, [showResult]);
-
-    const handleEndGameSession = async () => {
-        if (!deckFrn || userAnswersList.length === 0) return;
-        try {
-            const result = await endGameSession(deckFrn, userAnswersList);
-            setGameResult(result);
-            navigate(`/decks/${deckFrn}/gameSession/${result.gameSessionFrn}`);
-        } catch (error) {
-            toast.error("Failed to end game session");
         }
     };
 
@@ -156,6 +138,7 @@ const QuizGame = () => {
         }
     };
 
+    // Render helper components
     const renderCountdown = () => (
         <div className="flex items-center justify-center h-full absolute inset-0">
             <motion.div
@@ -178,10 +161,9 @@ const QuizGame = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}
                 >
-                    {countdown === 3 && "Ready..."}
-                    {countdown === 2 && "Steady..."}
-                    {countdown === 1 && "Almost there..."}
-                    {countdown === 0 && "Go!"}
+                    {countdown === 3 ? "Ready..." :
+                        countdown === 2 ? "Steady..." :
+                            countdown === 1 ? "Almost there..." : "Go!"}
                 </motion.p>
             </motion.div>
         </div>
@@ -204,7 +186,6 @@ const QuizGame = () => {
             </h2>
 
             <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md relative overflow-hidden">
-                {/* Decorative elements */}
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-400"></div>
                 <div className="absolute -top-10 -right-10 w-20 h-20 bg-indigo-50 rounded-full opacity-50"></div>
                 <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-blue-50 rounded-full opacity-50"></div>
@@ -266,117 +247,108 @@ const QuizGame = () => {
         </motion.div>
     );
 
-    const renderEmptyState = () => (
-        <EmptyState
-            icon={<BsXCircle size={48}/>}
-            title="No questions yet."
-            description="No questions available for this deck."
-        />
-    );
+    const renderQuizContent = () => {
+        const currentQuestion = questions[currentIndex];
+        const isMultipleChoice = currentQuestion.correctAnswers.length > 1;
+        const progress = (currentIndex / questions.length) * 100;
 
-    const renderQuizContent = () => (
-        <>
-            {/* Progress bar */}
-            <div className="relative h-2 w-full bg-gray-100 rounded-full mb-6 overflow-hidden">
-                <motion.div
-                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full"
-                    initial={{ width: `${(currentIndex / questions.length) * 100}%` }}
-                    animate={{ width: `${(currentIndex / questions.length) * 100}%` }}
-                    transition={{ duration: 0.3 }}
-                />
-            </div>
+        return (
+            <>
+                {/* Progress bar */}
+                <div className="relative h-2 w-full bg-gray-100 rounded-full mb-6 overflow-hidden">
+                    <motion.div
+                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full"
+                        initial={{ width: `${progress}%` }}
+                        animate={{ width: `${progress}%` }}
+                        transition={{ duration: 0.3 }}
+                    />
+                </div>
 
-            <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center">
+                <div className="flex justify-between items-center mb-6">
                     <span className="text-sm font-bold bg-gradient-to-r from-blue-400 to-indigo-400 text-white px-4 py-1.5 rounded-full shadow-sm">
                         {currentIndex + 1}/{questions.length}
                     </span>
-                </div>
 
-                {questions[currentIndex]?.difficulty && (
-                    <span className={`text-base font-medium px-4 py-1.5 rounded-full ${getDifficultyColor(questions[currentIndex].difficulty)} shadow-sm`}>
-                        {questions[currentIndex].difficulty}
-                    </span>
-                )}
+                    {currentQuestion?.difficulty && (
+                        <span className={`text-base font-medium px-4 py-1.5 rounded-full ${getDifficultyColor(currentQuestion.difficulty)} shadow-sm`}>
+                            {currentQuestion.difficulty}
+                        </span>
+                    )}
 
-                <div className="flex items-center bg-indigo-50 px-4 py-1.5 rounded-full">
-                    <FaRegClock className="text-indigo-400 mr-2" />
-                    <span className="text-indigo-600 font-medium">{formatTime(timeSpent)}</span>
-                </div>
-            </div>
-
-            <motion.div
-                key={currentIndex}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-8"
-            >
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-sm mb-8 border border-blue-100">
-                    <div className="flex items-start gap-4">
-                        <div className="bg-white p-2 rounded-lg shadow-sm">
-                            <BsLightbulb className="text-blue-500 text-2xl" />
-                        </div>
-                        <p className="text-xl font-medium text-gray-800 leading-relaxed">{questions[currentIndex].question}</p>
+                    <div className="flex items-center bg-indigo-50 px-4 py-1.5 rounded-full">
+                        <FaRegClock className="text-indigo-400 mr-2" />
+                        <span className="text-indigo-600 font-medium">{formatTime(timeSpent)}</span>
                     </div>
                 </div>
 
-                <div className="space-y-4">
-                    {shuffledAnswers.map((answer, index) => {
-                        const isSelected = selectedAnswers.includes(answer);
-                        const isMultipleChoice = questions[currentIndex].correctAnswers.length > 1;
-
-                        return (
-                            <motion.button
-                                key={index}
-                                whileHover={{ scale: 1.02, boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)" }}
-                                whileTap={{ scale: 0.98 }}
-                                className={`flex items-center w-full py-4 px-5 rounded-xl text-left transition-all ${
-                                    isSelected
-                                        ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md"
-                                        : "bg-white hover:bg-gray-50 text-gray-800 border border-gray-200"
-                                }`}
-                                onClick={() => handleAnswerSelect(answer)}
-                            >
-                                {isMultipleChoice ? (
-                                    <div className={`w-6 h-6 mr-4 flex items-center justify-center ${
-                                        isSelected
-                                            ? "bg-white"
-                                            : "border-2 border-gray-300"
-                                    } rounded-md`}>
-                                        {isSelected && <BsCheck2Circle className="text-indigo-500" size={16} />}
-                                    </div>
-                                ) : (
-                                    <div className={`w-6 h-6 mr-4 rounded-full flex items-center justify-center ${
-                                        isSelected
-                                            ? "bg-white"
-                                            : "border-2 border-gray-300"
-                                    }`}>
-                                        {isSelected && <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400"></div>}
-                                    </div>
-                                )}
-                                <span className={`text-lg ${isSelected ? 'font-medium' : ''}`}>{answer}</span>
-                            </motion.button>
-                        );
-                    })}
-                </div>
-            </motion.div>
-
-            <div className="flex justify-end mt-6">
-                <GradientButton
-                    onClick={handleNextQuestion}
-                    disabled={selectedAnswers.length === 0}
-                    className="px-8 py-3 relative overflow-hidden"
-                    startColor="from-blue-500"
-                    endColor="to-indigo-500"
-                    hoverStartColor="from-blue-600"
-                    hoverEndColor="to-indigo-600"
+                <motion.div
+                    key={currentIndex}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-8"
                 >
-                    {currentIndex + 1 === questions.length ? "Finish Quiz" : "Next Question"}
-                    <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 animate-shine"></div>
-                </GradientButton>
-            </div>
-        </>
-    );
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-sm mb-8 border border-blue-100">
+                        <div className="flex items-start gap-4">
+                            <div className="bg-white p-2 rounded-lg shadow-sm">
+                                <BsLightbulb className="text-blue-500 text-2xl" />
+                            </div>
+                            <p className="text-xl font-medium text-gray-800 leading-relaxed">{currentQuestion.question}</p>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        {shuffledAnswers.map((answer, index) => {
+                            const isSelected = selectedAnswers.includes(answer);
+
+                            return (
+                                <motion.button
+                                    key={index}
+                                    whileHover={{ scale: 1.02, boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)" }}
+                                    whileTap={{ scale: 0.98 }}
+                                    className={`flex items-center w-full py-4 px-5 rounded-xl text-left transition-all ${
+                                        isSelected
+                                            ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md"
+                                            : "bg-white hover:bg-gray-50 text-gray-800 border border-gray-200"
+                                    }`}
+                                    onClick={() => handleAnswerSelect(answer)}
+                                >
+                                    {isMultipleChoice ? (
+                                        <div className={`w-6 h-6 mr-4 flex items-center justify-center ${
+                                            isSelected ? "bg-white" : "border-2 border-gray-300"
+                                        } rounded-md`}>
+                                            {isSelected && <BsCheck2Circle className="text-indigo-500" size={16} />}
+                                        </div>
+                                    ) : (
+                                        <div className={`w-6 h-6 mr-4 rounded-full flex items-center justify-center ${
+                                            isSelected ? "bg-white" : "border-2 border-gray-300"
+                                        }`}>
+                                            {isSelected && <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400"></div>}
+                                        </div>
+                                    )}
+                                    <span className={`text-lg ${isSelected ? 'font-medium' : ''}`}>{answer}</span>
+                                </motion.button>
+                            );
+                        })}
+                    </div>
+                </motion.div>
+
+                <div className="flex justify-end mt-6">
+                    <GradientButton
+                        onClick={handleNextQuestion}
+                        disabled={selectedAnswers.length === 0}
+                        className="px-8 py-3 relative overflow-hidden"
+                        startColor="from-blue-500"
+                        endColor="to-indigo-500"
+                        hoverStartColor="from-blue-600"
+                        hoverEndColor="to-indigo-600"
+                    >
+                        {currentIndex + 1 === questions.length ? "Finish Quiz" : "Next Question"}
+                        <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 animate-shine"></div>
+                    </GradientButton>
+                </div>
+            </>
+        );
+    };
 
     return (
         <MainLayout
@@ -384,15 +356,13 @@ const QuizGame = () => {
             description={showCountdown ? "Prepare for quiz" : showResult ? "Quiz results" : "Choose the correct answer"}
             onBack={() => navigate(`/decks/${deckFrn}`)}
         >
-            {showCountdown ? (
-                renderCountdown()
-            ) : showResult && gameResult ? (
-                renderQuizResults()
-            ) : questions.length === 0 ? (
-                renderEmptyState()
-            ) : (
-                renderQuizContent()
-            )}
+            {showCountdown ? renderCountdown() :
+                showResult && gameResult ? renderQuizResults() :
+                    questions.length === 0 ? <EmptyState
+                        icon={<BsXCircle size={48}/>}
+                        title="No questions yet."
+                        description="No questions available for this deck."
+                    /> : renderQuizContent()}
         </MainLayout>
     );
 };
