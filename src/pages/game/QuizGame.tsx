@@ -3,13 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { startGameSession, endGameSession } from "../../api/gameSession.ts";
 import { QuestionRequest, QuestionResponse } from "../../interfaces/Question.ts";
-import { GameSessionResult } from "../../interfaces/GameSession.ts";
 import MainLayout from "../../components/MainLayout";
 import GradientButton from "../../components/ui/GradientButton";
 import EmptyState from "../../components/ui/EmptyState";
 import { toast } from "react-toastify";
 import { BsLightbulb, BsCheck2Circle, BsXCircle } from "react-icons/bs";
-import { FaRegClock, FaTrophy, FaBrain, FaChartLine } from "react-icons/fa";
+import { FaRegClock } from "react-icons/fa";
 
 const QuizGame = () => {
     const { deckFrn } = useParams<{ deckFrn: string }>();
@@ -22,7 +21,6 @@ const QuizGame = () => {
     const [showCountdown, setShowCountdown] = useState(true);
     const [countdown, setCountdown] = useState(3);
     const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([]);
-    const [gameResult, setGameResult] = useState<GameSessionResult | null>(null);
     const [userAnswersList, setUserAnswersList] = useState<QuestionRequest[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [deckName, setDeckName] = useState("Quiz");
@@ -72,7 +70,6 @@ const QuizGame = () => {
             if (deckFrn && userAnswersList.length > 0) {
                 endGameSession(deckFrn, userAnswersList)
                     .then(result => {
-                        setGameResult(result);
                         navigate(`/decks/${deckFrn}/gameSession/${result.gameSessionFrn}`);
                     })
                     .catch(() => toast.error("Failed to end game session"));
@@ -167,84 +164,6 @@ const QuizGame = () => {
                 </motion.p>
             </motion.div>
         </div>
-    );
-
-    const renderQuizResults = () => (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center text-center p-8"
-        >
-            <div className="w-32 h-32 bg-gradient-to-br from-blue-400 to-indigo-400 rounded-full flex items-center justify-center mb-6 shadow-lg">
-                <div className="w-28 h-28 bg-white rounded-full flex items-center justify-center">
-                    <FaTrophy size={54} className="text-yellow-500" />
-                </div>
-            </div>
-
-            <h2 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mb-8">
-                Quiz Completed!
-            </h2>
-
-            <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-400"></div>
-                <div className="absolute -top-10 -right-10 w-20 h-20 bg-indigo-50 rounded-full opacity-50"></div>
-                <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-blue-50 rounded-full opacity-50"></div>
-
-                <div className="grid grid-cols-2 gap-6 mb-8">
-                    <motion.div
-                        initial={{ scale: 0.9, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.1 }}
-                        className="flex flex-col items-center bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-lg shadow-sm"
-                    >
-                        <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 mb-2">
-                            {gameResult?.score}/{gameResult?.totalQuestions}
-                        </div>
-                        <div className="text-sm text-gray-600 flex items-center gap-1">
-                            <FaChartLine />
-                            <span>Score</span>
-                        </div>
-                    </motion.div>
-
-                    <motion.div
-                        initial={{ scale: 0.9, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                        className="flex flex-col items-center bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-lg shadow-sm"
-                    >
-                        <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-teal-500 mb-2">
-                            {gameResult?.accuracy}%
-                        </div>
-                        <div className="text-sm text-gray-600 flex items-center gap-1">
-                            <FaBrain />
-                            <span>Accuracy</span>
-                        </div>
-                    </motion.div>
-                </div>
-
-                <motion.div
-                    className="flex items-center justify-center gap-3 text-lg text-gray-700 mb-8 bg-blue-50 py-3 px-6 rounded-full"
-                    initial={{ y: 10, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                >
-                    <FaRegClock className="text-indigo-500" />
-                    <span>Time: {gameResult?.duration}</span>
-                </motion.div>
-
-                <GradientButton
-                    onClick={() => window.location.reload()}
-                    className="w-full py-3 px-6 relative overflow-hidden"
-                    startColor="from-blue-500"
-                    endColor="to-indigo-500"
-                    hoverStartColor="from-blue-600"
-                    hoverEndColor="to-indigo-600"
-                >
-                    Try Again
-                    <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 animate-shine"></div>
-                </GradientButton>
-            </div>
-        </motion.div>
     );
 
     const renderQuizContent = () => {
@@ -353,16 +272,15 @@ const QuizGame = () => {
     return (
         <MainLayout
             title={deckName}
-            description={showCountdown ? "Prepare for quiz" : showResult ? "Quiz results" : "Choose the correct answer"}
+            description={showCountdown ? "Prepare for quiz" : "Choose the correct answer"}
             onBack={() => navigate(`/decks/${deckFrn}`)}
         >
             {showCountdown ? renderCountdown() :
-                showResult && gameResult ? renderQuizResults() :
-                    questions.length === 0 ? <EmptyState
-                        icon={<BsXCircle size={48}/>}
-                        title="No questions yet."
-                        description="No questions available for this deck."
-                    /> : renderQuizContent()}
+                questions.length === 0 ? <EmptyState
+                    icon={<BsXCircle size={48}/>}
+                    title="No questions yet."
+                    description="No questions available for this deck."
+                /> : renderQuizContent()}
         </MainLayout>
     );
 };
