@@ -18,7 +18,6 @@ const Register = () => {
         toast.info(`Activation email sent to: ${data.email}`, {
             position: "bottom-right",
             autoClose: 10000,
-            hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
