@@ -22,7 +22,7 @@ const Navbar = () => {
         setIsExpanded(!isExpanded);
     };
 
-    const isActive = (path) => {
+    const isActive = (path: string) => {
         return location.pathname.startsWith(path);
     };
 

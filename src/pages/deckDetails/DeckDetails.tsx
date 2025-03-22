@@ -8,7 +8,7 @@ import GameModesTab from "./GameModesTab.tsx";
 import MainLayout from "../../components/MainLayout";
 
 const DeckDetails = () => {
-    const { deckId } = useParams<{ deckId: string }>();
+    const { deckFrn } = useParams<{ deckFrn: string }>();
     const navigate = useNavigate();
     const [tabIndex, setTabIndex] = useState("gameModes");
     const [deckName, setDeckName] = useState<string | null>(null);
@@ -16,9 +16,9 @@ const DeckDetails = () => {
 
     useEffect(() => {
         const fetchDeckDetails = async () => {
-            if (!deckId) return;
+            if (!deckFrn) return;
             try {
-                const deckDetails = await getDeckDetails(deckId);
+                const deckDetails = await getDeckDetails(deckFrn);
                 setDeckName(deckDetails.name || "Untitled Deck");
                 setDeckDescription(deckDetails.description || "No description available.");
             } catch (err) {
@@ -26,7 +26,7 @@ const DeckDetails = () => {
             }
         };
         fetchDeckDetails();
-    }, [deckId]);
+    }, [deckFrn]);
 
     return (
         <MainLayout
@@ -41,8 +41,8 @@ const DeckDetails = () => {
             setActiveTab={setTabIndex}
             onBack={() => navigate("/decks")}
         >
-            {tabIndex === "gameModes" && <GameModesTab deckId={deckId!} />}
-            {tabIndex === "questions" && <QuestionsTab deckId={deckId!} />}
+            {tabIndex === "gameModes" && <GameModesTab />}
+            {tabIndex === "questions" && <QuestionsTab />}
             {tabIndex === "statistics" && <StatisticsTab />}
         </MainLayout>
     );

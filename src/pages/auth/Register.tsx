@@ -1,22 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { register } from "../../api/auth.ts";
-import AuthForm from "../../components/AuthForm.tsx";
+import { register } from "../../api/auth";
+import AuthForm from "../../components/AuthForm";
 
 const Register = () => {
     const navigate = useNavigate();
 
-    const handleRegister = async ({ firstName, lastName, username, email, password }) => {
-        await register({ firstName, lastName, username, email, password });
+    const handleRegister = async (data: Record<string, string>) => {
+        await register({
+            firstName: data.firstName,
+            lastName: data.lastName,
+            username: data.username,
+            email: data.email,
+            password: data.password
+        });
 
-        toast.info(`Activation email sent to: ${email}`, {
+        toast.info(`Activation email sent to: ${data.email}`, {
             position: "bottom-right",
             autoClose: 10000,
-            hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
-            progress: undefined,
         });
 
         navigate("/login");
@@ -71,7 +75,6 @@ const Register = () => {
             footerHref="/login"
             columns={2}
             validatePasswords={true}
-            buttonVariant="primary"
         />
     );
 };
