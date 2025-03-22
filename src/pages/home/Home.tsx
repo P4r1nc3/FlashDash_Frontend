@@ -5,6 +5,23 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 
+interface FeatureCardProps {
+    title: string;
+    description: string;
+    icon: string;
+}
+
+interface TestimonialProps {
+    quote: string;
+    name: string;
+    location: string;
+}
+
+interface FAQItemProps {
+    question: string;
+    answer: string;
+}
+
 const Home = () => {
     return (
         <main className="w-full">
@@ -60,8 +77,9 @@ const Home = () => {
             {/* Key Features Section */}
             <section className="h-[65vh] py-20 bg-white text-center flex flex-col justify-center">
                 <div className="container mx-auto px-6 lg:px-16">
-                    <h2 className="text-5xl font-extrabold text-gray-900 mb-2">Key Features</h2>
-                    <p className="text-lg text-gray-600 mb-12">Discover how FlashDash makes learning engaging and rewarding.</p>
+                    <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">Key Features</h2>
+                    <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto mb-6"></div>
+                    <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-10">Discover how FlashDash makes learning engaging and rewarding.</p>
                     <div className="grid md:grid-cols-3 gap-12">
                         <FeatureCard
                             title="Engaging Quizzes"
@@ -85,8 +103,9 @@ const Home = () => {
             {/* Testimonials Section */}
             <section className="h-[45vh] py-20 bg-gray-100 text-center flex flex-col justify-center">
                 <div className="container mx-auto px-6 lg:px-16">
-                    <h2 className="text-5xl font-extrabold text-gray-900 mb-2">What Users Say</h2>
-                    <p className="text-lg text-gray-600 mb-12">See what our users love about FlashDash.</p>
+                    <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">What Users Say</h2>
+                    <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto mb-6"></div>
+                    <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-10">See what our users love about FlashDash.</p>
                     <Swiper
                         modules={[Pagination]}
                         spaceBetween={30}
@@ -120,15 +139,25 @@ const Home = () => {
             </section>
 
             {/* FAQ Section */}
-            <section className="py-20 bg-white text-center flex flex-col justify-center">
+            <section className="py-24 bg-white">
                 <div className="container mx-auto px-6 lg:px-16">
-                    <h2 className="text-5xl font-extrabold text-gray-900 mb-2">Frequently Asked Questions</h2>
-                    <p className="text-lg text-gray-600 mb-12">Have questions? We have answers!</p>
-                    <div className="grid md:grid-cols-2 gap-12 text-left">
-                        <FAQItem question="Is FlashDash free to use?" answer="Yes! FlashDash offers free access to thousands of quizzes. A premium version is available for extra features." />
-                        <FAQItem question="Can I create my own quizzes?" answer="Absolutely! Create, share, and challenge friends with your custom quizzes." />
-                        <FAQItem question="How do I earn rewards?" answer="Earn points by completing quizzes and maintaining learning streaks." />
-                        <FAQItem question="Is FlashDash available on mobile?" answer="Our mobile app is coming soon! Stay tuned for updates." />
+                    <div className="text-center mb-16">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.7 }}
+                            viewport={{ once: true }}
+                        >
+                            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+                            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto mb-6"></div>
+                            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Have questions? We have answers!</p>
+                        </motion.div>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
+                        <FAQItem question="Is FlashDash free to use?" answer="Yes! FlashDash offers free access to thousands of quizzes. A premium version is available for extra features and exclusive content." />
+                        <FAQItem question="Can I create my own quizzes?" answer="Absolutely! Create, share, and challenge friends with your custom quizzes. Our intuitive editor makes it easy to get started." />
+                        <FAQItem question="How do I earn rewards?" answer="Earn points by completing quizzes, maintaining daily learning streaks, and participating in community challenges and competitions." />
+                        <FAQItem question="Is FlashDash available on mobile?" answer="Yes! Our app is available for both iOS and Android devices. Search for 'FlashDash Quiz' in your app store." />
                     </div>
                 </div>
             </section>
@@ -153,7 +182,7 @@ const Home = () => {
     );
 };
 
-const FeatureCard = ({ title, description, icon }) => (
+const FeatureCard = ({ title, description, icon }: FeatureCardProps) => (
     <div className="p-8 bg-gray-100 rounded-lg shadow-lg hover:shadow-xl transition duration-300 flex flex-col items-center text-center min-h-[350px]">
         <div className="text-6xl mb-6">{icon}</div>
         <h3 className="text-3xl font-bold text-gray-800 mb-2">{title}</h3>
@@ -161,7 +190,7 @@ const FeatureCard = ({ title, description, icon }) => (
     </div>
 );
 
-const Testimonial = ({ quote, name, location }) => (
+const Testimonial = ({ quote, name, location }: TestimonialProps) => (
     <div className="bg-white p-8 rounded-lg shadow-lg">
         <p className="text-xl italic text-gray-700 mb-4">"{quote}"</p>
         <h4 className="font-bold text-gray-800">{name}</h4>
@@ -169,7 +198,7 @@ const Testimonial = ({ quote, name, location }) => (
     </div>
 );
 
-const FAQItem = ({ question, answer }) => (
+const FAQItem = ({ question, answer }: FAQItemProps) => (
     <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
         <h4 className="text-xl font-semibold text-gray-900 mb-2">{question}</h4>
         <p className="text-gray-700">{answer}</p>
