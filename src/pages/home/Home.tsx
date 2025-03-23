@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Star, Award, Users, Zap, Book, Gift } from 'lucide-react';
+import { Star, Award, Users, Zap, Book, Gift, ChevronDown } from 'lucide-react';
 
 interface FeatureCardProps {
     title: string;
@@ -256,7 +256,7 @@ const Home = () => {
             </section>
 
             {/* FAQ Section */}
-            <section className="py-24 bg-white">
+            <section className="py-24 bg-gray-50">
                 <div className="container mx-auto px-6 lg:px-16">
                     <div className="text-center mb-16">
                         <motion.div
@@ -267,14 +267,14 @@ const Home = () => {
                         >
                             <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
                             <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto mb-6"></div>
-                            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Have questions? We have answers!</p>
+                            <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-4">Have questions? We have answers!</p>
                         </motion.div>
                     </div>
-                    <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
-                        <FAQItem question="Is FlashDash free to use?" answer="Yes! FlashDash offers free access to thousands of quizzes. A premium version is available for extra features and exclusive content." />
-                        <FAQItem question="Can I create my own quizzes?" answer="Absolutely! Create, share, and challenge friends with your custom quizzes. Our intuitive editor makes it easy to get started." />
-                        <FAQItem question="How do I earn rewards?" answer="Earn points by completing quizzes, maintaining daily learning streaks, and participating in community challenges and competitions." />
-                        <FAQItem question="Is FlashDash available on mobile?" answer="Yes! Our app is available for both iOS and Android devices. Search for 'FlashDash Quiz' in your app store." />
+
+                    <div className="max-w-3xl mx-auto space-y-4">
+                        {faqData.map((faq, index) => (
+                            <FAQAccordionItem key={index} question={faq.question} answer={faq.answer} />
+                        ))}
                     </div>
                 </div>
             </section>
@@ -298,6 +298,33 @@ const Home = () => {
         </main>
     );
 };
+
+const faqData = [
+    {
+        question: "Is FlashDash free to use?",
+        answer: "Yes! FlashDash offers free access to thousands of quizzes. A premium version is available for extra features and exclusive content."
+    },
+    {
+        question: "Can I create my own quizzes?",
+        answer: "Absolutely! Create, share, and challenge friends with your custom quizzes. Our intuitive editor makes it easy to get started."
+    },
+    {
+        question: "How do I earn rewards?",
+        answer: "Earn points by completing quizzes, maintaining daily learning streaks, and participating in community challenges and competitions."
+    },
+    {
+        question: "Is FlashDash available on mobile?",
+        answer: "Yes! Our app is available for both iOS and Android devices. Search for 'FlashDash Quiz' in your app store."
+    },
+    {
+        question: "How does the leaderboard system work?",
+        answer: "Our leaderboards update in real-time based on points earned. Compete globally or just with friends, and reset weekly for fresh competition."
+    },
+    {
+        question: "Can I use FlashDash for educational purposes?",
+        answer: "Definitely! Many educators use FlashDash in their classrooms. We offer special features for teachers to create private quizzes for their students."
+    }
+];
 
 const FeatureCard = ({ title, description, icon, color }: FeatureCardProps) => (
     <motion.div
@@ -330,11 +357,44 @@ const Testimonial = ({ quote, name, location }: TestimonialProps) => (
     </div>
 );
 
-const FAQItem = ({ question, answer }: FAQItemProps) => (
-    <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
-        <h4 className="text-xl font-semibold text-gray-900 mb-2">{question}</h4>
-        <p className="text-gray-700">{answer}</p>
-    </div>
-);
+const FAQAccordionItem = ({ question, answer }: FAQItemProps) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <motion.div
+            className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+            whileHover={{ y: -5 }}
+        >
+            <button
+                className="w-full px-6 py-5 flex justify-between items-center text-left focus:outline-none"
+                onClick={() => setIsOpen(!isOpen)}
+            >
+                <h4 className="text-xl font-semibold text-gray-900">{question}</h4>
+                <motion.div
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    <ChevronDown className={`w-5 h-5 transition-colors ${isOpen ? 'text-indigo-600' : 'text-blue-500'}`} />
+                </motion.div>
+            </button>
+
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                    >
+                        <div className="px-6 pb-5 text-gray-700 border-t border-gray-100 pt-3">
+                            {answer}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </motion.div>
+    );
+};
 
 export default Home;
