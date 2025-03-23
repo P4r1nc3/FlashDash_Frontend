@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getGameSessions } from "../../api/gameSession.ts";
 import { GameSessionResult } from "../../interfaces/GameSession.ts";
@@ -9,28 +9,13 @@ import { EChartsOption } from "echarts";
 import Card from "../../components/ui/Card";
 import EmptyState from "../../components/ui/EmptyState";
 import { toast } from "react-toastify";
-
-interface ChartDataItem {
-    date: string;
-    timestamp: number;
-    score: number;
-    accuracy: number;
-    duration: string;
-    gameSessionFrn: string;
-}
-
-interface TooltipParams {
-    data: {
-        date: string;
-        accuracy: number;
-        duration: string;
-    };
-}
+import { CallbackDataParams } from "echarts/types/dist/shared";
 
 const StatisticsTab = () => {
     const { deckFrn } = useParams<{ deckFrn: string }>();
     const navigate = useNavigate();
     const [gameSessions, setGameSessions] = useState<GameSessionResult[]>([]);
+    const chartContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const fetchGameSessions = async () => {
@@ -45,7 +30,7 @@ const StatisticsTab = () => {
         };
 
         fetchGameSessions();
-    }, [deckFrn]);
+    }, [deckFrn, toast]);
 
     if (gameSessions.length === 0) {
         return (
@@ -107,15 +92,23 @@ const StatisticsTab = () => {
             borderColor: "#818cf8",
             borderWidth: 1,
             textStyle: { color: "#333" },
-            formatter: function (params: TooltipParams[]) {
-                if (params.length > 0) {
-                    const data = params[0].data;
+            formatter: function (params: CallbackDataParams | CallbackDataParams[]) {
+                const paramsArray = Array.isArray(params) ? params : [params];
+
+                if (paramsArray.length > 0) {
+                    const point = paramsArray[0];
+                    const dataPoint = point.data as {
+                        date: string;
+                        accuracy: number;
+                        duration: string;
+                    };
+
                     return `
                         <div style="padding: 8px; border-radius: 6px;">
                             <b>Click to see more details</b> <br/>
-                            📅 <b>Date:</b> ${data.date}<br/>
-                            🎯 <b>Accuracy:</b> ${data.accuracy.toFixed(2)}%<br/>
-                            ⏳ <b>Duration:</b> ${data.duration}
+                            📅 <b>Date:</b> ${dataPoint.date}<br/>
+                            🎯 <b>Accuracy:</b> ${dataPoint.accuracy.toFixed(2)}%<br/>
+                            ⏳ <b>Duration:</b> ${dataPoint.duration}
                         </div>
                     `;
                 }
@@ -211,13 +204,18 @@ const StatisticsTab = () => {
             left: '5%',
             right: '5%',
             bottom: '20%',
-            top: '15%', // Increased from 10% to 15% to give more space below the title
+            top: '15%',
             containLabel: true,
         },
     };
 
-    const handleChartClick = (params: { data: ChartDataItem }) => {
-        if (params.data?.gameSessionFrn) {
+    const handleChartClick = (params: {
+        data: {
+            gameSessionFrn?: string;
+            [key: string]: unknown;
+        };
+    }) => {
+        if (params.data && params.data.gameSessionFrn) {
             navigate(`/decks/${deckFrn}/gameSession/${params.data.gameSessionFrn}`);
         }
     };
@@ -229,10 +227,8 @@ const StatisticsTab = () => {
             icon={<AiOutlineLineChart size={22} />}
             scrollable={true}
             fullHeight={true}
-            className="h-full"
         >
             <div className="flex flex-col h-full">
-                {/* Compact Stats cards */}
                 <div className="grid grid-cols-4 gap-2 mb-4 flex-shrink-0">
                     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-2 rounded-lg shadow-sm">
                         <div className="flex items-center justify-between">
@@ -283,16 +279,20 @@ const StatisticsTab = () => {
                     </div>
                 </div>
 
-                {/* Chart container with interaction hint */}
-                <div className="bg-white border border-gray-100 rounded-lg shadow-sm p-3 flex-grow flex flex-col relative">
+                <div
+                    ref={chartContainerRef}
+                    className="bg-white border border-gray-100 rounded-lg shadow-sm p-3 flex-grow flex flex-col relative"
+                    style={{ display: 'flex', height: '100%', minHeight: '200px' }}
+                >
                     <ReactECharts
                         option={chartOptions}
-                        style={{ width: "100%", height: "100%", minHeight: "170px", maxHeight: "270px" }}
+                        style={{ height: '100%', width: '100%' }}
+                        opts={{ renderer: 'canvas' }}
                         onEvents={{
                             click: handleChartClick
                         }}
                     />
-                    <div className="text-center text-gray-400 text-xs mt-2 italic absolute bottom-1 left-0 right-0">
+                    <div className="text-center text-gray-400 text-xs mt-2 italic">
                         Tap on any point to see detailed session information
                     </div>
                 </div>
