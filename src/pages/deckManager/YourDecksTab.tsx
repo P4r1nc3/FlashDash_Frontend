@@ -186,17 +186,18 @@ const YourDecksTab = () => {
 
                     const newDeck = await createDeck(deckData);
 
-                    // Add all questions to the deck
-                    const promises = content.questions.map(q =>
-                        addQuestionToDeck(newDeck.deckFrn, {
-                            question: q.question,
-                            correctAnswers: q.correctAnswers,
-                            incorrectAnswers: q.incorrectAnswers,
-                            difficulty: q.difficulty
-                        })
-                    );
+                    // Add questions sequentially with delay instead of all at once
+                    for (const question of content.questions) {
+                        await addQuestionToDeck(newDeck.deckFrn, {
+                            question: question.question,
+                            correctAnswers: question.correctAnswers,
+                            incorrectAnswers: question.incorrectAnswers,
+                            difficulty: question.difficulty
+                        });
 
-                    await Promise.all(promises);
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                    }
+
                     await fetchDecks();
 
                     toast.success("Deck imported successfully!");
