@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
-import { FaLayerGroup, FaUsers, FaUser, FaSignOutAlt } from "react-icons/fa";
+import { FaLayerGroup, FaUsers, FaUser, FaSignOutAlt, FaTrophy } from "react-icons/fa";
 import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
 import { motion } from "framer-motion";
 
@@ -169,6 +169,24 @@ const Navbar = () => {
                 </Link>
 
                 <Link
+                    to="/leaderboard"
+                    className={`flex items-center w-full text-lg font-medium transition-colors duration-200 rounded-lg py-2.5 px-3 ${
+                        isActive('/leaderboard')
+                            ? 'bg-indigo-50 text-indigo-500'
+                            : 'text-gray-600 hover:text-indigo-500 hover:bg-blue-50'
+                    }`}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <FaTrophy className={`w-6 h-6 flex-shrink-0 ${isActive('/leaderboard') ? 'text-indigo-400' : 'text-gray-500'}`} />
+                    <span className={`ml-4 transition-all duration-300 ${isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0 overflow-hidden"}`}>
+                        Leaderboard
+                    </span>
+                    {isActive('/leaderboard') && !isExpanded && (
+                        <div className="absolute left-0 w-1 h-8 bg-gradient-to-b from-blue-400 to-indigo-400 rounded-r-md"></div>
+                    )}
+                </Link>
+
+                <Link
                     to="/account"
                     className={`flex items-center w-full text-lg font-medium transition-colors duration-200 rounded-lg py-2.5 px-3 ${
                         isActive('/account')
@@ -185,26 +203,26 @@ const Navbar = () => {
                         <div className="absolute left-0 w-1 h-8 bg-gradient-to-b from-blue-400 to-indigo-400 rounded-r-md"></div>
                     )}
                 </Link>
-
-                {/* Divider */}
-                <div className="border-t border-gray-100 w-full my-2"></div>
-
-                <button
-                    className="flex items-center text-gray-600 hover:text-red-500 hover:bg-red-50 w-full text-lg font-medium rounded-lg py-2.5 px-3 transition-colors duration-200"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        auth.logout();
-                    }}
-                >
-                    <FaSignOutAlt className="w-6 h-6 flex-shrink-0 text-gray-500" />
-                    <span className={`ml-4 transition-all duration-300 ${isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0 overflow-hidden"}`}>
-                        Logout
-                    </span>
-                </button>
             </div>
 
             {/* Bottom gradient line */}
             <div className="mt-auto">
+                {/* Logout button moved to the bottom */}
+                <div className="px-4 mb-6">
+                    <button
+                        className="flex items-center text-gray-600 hover:text-red-500 hover:bg-red-50 w-full text-lg font-medium rounded-lg py-2.5 px-3 transition-colors duration-200"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            auth.logout();
+                        }}
+                    >
+                        <FaSignOutAlt className="w-6 h-6 flex-shrink-0 text-gray-500" />
+                        <span className={`ml-4 transition-all duration-300 ${isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0 overflow-hidden"}`}>
+                            Logout
+                        </span>
+                    </button>
+                </div>
+
                 <div className="h-1 w-full bg-gradient-to-r from-blue-200 to-indigo-200"></div>
             </div>
         </nav>
