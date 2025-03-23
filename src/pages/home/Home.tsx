@@ -80,7 +80,7 @@ const Home = () => {
                 right: -40px !important;
             }
             .slick-prev:before, .slick-next:before {
-                font-size: 24px !important;
+                font-size: 28px !important;
                 background: linear-gradient(to right, #3B82F6, #6366F1);
                 -webkit-background-clip: text;
                 background-clip: text;
