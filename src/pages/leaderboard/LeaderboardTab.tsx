@@ -3,7 +3,6 @@ import { getLeaderboard } from "../../api/leaderboards";
 import { LeaderboardEntry } from "../../interfaces/LeaderboardEntry";
 import { AiOutlineTrophy, AiOutlineSearch, AiOutlineUser, AiOutlineGlobal } from "react-icons/ai";
 import { FaRegClock, FaGamepad, FaFire, FaRegStar } from "react-icons/fa";
-import { motion } from "framer-motion";
 import Card from "../../components/ui/Card";
 import EmptyState from "../../components/ui/EmptyState";
 import { toast } from "react-toastify";
@@ -123,7 +122,7 @@ const LeaderboardTab = () => {
                     const index = entry.rank - 1;
 
                     return (
-                        <motion.div
+                        <div
                             key={`${entry.user.userFrn}-${entry.rank}`}
                             className={`p-4 rounded-lg shadow-sm border ${
                                 index === 0
@@ -133,10 +132,7 @@ const LeaderboardTab = () => {
                                         : index === 2
                                             ? "bg-gradient-to-br from-orange-50 to-amber-50 border-orange-200"
                                             : "bg-gradient-to-br from-blue-50 to-indigo-50 border-indigo-100"
-                            } transition-all duration-200`}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.05, duration: 0.3 }}
+                            }`}
                         >
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center space-x-4">
@@ -180,7 +176,7 @@ const LeaderboardTab = () => {
                                     </div>
                                 </div>
                             </div>
-                        </motion.div>
+                        </div>
                     );
                 })}
             </div>
