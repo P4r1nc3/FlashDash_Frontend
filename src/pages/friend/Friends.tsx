@@ -107,7 +107,7 @@ const Friends = () => {
             <input
                 type="email"
                 placeholder="Enter email address"
-                className="p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 text-base w-64"
+                className="p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 text-base w-72"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
             />
@@ -121,7 +121,7 @@ const Friends = () => {
     );
 
     const renderFriendsTab = () => (
-        <div className="space-y-6">
+        <div className="space-y-6 h-full flex flex-col">
             <Card
                 title="Add a Friend"
                 description="Send an invitation to connect with a friend."
@@ -134,7 +134,7 @@ const Friends = () => {
                 description="People you are connected with."
                 icon={<LiaUserFriendsSolid size={22} />}
                 scrollable={true}
-                maxHeight="max-h-[36vh]"
+                fullHeight={true}
             >
                 {friends.length > 0 ? (
                     <div className="space-y-3">
@@ -179,7 +179,7 @@ const Friends = () => {
             description="Friend requests waiting for your response."
             icon={<AiOutlineMail size={22} />}
             scrollable={true}
-            maxHeight="max-h-[36vh]"
+            fullHeight={true}
         >
             {receivedInvitations.length > 0 ? (
                 <div className="space-y-3">
@@ -232,7 +232,7 @@ const Friends = () => {
             description="Pending invitations you've sent to others."
             icon={<AiOutlineSend size={22} />}
             scrollable={true}
-            maxHeight="max-h-[36vh]"
+            fullHeight={true}
         >
             {sentInvitations.length > 0 ? (
                 <div className="space-y-3">

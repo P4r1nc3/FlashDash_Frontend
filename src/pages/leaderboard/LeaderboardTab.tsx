@@ -193,7 +193,7 @@ const LeaderboardTab = () => {
             description="See how you rank against others"
             icon={<AiOutlineTrophy size={22} />}
             scrollable={true}
-            maxHeight="max-h-[36vh]"
+            fullHeight={true}
         >
             <div className="flex flex-col gap-4 mb-6">
                 <div className="flex flex-col md:flex-row justify-between gap-3">

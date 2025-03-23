@@ -47,7 +47,6 @@ const StatisticsTab = () => {
         fetchGameSessions();
     }, [deckFrn]);
 
-    // Show empty state if no sessions available
     if (gameSessions.length === 0) {
         return (
             <Card
@@ -64,7 +63,6 @@ const StatisticsTab = () => {
         );
     }
 
-    // Helper function to format dates
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toLocaleDateString(undefined, {
@@ -74,7 +72,6 @@ const StatisticsTab = () => {
         });
     };
 
-    // Prepare chart data
     const chartData = gameSessions
         .map(session => ({
             date: formatDate(session.startTime),
@@ -86,13 +83,11 @@ const StatisticsTab = () => {
         }))
         .sort((a, b) => a.timestamp - b.timestamp);
 
-    // Calculate summary statistics
     const totalGames = gameSessions.length;
     const avgAccuracy = chartData.reduce((acc, s) => acc + s.accuracy, 0) / totalGames;
     const firstGame = chartData[0]?.date || "N/A";
     const lastGame = chartData[chartData.length - 1]?.date || "N/A";
 
-    // Chart configuration
     const chartOptions: EChartsOption = {
         title: {
             text: "Accuracy Over Time",
@@ -199,7 +194,6 @@ const StatisticsTab = () => {
         },
     };
 
-    // Chart click handler
     const handleChartClick = (params: { data: ChartDataItem }) => {
         if (params.data?.gameSessionFrn) {
             navigate(`/decks/${deckFrn}/gameSession/${params.data.gameSessionFrn}`);
@@ -211,10 +205,10 @@ const StatisticsTab = () => {
             title="Statistics"
             description="Analyze your progress and performance over time."
             icon={<AiOutlineLineChart size={22} />}
+            scrollable={true}
+            fullHeight={true}
         >
-            {/* Summary Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                {/* Total Games Card */}
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
                     <div className="flex items-center justify-between mb-1">
                         <p className="text-gray-600 font-medium text-sm">Total Games</p>
@@ -227,7 +221,6 @@ const StatisticsTab = () => {
                     </p>
                 </div>
 
-                {/* Average Accuracy Card */}
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
                     <div className="flex items-center justify-between mb-1">
                         <p className="text-gray-600 font-medium text-sm">Accuracy</p>
@@ -240,7 +233,6 @@ const StatisticsTab = () => {
                     </p>
                 </div>
 
-                {/* First Game Card */}
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
                     <div className="flex items-center justify-between mb-1">
                         <p className="text-gray-600 font-medium text-sm">First Game</p>
@@ -253,7 +245,6 @@ const StatisticsTab = () => {
                     </p>
                 </div>
 
-                {/* Last Game Card */}
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
                     <div className="flex items-center justify-between mb-1">
                         <p className="text-gray-600 font-medium text-sm">Last Game</p>
@@ -267,7 +258,6 @@ const StatisticsTab = () => {
                 </div>
             </div>
 
-            {/* Chart */}
             <div className="bg-white border border-gray-100 rounded-lg shadow-sm p-4">
                 <ReactECharts
                     option={chartOptions}

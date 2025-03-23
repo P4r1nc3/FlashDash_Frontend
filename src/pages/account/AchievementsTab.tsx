@@ -251,7 +251,7 @@ const AchievementsTab = () => {
                 </div>
             }
             scrollable={true}
-            maxHeight="max-h-[35vh]"
+            fullHeight={true}
         >
             {/* Filter buttons */}
             <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2">

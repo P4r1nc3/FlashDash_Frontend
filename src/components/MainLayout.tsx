@@ -43,15 +43,13 @@ const MainLayout = ({ title, description, tabs, activeTab, setActiveTab, onBack,
             />
 
             <motion.div
-                className="relative w-full max-w-4xl bg-white shadow-lg rounded-xl overflow-hidden min-h-[80vh] flex flex-col"
+                className="relative w-full max-w-4xl bg-white shadow-lg rounded-xl overflow-hidden h-[90vh] flex flex-col"
                 variants={pageVariants}
                 initial="initial"
                 animate="animate"
                 exit="exit"
             >
-                {/* Header Section with Background */}
-                <div className="relative bg-gradient-to-r from-blue-400 to-indigo-400 text-white p-8 pb-12">
-                    {/* Back Button */}
+                <div className="relative bg-gradient-to-r from-blue-400 to-indigo-400 text-white p-8 pb-12 flex-shrink-0">
                     {onBack && (
                         <button
                             className="absolute top-4 left-4 text-white hover:text-blue-50 flex items-center gap-2 transition-all bg-white bg-opacity-15 hover:bg-opacity-25 p-2 rounded-lg"
@@ -61,15 +59,13 @@ const MainLayout = ({ title, description, tabs, activeTab, setActiveTab, onBack,
                         </button>
                     )}
 
-                    {/* Page Title with drop shadow */}
                     <h1 className="text-4xl font-bold text-center mt-4 text-white drop-shadow-sm">{title}</h1>
                     {description && <p className="text-center text-blue-50 mt-3 max-w-2xl mx-auto opacity-90 font-light">{description}</p>}
                 </div>
 
-                {/* Navigation Tabs */}
                 {tabs && tabs.length > 0 && setActiveTab && (
-                    <div className="flex justify-center -mt-6 px-8">
-                        <div className="bg-white rounded-lg shadow-md flex p-1 z-10">
+                    <div className="flex justify-center -mt-6 px-8 z-10 flex-shrink-0">
+                        <div className="bg-white rounded-lg shadow-md flex p-1">
                             {tabs.map(({ id, icon, label }) => (
                                 <button
                                     key={id}
@@ -87,8 +83,9 @@ const MainLayout = ({ title, description, tabs, activeTab, setActiveTab, onBack,
                     </div>
                 )}
 
-                {/* Content */}
-                <div className="p-8 pt-6 flex-1 overflow-auto">{children}</div>
+                <div className="p-8 pt-6 flex-grow overflow-hidden h-full">
+                    {children}
+                </div>
             </motion.div>
         </div>
     );

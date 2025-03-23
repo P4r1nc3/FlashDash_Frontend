@@ -34,7 +34,6 @@ const YourDecksTab = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
 
-    // Define filterAndSortDecks with useCallback to use it in dependency array
     const filterAndSortDecks = useCallback(() => {
         let filtered = [...decks];
 
@@ -112,13 +111,10 @@ const YourDecksTab = () => {
         }
     };
 
-    // New function to handle deck download
     const handleDownloadDeck = async (deck: Deck) => {
         try {
-            // Get questions for the deck
             const questions = await getQuestionsInDeck(deck.deckFrn);
 
-            // Create exportable deck data
             const deckData: ExportDeck = {
                 name: deck.name,
                 description: deck.description || "",
@@ -130,19 +126,16 @@ const YourDecksTab = () => {
                 }))
             };
 
-            // Convert to JSON and create download link
             const dataStr = JSON.stringify(deckData, null, 2);
             const dataBlob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(dataBlob);
 
-            // Create and trigger download
             const a = document.createElement('a');
             a.href = url;
             a.download = `${deck.name.replace(/\s+/g, '_')}.json`;
             document.body.appendChild(a);
             a.click();
 
-            // Clean up
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
 
@@ -153,7 +146,6 @@ const YourDecksTab = () => {
         }
     };
 
-    // New function to handle deck upload
     const handleUploadDeck = async (event: React.ChangeEvent<HTMLInputElement>) => {
         try {
             setIsUploading(true);
@@ -173,12 +165,10 @@ const YourDecksTab = () => {
 
                     const content = JSON.parse(result) as ExportDeck;
 
-                    // Validate the content structure
                     if (!content.name || !Array.isArray(content.questions)) {
                         throw new Error("Invalid deck format");
                     }
 
-                    // Create the new deck
                     const deckData: CreateDeckRequest = {
                         name: content.name,
                         description: content.description || ""
@@ -186,7 +176,6 @@ const YourDecksTab = () => {
 
                     const newDeck = await createDeck(deckData);
 
-                    // Add questions sequentially with delay instead of all at once
                     for (const question of content.questions) {
                         await addQuestionToDeck(newDeck.deckFrn, {
                             question: question.question,
@@ -327,7 +316,7 @@ const YourDecksTab = () => {
                 </div>
             }
             scrollable={true}
-            maxHeight="max-h-[36vh]"
+            fullHeight={true}
         >
             <div className="flex justify-between mb-6 items-center gap-3">
                 <div className="relative flex-grow">
@@ -358,11 +347,8 @@ const YourDecksTab = () => {
                 </div>
             </div>
 
-            <div className="max-h-[60vh] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
-                {renderDeckList()}
-            </div>
+            {renderDeckList()}
 
-            {/* Create/Edit Deck Modal */}
             <Modal
                 isOpen={modalOpen}
                 onClose={() => setModalOpen(false)}
@@ -396,7 +382,6 @@ const YourDecksTab = () => {
                 </div>
             </Modal>
 
-            {/* Upload Deck Modal */}
             <Modal
                 isOpen={uploadModalOpen}
                 onClose={() => setUploadModalOpen(false)}
@@ -428,7 +413,6 @@ const YourDecksTab = () => {
 
                             const files = e.dataTransfer.files;
                             if (files && files.length > 0) {
-                                // Create a synthetic event to reuse the existing upload handler
                                 const syntheticEvent = {
                                     target: {
                                         files: files
