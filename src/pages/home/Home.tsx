@@ -25,6 +25,7 @@ interface FAQItemProps {
 }
 
 const Home = () => {
+    // Konfiguracja dla React Slick
     const slickSettings = {
         dots: true,
         infinite: true,
@@ -149,18 +150,18 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* Key Features Section */}
-            <section className="py-24 bg-white text-center">
+            <section className="py-24 bg-white">
                 <div className="container mx-auto px-6 lg:px-16">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.7 }}
                         viewport={{ once: true }}
+                        className="text-center"
                     >
                         <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">Key Features</h2>
                         <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto mb-6"></div>
-                        <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-16">Discover how FlashDash makes learning engaging and rewarding.</p>
+                        <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-16">Discover how FlashDash makes learning engaging and rewarding with our powerful set of features.</p>
                     </motion.div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
@@ -169,36 +170,42 @@ const Home = () => {
                             description="Test your knowledge with thousands of interactive quizzes on various topics. Tailored difficulty levels and dynamic content ensure a fun learning experience."
                             icon={<Book size={36} />}
                             color="from-blue-400 to-blue-600"
+
                         />
                         <FeatureCard
                             title="Gamification Rewards"
                             description="Earn points, unlock exclusive achievements, and climb the leaderboards. Stay motivated with streaks, badges, and performance tracking."
                             icon={<Award size={36} />}
                             color="from-indigo-400 to-indigo-600"
+
                         />
                         <FeatureCard
                             title="Compete with Friends"
                             description="Challenge your friends to quizzes, compare scores in real-time, and engage in friendly competition with social leaderboards."
                             icon={<Users size={36} />}
                             color="from-purple-400 to-purple-600"
+
                         />
                         <FeatureCard
                             title="Daily Challenges"
                             description="Keep your knowledge fresh with new daily challenges across different subjects. Build streaks and earn bonus rewards for consistent learning."
                             icon={<Zap size={36} />}
                             color="from-pink-400 to-pink-600"
+
                         />
                         <FeatureCard
                             title="Personalized Learning"
                             description="Our AI adapts to your strengths and weaknesses, creating a personalized learning path that helps you improve efficiently."
                             icon={<Gift size={36} />}
                             color="from-amber-400 to-amber-600"
+
                         />
                         <FeatureCard
                             title="Create & Share"
                             description="Create your own quizzes to share with friends or the community. Customize topics, difficulty, and question formats."
                             icon={<Star size={36} />}
                             color="from-teal-400 to-teal-600"
+
                         />
                     </div>
                 </div>
@@ -218,7 +225,7 @@ const Home = () => {
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-10">See what our users love about FlashDash.</p>
                     </motion.div>
 
-                    {/* React Slick Carousel zastępujący Swiper */}
+                    {/* React Slick Carousel */}
                     <div className="w-full max-w-4xl mx-auto relative">
                         <Slider {...slickSettings}>
                             <div className="px-4">
@@ -298,12 +305,23 @@ const Home = () => {
     );
 };
 
-const FeatureCard = ({ title, description, icon }: FeatureCardProps) => (
-    <div className="p-8 bg-gray-100 rounded-lg shadow-lg hover:shadow-xl transition duration-300 flex flex-col items-center text-center min-h-[350px]">
-        <div className="text-6xl mb-6">{icon}</div>
-        <h3 className="text-3xl font-bold text-gray-800 mb-2">{title}</h3>
-        <p className="text-lg text-gray-600">{description}</p>
-    </div>
+const FeatureCard = ({ title, description, icon, color }: FeatureCardProps) => (
+    <motion.div
+        whileHover={{
+            y: -10,
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+        }}
+        className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
+    >
+        <div className={`h-2 w-full bg-gradient-to-r ${color}`}></div>
+        <div className="p-8 flex flex-col items-center text-center">
+            <div className={`p-4 rounded-full bg-gradient-to-r ${color} bg-opacity-10 mb-6`}>
+                <div className="text-white">{icon}</div>
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-3">{title}</h3>
+            <p className="text-gray-600">{description}</p>
+        </div>
+    </motion.div>
 );
 
 const Testimonial = ({ quote, name, location }: TestimonialProps) => (
