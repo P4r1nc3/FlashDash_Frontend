@@ -401,7 +401,6 @@ const YourDecksTab = () => {
                 onClose={() => setUploadModalOpen(false)}
                 title="Import Deck"
                 onSave={() => setUploadModalOpen(false)}
-                saveText="Close"
             >
                 <div className="mb-4">
                     <p className="text-gray-600 mb-4">
