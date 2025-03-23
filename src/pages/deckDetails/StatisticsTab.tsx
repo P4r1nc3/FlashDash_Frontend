@@ -53,6 +53,8 @@ const StatisticsTab = () => {
                 title="Statistics"
                 description="Analyze your progress and performance over time."
                 icon={<AiOutlineLineChart size={22} />}
+                fullHeight={true}
+                className="h-full"
             >
                 <EmptyState
                     icon={<FaChartLine size={48} />}
@@ -92,6 +94,7 @@ const StatisticsTab = () => {
         title: {
             text: "Accuracy Over Time",
             left: "center",
+            top: 3,
             textStyle: {
                 fontSize: 16,
                 fontWeight: "bold",
@@ -122,11 +125,19 @@ const StatisticsTab = () => {
         xAxis: {
             type: "category",
             data: chartData.map((d) => d.date),
-            axisLabel: { fontSize: 12, color: "#64748b" },
+            axisLabel: {
+                fontSize: 12,
+                color: "#64748b",
+                margin: 10
+            },
             name: "Game Date",
             nameLocation: "middle",
-            nameTextStyle: { fontSize: 14, padding: 0, color: "#64748b" },
-            nameGap: 30,
+            nameTextStyle: {
+                fontSize: 14,
+                padding: [10, 0, 0, 0],
+                color: "#64748b"
+            },
+            nameGap: 22,
             axisLine: { lineStyle: { color: "#e2e8f0" } },
             axisTick: { lineStyle: { color: "#e2e8f0" } }
         },
@@ -137,8 +148,8 @@ const StatisticsTab = () => {
             axisLabel: { fontSize: 12, color: "#64748b" },
             name: "Accuracy (%)",
             nameLocation: "middle",
-            nameTextStyle: { fontSize: 14, padding: 10, color: "#64748b" },
-            nameGap: 50,
+            nameTextStyle: { fontSize: 14, padding: 5, color: "#64748b" },
+            nameGap: 35,
             axisLine: { lineStyle: { color: "#e2e8f0" } },
             axisTick: { lineStyle: { color: "#e2e8f0" } },
             splitLine: { lineStyle: { color: "#f1f5f9" } }
@@ -155,12 +166,23 @@ const StatisticsTab = () => {
                     gameSessionFrn: d.gameSessionFrn,
                 })),
                 encode: { x: "date", y: "value" },
-                symbolSize: 10,
+                symbolSize: 12,
                 symbol: "circle",
                 itemStyle: {
                     color: "#818cf8",
                     borderColor: "white",
                     borderWidth: 2,
+                    shadowColor: 'rgba(0, 0, 0, 0.2)',
+                    shadowBlur: 5
+                },
+                emphasis: {
+                    itemStyle: {
+                        borderWidth: 3,
+                        borderColor: "#fff",
+                        shadowBlur: 10,
+                        shadowColor: 'rgba(0, 0, 0, 0.3)'
+                    },
+                    scale: true
                 },
                 lineStyle: {
                     width: 3,
@@ -186,10 +208,10 @@ const StatisticsTab = () => {
             },
         ],
         grid: {
-            left: "10%",
-            right: "10%",
-            bottom: "15%",
-            top: "15%",
+            left: '5%',
+            right: '5%',
+            bottom: '20%',
+            top: '15%', // Increased from 10% to 15% to give more space below the title
             containLabel: true,
         },
     };
@@ -207,65 +229,73 @@ const StatisticsTab = () => {
             icon={<AiOutlineLineChart size={22} />}
             scrollable={true}
             fullHeight={true}
+            className="h-full"
         >
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
-                    <div className="flex items-center justify-between mb-1">
-                        <p className="text-gray-600 font-medium text-sm">Total Games</p>
-                        <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-sm">
-                            <FaTrophy className="text-white text-xs" />
+            <div className="flex flex-col h-full">
+                {/* Compact Stats cards */}
+                <div className="grid grid-cols-4 gap-2 mb-4 flex-shrink-0">
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-2 rounded-lg shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <p className="text-gray-600 font-medium text-xs">Total Games</p>
+                            <div className="w-6 h-6 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-sm">
+                                <FaTrophy className="text-white text-[10px]" />
+                            </div>
                         </div>
+                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
+                            {totalGames}
+                        </p>
                     </div>
-                    <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
-                        {totalGames}
-                    </p>
+
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-2 rounded-lg shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <p className="text-gray-600 font-medium text-xs">Accuracy</p>
+                            <div className="w-6 h-6 bg-gradient-to-r from-green-400 to-teal-400 rounded-full flex items-center justify-center shadow-sm">
+                                <FaCheckCircle className="text-white text-[10px]" />
+                            </div>
+                        </div>
+                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-teal-500">
+                            {avgAccuracy.toFixed(2)}%
+                        </p>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-2 rounded-lg shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <p className="text-gray-600 font-medium text-xs">First Game</p>
+                            <div className="w-6 h-6 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-sm">
+                                <FaCalendarAlt className="text-white text-[10px]" />
+                            </div>
+                        </div>
+                        <p className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 truncate" title={firstGame}>
+                            {firstGame}
+                        </p>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-2 rounded-lg shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <p className="text-gray-600 font-medium text-xs">Last Game</p>
+                            <div className="w-6 h-6 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-sm">
+                                <FaRegClock className="text-white text-[10px]" />
+                            </div>
+                        </div>
+                        <p className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 truncate" title={lastGame}>
+                            {lastGame}
+                        </p>
+                    </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
-                    <div className="flex items-center justify-between mb-1">
-                        <p className="text-gray-600 font-medium text-sm">Accuracy</p>
-                        <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-teal-400 rounded-full flex items-center justify-center shadow-sm">
-                            <FaCheckCircle className="text-white text-xs" />
-                        </div>
+                {/* Chart container with interaction hint */}
+                <div className="bg-white border border-gray-100 rounded-lg shadow-sm p-3 flex-grow flex flex-col relative">
+                    <ReactECharts
+                        option={chartOptions}
+                        style={{ width: "100%", height: "100%", minHeight: "170px", maxHeight: "270px" }}
+                        onEvents={{
+                            click: handleChartClick
+                        }}
+                    />
+                    <div className="text-center text-gray-400 text-xs mt-2 italic absolute bottom-1 left-0 right-0">
+                        Tap on any point to see detailed session information
                     </div>
-                    <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-teal-500">
-                        {avgAccuracy.toFixed(2)}%
-                    </p>
                 </div>
-
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
-                    <div className="flex items-center justify-between mb-1">
-                        <p className="text-gray-600 font-medium text-sm">First Game</p>
-                        <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-sm">
-                            <FaCalendarAlt className="text-white text-xs" />
-                        </div>
-                    </div>
-                    <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
-                        {firstGame}
-                    </p>
-                </div>
-
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
-                    <div className="flex items-center justify-between mb-1">
-                        <p className="text-gray-600 font-medium text-sm">Last Game</p>
-                        <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-sm">
-                            <FaRegClock className="text-white text-xs" />
-                        </div>
-                    </div>
-                    <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
-                        {lastGame}
-                    </p>
-                </div>
-            </div>
-
-            <div className="bg-white border border-gray-100 rounded-lg shadow-sm p-4">
-                <ReactECharts
-                    option={chartOptions}
-                    style={{ width: "100%", height: "300px" }}
-                    onEvents={{
-                        click: handleChartClick
-                    }}
-                />
             </div>
         </Card>
     );

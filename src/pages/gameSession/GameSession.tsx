@@ -50,7 +50,6 @@ const GameSession = () => {
                 icon={<AiOutlineLineChart size={22} />}
             >
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                    {/* Score Card */}
                     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
                         <div className="flex items-center justify-between mb-1">
                             <p className="text-gray-600 font-medium text-sm">Score</p>
@@ -63,7 +62,6 @@ const GameSession = () => {
                         </p>
                     </div>
 
-                    {/* Correct Answers Card */}
                     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
                         <div className="flex items-center justify-between mb-1">
                             <p className="text-gray-600 font-medium text-sm">Correct</p>
@@ -76,7 +74,6 @@ const GameSession = () => {
                         </p>
                     </div>
 
-                    {/* Duration Card */}
                     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
                         <div className="flex items-center justify-between mb-1">
                             <p className="text-gray-600 font-medium text-sm">Duration</p>
@@ -89,7 +86,6 @@ const GameSession = () => {
                         </p>
                     </div>
 
-                    {/* Date Card */}
                     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg shadow-sm">
                         <div className="flex items-center justify-between mb-1">
                             <p className="text-gray-600 font-medium text-sm">Date</p>
@@ -137,24 +133,19 @@ const GameSession = () => {
 
                                 <div className="space-y-2">
                                     {allAnswers.map((answer, i) => {
-                                        // Determine the styling for each answer
                                         let className = "p-2 rounded-lg text-sm";
                                         let icon = null;
 
                                         if (correctAnswers.includes(answer) && userAnswers.includes(answer)) {
-                                            // User selected correct answer
                                             className += " bg-green-50 text-green-700 border border-green-200";
                                             icon = <BsCheckCircleFill className="text-green-500 mr-2 flex-shrink-0" />;
                                         } else if (!correctAnswers.includes(answer) && userAnswers.includes(answer)) {
-                                            // User selected wrong answer
                                             className += " bg-red-50 text-red-700 border border-red-200";
                                             icon = <BsXCircleFill className="text-red-500 mr-2 flex-shrink-0" />;
                                         } else if (correctAnswers.includes(answer) && !userAnswers.includes(answer)) {
-                                            // User missed correct answer
                                             className += " bg-yellow-50 text-yellow-700 border border-yellow-200";
                                             icon = <BsCheckCircleFill className="text-yellow-500 mr-2 flex-shrink-0" />;
                                         } else {
-                                            // Incorrect answer not selected (good)
                                             className += " bg-gray-50 text-gray-500 border border-gray-200";
                                         }
 
