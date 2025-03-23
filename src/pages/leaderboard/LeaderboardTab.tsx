@@ -31,12 +31,15 @@ const LeaderboardTab = () => {
 
     const getCriteriaColor = (criteriaType: string) => {
         switch (criteriaType) {
-            case "studyTime":
+            case "studyTime": {
                 return "bg-gradient-to-r from-purple-400 to-pink-400";
-            case "gamesPlayed":
+            }
+            case "gamesPlayed": {
                 return "bg-gradient-to-r from-yellow-400 to-amber-400";
-            case "streak":
+            }
+            case "streak": {
                 return "bg-gradient-to-r from-orange-400 to-red-400";
+            }
             case "points":
             default:
                 return "bg-gradient-to-r from-blue-400 to-indigo-400";
@@ -59,12 +62,13 @@ const LeaderboardTab = () => {
 
     const formatValue = (value: number, criteriaType: string) => {
         switch (criteriaType) {
-            case "studyTime":
+            case "studyTime": {
                 const hours = Math.floor(value / 60);
                 const minutes = value % 60;
                 if (hours === 0) return `${minutes} min`;
                 if (minutes === 0) return `${hours} hrs`;
                 return `${hours} hrs ${minutes} min`;
+            }
             case "streak":
                 return `${value} days`;
             default:
@@ -86,7 +90,7 @@ const LeaderboardTab = () => {
     }, [criteria, friendsOnly]);
 
     useEffect(() => {
-        fetchLeaderboardData();
+        fetchLeaderboardData()
     }, [fetchLeaderboardData]);
 
     const filteredEntries = entries.filter(entry =>
@@ -115,66 +119,70 @@ const LeaderboardTab = () => {
 
         return (
             <div className="space-y-3">
-                {filteredEntries.map((entry, index) => (
-                    <motion.div
-                        key={`${entry.user.userFrn}-${index}`}
-                        className={`p-4 rounded-lg shadow-sm border ${
-                            index === 0
-                                ? "bg-gradient-to-br from-yellow-50 to-amber-50 border-amber-200"
-                                : index === 1
-                                    ? "bg-gradient-to-br from-gray-50 to-slate-50 border-slate-200"
-                                    : index === 2
-                                        ? "bg-gradient-to-br from-orange-50 to-amber-50 border-orange-200"
-                                        : "bg-gradient-to-br from-blue-50 to-indigo-50 border-indigo-100"
-                        } transition-all duration-200`}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.05, duration: 0.3 }}
-                    >
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-4">
-                                <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center">
-                                    {index < 3 ? (
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm ${
-                                            index === 0
-                                                ? "bg-gradient-to-r from-yellow-400 to-amber-400"
-                                                : index === 1
-                                                    ? "bg-gradient-to-r from-gray-400 to-slate-400"
-                                                    : "bg-gradient-to-r from-orange-400 to-amber-400"
-                                        }`}>
-                                            <span className="text-white font-bold">{index + 1}</span>
-                                        </div>
-                                    ) : (
-                                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400 flex items-center justify-center shadow-sm">
-                                            <span className="text-white font-bold">{index + 1}</span>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-lg font-semibold text-gray-800 truncate">
-                                        {entry.user.firstName} {entry.user.lastName}
-                                    </p>
-                                    <p className="text-sm text-gray-500 truncate">
-                                        @{entry.user.username}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex items-center">
-                                <div className={`h-10 w-10 ${getCriteriaColor(criteria)} rounded-full flex items-center justify-center mr-3 shadow-sm`}>
-                                    {getCriteriaIcon(criteria)}
-                                </div>
-                                <div className="text-right">
-                                    <div className="text-xl font-bold text-gray-800">
-                                        {formatValue(entry.score, criteria)}
+                {filteredEntries.map((entry) => {
+                    const index = entry.rank - 1;
+
+                    return (
+                        <motion.div
+                            key={`${entry.user.userFrn}-${entry.rank}`}
+                            className={`p-4 rounded-lg shadow-sm border ${
+                                index === 0
+                                    ? "bg-gradient-to-br from-yellow-50 to-amber-50 border-amber-200"
+                                    : index === 1
+                                        ? "bg-gradient-to-br from-gray-50 to-slate-50 border-slate-200"
+                                        : index === 2
+                                            ? "bg-gradient-to-br from-orange-50 to-amber-50 border-orange-200"
+                                            : "bg-gradient-to-br from-blue-50 to-indigo-50 border-indigo-100"
+                            } transition-all duration-200`}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.05, duration: 0.3 }}
+                        >
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-4">
+                                    <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center">
+                                        {index < 3 ? (
+                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm ${
+                                                index === 0
+                                                    ? "bg-gradient-to-r from-yellow-400 to-amber-400"
+                                                    : index === 1
+                                                        ? "bg-gradient-to-r from-gray-400 to-slate-400"
+                                                        : "bg-gradient-to-r from-orange-400 to-amber-400"
+                                            }`}>
+                                                <span className="text-white font-bold">{entry.rank}</span>
+                                            </div>
+                                        ) : (
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400 flex items-center justify-center shadow-sm">
+                                                <span className="text-white font-bold">{entry.rank}</span>
+                                            </div>
+                                        )}
                                     </div>
-                                    <div className="text-xs text-gray-500">
-                                        {getCriteriaLabel(criteria)}
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-lg font-semibold text-gray-800 truncate">
+                                            {entry.user.firstName} {entry.user.lastName}
+                                        </p>
+                                        <p className="text-sm text-gray-500 truncate">
+                                            @{entry.user.username}
+                                        </p>
                                     </div>
                                 </div>
+                                <div className="flex items-center">
+                                    <div className={`h-10 w-10 ${getCriteriaColor(criteria)} rounded-full flex items-center justify-center mr-3 shadow-sm`}>
+                                        {getCriteriaIcon(criteria)}
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-xl font-bold text-gray-800">
+                                            {formatValue(entry.score, criteria)}
+                                        </div>
+                                        <div className="text-xs text-gray-500">
+                                            {getCriteriaLabel(criteria)}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </motion.div>
-                ))}
+                        </motion.div>
+                    );
+                })}
             </div>
         );
     };
