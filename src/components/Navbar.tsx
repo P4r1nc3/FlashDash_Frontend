@@ -1,8 +1,9 @@
 import { useContext, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
-import { FaLayerGroup, FaUsers, FaUser, FaSignOutAlt, FaTrophy } from "react-icons/fa";
+import { FaLayerGroup, FaUsers, FaUser, FaSignOutAlt } from "react-icons/fa";
 import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
+import { MdLeaderboard } from "react-icons/md";
 import { motion } from "framer-motion";
 
 const Navbar = () => {
@@ -177,7 +178,7 @@ const Navbar = () => {
                     }`}
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <FaTrophy className={`w-6 h-6 flex-shrink-0 ${isActive('/leaderboard') ? 'text-indigo-400' : 'text-gray-500'}`} />
+                    <MdLeaderboard className={`w-6 h-6 flex-shrink-0 ${isActive('/leaderboard') ? 'text-indigo-400' : 'text-gray-500'}`} />
                     <span className={`ml-4 transition-all duration-300 ${isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0 overflow-hidden"}`}>
                         Leaderboard
                     </span>
