@@ -150,62 +150,56 @@ const Home = () => {
                 </div>
             </section>
 
-            <section className="py-24 bg-white">
+            <section className="h-[calc(100vh-70px)] bg-white flex flex-col justify-center py-12">
                 <div className="container mx-auto px-6 lg:px-16">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.7 }}
                         viewport={{ once: true }}
-                        className="text-center"
+                        className="text-center mb-12"
                     >
                         <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">Key Features</h2>
                         <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto mb-6"></div>
-                        <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-16">Discover how FlashDash makes learning engaging and rewarding with our powerful set of features.</p>
+                        <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-12">Discover how FlashDash makes learning engaging and rewarding with our powerful set of features.</p>
                     </motion.div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
                         <FeatureCard
                             title="Engaging Quizzes"
-                            description="Test your knowledge with thousands of interactive quizzes on various topics. Tailored difficulty levels and dynamic content ensure a fun learning experience."
-                            icon={<Book size={36} />}
+                            description="Test your knowledge with thousands of interactive quizzes on various topics. Tailored difficulty levels and dynamic content."
+                            icon={<Book size={32} />}
                             color="from-blue-400 to-blue-600"
-
                         />
                         <FeatureCard
                             title="Gamification Rewards"
-                            description="Earn points, unlock exclusive achievements, and climb the leaderboards. Stay motivated with streaks, badges, and performance tracking."
-                            icon={<Award size={36} />}
+                            description="Earn points, unlock achievements, and climb the leaderboards. Stay motivated with streaks and badges."
+                            icon={<Award size={32} />}
                             color="from-indigo-400 to-indigo-600"
-
                         />
                         <FeatureCard
                             title="Compete with Friends"
-                            description="Challenge your friends to quizzes, compare scores in real-time, and engage in friendly competition with social leaderboards."
-                            icon={<Users size={36} />}
+                            description="Challenge your friends to quizzes, compare scores in real-time, and engage in friendly competition."
+                            icon={<Users size={32} />}
                             color="from-purple-400 to-purple-600"
-
                         />
                         <FeatureCard
                             title="Daily Challenges"
-                            description="Keep your knowledge fresh with new daily challenges across different subjects. Build streaks and earn bonus rewards for consistent learning."
-                            icon={<Zap size={36} />}
+                            description="Keep your knowledge fresh with new daily challenges across different subjects. Build streaks for bonus rewards."
+                            icon={<Zap size={32} />}
                             color="from-pink-400 to-pink-600"
-
                         />
                         <FeatureCard
                             title="Personalized Learning"
-                            description="Our AI adapts to your strengths and weaknesses, creating a personalized learning path that helps you improve efficiently."
-                            icon={<Gift size={36} />}
+                            description="Our AI adapts to your strengths and weaknesses, creating a personalized learning path for efficient improvement."
+                            icon={<Gift size={32} />}
                             color="from-amber-400 to-amber-600"
-
                         />
                         <FeatureCard
                             title="Create & Share"
-                            description="Create your own quizzes to share with friends or the community. Customize topics, difficulty, and question formats."
-                            icon={<Star size={36} />}
+                            description="Create your own quizzes to share with friends or the community. Customize topics, difficulty, and formats."
+                            icon={<Star size={32} />}
                             color="from-teal-400 to-teal-600"
-
                         />
                     </div>
                 </div>
@@ -314,8 +308,8 @@ const FeatureCard = ({ title, description, icon, color }: FeatureCardProps) => (
         className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
     >
         <div className={`h-2 w-full bg-gradient-to-r ${color}`}></div>
-        <div className="p-8 flex flex-col items-center text-center">
-            <div className={`p-4 rounded-full bg-gradient-to-r ${color} bg-opacity-10 mb-6`}>
+        <div className="p-7 flex flex-col items-center text-center">
+            <div className={`p-4 rounded-full bg-gradient-to-r ${color} bg-opacity-10 mb-5`}>
                 <div className="text-white">{icon}</div>
             </div>
             <h3 className="text-2xl font-bold text-gray-800 mb-3">{title}</h3>
