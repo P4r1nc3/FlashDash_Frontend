@@ -1,9 +1,9 @@
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import { Pagination } from 'swiper/modules';
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { Star, Award, Users, Zap, Book, Gift } from 'lucide-react';
 
 interface FeatureCardProps {
@@ -25,6 +25,79 @@ interface FAQItemProps {
 }
 
 const Home = () => {
+    const slickSettings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 5000,
+        pauseOnHover: true,
+        adaptiveHeight: false,
+        arrows: true,
+        dotsClass: "slick-dots custom-dots",
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    arrows: false,
+                }
+            }
+        ]
+    };
+
+    useEffect(() => {
+        const style = document.createElement('style');
+        style.textContent = `
+            .custom-dots {
+                margin-top: 20px !important;
+            }
+            .custom-dots li button:before {
+                font-size: 12px !important;
+                opacity: 0.5;
+                color: #ccc !important;
+            }
+            .custom-dots li.slick-active button:before {
+                opacity: 1;
+                background: linear-gradient(to right, #3B82F6, #6366F1);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent !important;
+                font-size: 14px !important;
+            }
+            .slick-prev, .slick-next {
+                width: 24px !important;
+                height: 24px !important;
+                z-index: 10;
+                top: 40% !important;
+                transform: translateY(-50%) !important;
+            }
+            .slick-prev {
+                left: -40px !important;
+            }
+            .slick-next {
+                right: -40px !important;
+            }
+            .slick-prev:before, .slick-next:before {
+                font-size: 24px !important;
+                background: linear-gradient(to right, #3B82F6, #6366F1);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent !important;
+                opacity: 0.8 !important;
+            }
+            .slick-prev:hover:before, .slick-next:hover:before {
+                opacity: 1 !important;
+            }
+        `;
+        document.head.appendChild(style);
+
+        return () => {
+            document.head.removeChild(style);
+        };
+    }, []);
+
     return (
         <main className="w-full">
             {/* Hero Section */}
@@ -132,40 +205,52 @@ const Home = () => {
             </section>
 
             {/* Testimonials Section */}
-            <section className="h-[45vh] py-20 bg-gray-100 text-center flex flex-col justify-center">
+            <section className="py-20 bg-gray-100 text-center">
                 <div className="container mx-auto px-6 lg:px-16">
-                    <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">What Users Say</h2>
-                    <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto mb-6"></div>
-                    <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-10">See what our users love about FlashDash.</p>
-                    <Swiper
-                        modules={[Pagination]}
-                        spaceBetween={30}
-                        slidesPerView={1}
-                        pagination={{ clickable: true }}
-                        className="w-full max-w-4xl mx-auto"
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7 }}
+                        viewport={{ once: true }}
                     >
-                        <SwiperSlide>
-                            <Testimonial
-                                quote="FlashDash has made learning so much fun! I never thought quizzes could be this engaging."
-                                name="Sarah L."
-                                location="New York, USA"
-                            />
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <Testimonial
-                                quote="I love the competition aspect! My friends and I challenge each other daily."
-                                name="David R."
-                                location="London, UK"
-                            />
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <Testimonial
-                                quote="The rewards system keeps me motivated to keep learning every day."
-                                name="Emma W."
-                                location="Sydney, Australia"
-                            />
-                        </SwiperSlide>
-                    </Swiper>
+                        <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">What Users Say</h2>
+                        <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto mb-6"></div>
+                        <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-10">See what our users love about FlashDash.</p>
+                    </motion.div>
+
+                    {/* React Slick Carousel zastępujący Swiper */}
+                    <div className="w-full max-w-4xl mx-auto relative">
+                        <Slider {...slickSettings}>
+                            <div className="px-4">
+                                <Testimonial
+                                    quote="FlashDash has made learning fun! I never thought quizzes could be this engaging and addictive."
+                                    name="Sarah L."
+                                    location="New York, USA"
+                                />
+                            </div>
+                            <div className="px-4">
+                                <Testimonial
+                                    quote="I love the competition aspect! My friends and I challenge each other daily with new quizzes."
+                                    name="David R."
+                                    location="London, UK"
+                                />
+                            </div>
+                            <div className="px-4">
+                                <Testimonial
+                                    quote="The rewards system keeps me motivated to learn every day. I've maintained a 60-day streak!"
+                                    name="Emma W."
+                                    location="Sydney, Australia"
+                                />
+                            </div>
+                            <div className="px-4">
+                                <Testimonial
+                                    quote="As a teacher, I use FlashDash to make my lessons interactive. My students love it and learn more."
+                                    name="Michael K."
+                                    location="Toronto, Canada"
+                                />
+                            </div>
+                        </Slider>
+                    </div>
                 </div>
             </section>
 
@@ -194,7 +279,7 @@ const Home = () => {
             </section>
 
             {/* Footer Section */}
-            <footer className="h-[35vh] bg-gradient-to-r from-blue-400 to-indigo-400 text-white flex flex-col items-center justify-center text-center">
+            <footer className="bg-gradient-to-r from-blue-400 to-indigo-400 text-white py-16 flex flex-col items-center justify-center text-center">
                 <div className="container mx-auto px-6">
                     <p className="text-2xl mb-8">Join thousands of learners and start your journey today!</p>
                     <Link to="/register">
@@ -222,10 +307,14 @@ const FeatureCard = ({ title, description, icon }: FeatureCardProps) => (
 );
 
 const Testimonial = ({ quote, name, location }: TestimonialProps) => (
-    <div className="bg-white p-8 rounded-lg shadow-lg">
-        <p className="text-xl italic text-gray-700 mb-4">"{quote}"</p>
-        <h4 className="font-bold text-gray-800">{name}</h4>
-        <span className="text-gray-500">{location}</span>
+    <div className="bg-white p-6 rounded-lg shadow-lg mb-12 mx-3">
+        <div className="flex flex-col justify-between h-24">
+            <p className="text-lg italic text-gray-700 mb-4 line-clamp-3">"{quote}"</p>
+            <div>
+                <h4 className="font-bold text-gray-800">{name}</h4>
+                <span className="text-gray-500">{location}</span>
+            </div>
+        </div>
     </div>
 );
 
