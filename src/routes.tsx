@@ -7,6 +7,7 @@ import DeckDetails from './pages/deckDetails/DeckDetails.tsx';
 import GameSession from './pages/gameSession/GameSession.tsx';
 import QuizGame from './pages/game/QuizGame.tsx';
 import Account from './pages/account/Account.tsx';
+import Leaderboard from './pages/leaderboard/Leaderboard.tsx';
 import Friends from './pages/friend/Friends.tsx';
 import NotFound from './pages/util/NotFound.tsx';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -17,11 +18,12 @@ const AppRoutes = () => (
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+        <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
+        <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
         <Route path="/decks" element={<ProtectedRoute><DeckManager /></ProtectedRoute>} />
         <Route path="/decks/:deckFrn" element={<ProtectedRoute><DeckDetails /></ProtectedRoute>} />
         <Route path="/decks/:deckFrn/quiz" element={<ProtectedRoute><QuizGame /></ProtectedRoute>} />
         <Route path="/decks/:deckFrn/gameSession/:gameSessionId" element={<ProtectedRoute><GameSession /></ProtectedRoute>} />
-        <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
     </Routes>
 );
