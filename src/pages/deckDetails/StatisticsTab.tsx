@@ -261,7 +261,7 @@ const StatisticsTab = () => {
                                 <FaCalendarAlt className="text-white text-[10px]" />
                             </div>
                         </div>
-                        <p className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 truncate" title={firstGame}>
+                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 truncate" title={firstGame}>
                             {firstGame}
                         </p>
                     </div>
@@ -273,7 +273,7 @@ const StatisticsTab = () => {
                                 <FaRegClock className="text-white text-[10px]" />
                             </div>
                         </div>
-                        <p className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 truncate" title={lastGame}>
+                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 truncate" title={lastGame}>
                             {lastGame}
                         </p>
                     </div>

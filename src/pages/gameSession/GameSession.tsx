@@ -96,7 +96,7 @@ const GameSession = () => {
                                 <FaCalendarAlt className="text-white text-[10px]" />
                             </div>
                         </div>
-                        <p className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 truncate" title={gameSession?.startTime ? formatDate(gameSession.startTime) : ""}>
+                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 truncate" title={gameSession?.startTime ? formatDate(gameSession.startTime) : ""}>
                             {gameSession?.startTime ? formatDate(gameSession.startTime) : ""}
                         </p>
                     </div>
