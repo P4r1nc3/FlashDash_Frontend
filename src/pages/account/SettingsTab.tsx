@@ -11,20 +11,23 @@ import Modal from "../../components/ui/Modal";
 const SettingsTab = () => {
     const [passwords, setPasswords] = useState({ oldPassword: "", newPassword: "" });
     const [showPassword, setShowPassword] = useState({ old: false, new: false });
-    const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(false);
-    const [notificationTime, setNotificationTime] = useState<string>("08:00");
-    const [tempNotificationTime, setTempNotificationTime] = useState<string>("08:00");
+    const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+    const [notificationTime, setNotificationTime] = useState("08:00");
+    const [tempNotificationTime, setTempNotificationTime] = useState("08:00");
     const [showTimePicker, setShowTimePicker] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [passwordModalOpen, setPasswordModalOpen] = useState(false);
-    const timePickerRef = useRef<HTMLDivElement>(null);
+    const [timePickerPosition, setTimePickerPosition] = useState({ top: 0, left: 0 });
+    const timePickerRef = useRef(null);
+    const timeButtonRef = useRef(null);
 
     useEffect(() => {
         fetchNotificationSettings();
 
         // Close time picker when clicking outside
-        const handleClickOutside = (event: MouseEvent) => {
-            if (timePickerRef.current && !timePickerRef.current.contains(event.target as Node)) {
+        const handleClickOutside = (event) => {
+            if (timePickerRef.current && !timePickerRef.current.contains(event.target) &&
+                timeButtonRef.current && !timeButtonRef.current.contains(event.target)) {
                 setShowTimePicker(false);
             }
         };
@@ -67,11 +70,22 @@ const SettingsTab = () => {
     const handleTimePickerOpen = () => {
         if (notificationsEnabled) {
             setTempNotificationTime(notificationTime);
+
+            if (timeButtonRef.current && !showTimePicker) {
+                const rect = timeButtonRef.current.getBoundingClientRect();
+                const rightAlignedLeft = rect.right - 255;
+
+                setTimePickerPosition({
+                    top: rect.bottom + window.scrollY + 10,
+                    left: rightAlignedLeft + window.scrollX
+                });
+            }
+
             setShowTimePicker(!showTimePicker);
         }
     };
 
-    const handleTimeSelect = (type: "hour" | "minute", value: string) => {
+    const handleTimeSelect = (type, value) => {
         if (type === "hour") {
             setTempNotificationTime(`${value}:${tempNotificationTime.split(":")[1]}`);
         } else {
@@ -138,7 +152,11 @@ const SettingsTab = () => {
         showTimePicker && (
             <div
                 ref={timePickerRef}
-                className="absolute mt-2 right-0 p-4 bg-white rounded-lg shadow-lg border border-indigo-100 w-80 z-10"
+                className="fixed p-4 bg-white rounded-lg shadow-lg border border-indigo-100 w-80 z-50"
+                style={{
+                    top: `${timePickerPosition.top}px`,
+                    left: `${timePickerPosition.left}px`
+                }}
             >
                 <h3 className="text-md font-semibold text-gray-700 mb-3">Set notification time</h3>
 
@@ -162,8 +180,8 @@ const SettingsTab = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                    <div>
+                <div className="grid grid-cols-3 gap-4 mb-3">
+                    <div className="col-span-2">
                         <p className="text-sm text-gray-500 mb-2">Hour</p>
                         <div className="h-40 overflow-y-auto pr-1 grid grid-cols-4 gap-1 custom-scrollbar">
                             {hours.map((hour) => (
@@ -227,20 +245,21 @@ const SettingsTab = () => {
     const renderNotificationActions = () => (
         <div className="flex items-center space-x-3 relative">
             <button
+                ref={timeButtonRef}
                 onClick={handleTimePickerOpen}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${
+                className={`flex items-center gap-2 px-4 py-1.5 rounded-lg border text-base ${
                     notificationsEnabled
                         ? "bg-gradient-to-br from-blue-50 to-indigo-50 border-indigo-200 text-indigo-700 hover:bg-gradient-to-br hover:from-blue-100 hover:to-indigo-100"
                         : "bg-gray-100 text-gray-400 cursor-not-allowed"
                 }`}
                 disabled={!notificationsEnabled}
             >
-                <FiClock className={notificationsEnabled ? "text-indigo-500" : "text-gray-400"} size={16} />
-                <span className="font-medium text-sm">{notificationTime}</span>
+                <FiClock className={notificationsEnabled ? "text-indigo-500" : "text-gray-400"} size={18} />
+                <span className="font-medium">{notificationTime}</span>
             </button>
 
             <button
-                className={`relative w-12 h-6 rounded-full transition-all ${
+                className={`relative w-16 h-8 rounded-full transition-all ${
                     notificationsEnabled
                         ? "bg-gradient-to-r from-blue-400 to-indigo-400"
                         : "bg-gray-300"
@@ -249,8 +268,8 @@ const SettingsTab = () => {
                 aria-label={notificationsEnabled ? "Disable notifications" : "Enable notifications"}
             >
                 <span
-                    className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white shadow-sm transition-all ${
-                        notificationsEnabled ? "translate-x-6" : ""
+                    className={`absolute top-1 left-1 w-6 h-6 rounded-full bg-white shadow-sm transition-all ${
+                        notificationsEnabled ? "translate-x-8" : ""
                     }`}
                 />
             </button>
@@ -262,7 +281,7 @@ const SettingsTab = () => {
     const renderPasswordChangeAction = () => (
         <GradientButton
             onClick={() => setPasswordModalOpen(true)}
-            className="px-4 py-2.5 text-sm font-medium min-w-[150px]"
+            className="px-4 py-2.5 text-sm font-medium min-w-[170px]"
         >
             Change Password
         </GradientButton>
@@ -272,7 +291,7 @@ const SettingsTab = () => {
     const renderDeleteAccountAction = () => (
         <GradientButton
             onClick={() => setModalOpen(true)}
-            className="px-4 py-2.5 text-sm font-medium min-w-[150px]"
+            className="px-4 py-2.5 text-sm font-medium min-w-[170px]"
             startColor="from-red-400"
             endColor="to-red-500"
             hoverStartColor="from-red-500"
