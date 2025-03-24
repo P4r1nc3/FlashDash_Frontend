@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 
 const LeaderboardTab = () => {
     const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
-    const [loading, setLoading] = useState(true);
     const [criteria, setCriteria] = useState<string>("points");
     const [friendsOnly, setFriendsOnly] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState("");
@@ -77,15 +76,12 @@ const LeaderboardTab = () => {
     };
 
     const fetchLeaderboardData = useCallback(async () => {
-        setLoading(true);
         try {
             const data = await getLeaderboard(criteria, friendsOnly, 100);
             setEntries(data);
         } catch (error) {
             console.error("Error fetching leaderboard:", error);
             toast.error("Failed to load leaderboard data");
-        } finally {
-            setLoading(false);
         }
     }, [criteria, friendsOnly]);
 
@@ -99,14 +95,6 @@ const LeaderboardTab = () => {
     );
 
     const renderLeaderboard = () => {
-        if (loading) {
-            return (
-                <div className="flex justify-center items-center h-48">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-                </div>
-            );
-        }
-
         if (filteredEntries.length === 0) {
             return (
                 <EmptyState
