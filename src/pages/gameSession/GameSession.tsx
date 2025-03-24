@@ -3,11 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getGameSession } from "../../api/gameSession.ts";
 import { GameSessionResult } from "../../interfaces/GameSession.ts";
 import { FaRegClock, FaCalendarAlt, FaTrophy, FaCheckCircle } from "react-icons/fa";
-import { BsCheckCircleFill, BsXCircleFill } from "react-icons/bs";
 import { AiOutlineLineChart } from "react-icons/ai";
 import MainLayout from "../../components/MainLayout.tsx";
 import Card from "../../components/ui/Card";
 import StatItem from "../../components/ui/StatItem";
+import Question from "../../components/ui/Question";
 import GradientButton from "../../components/ui/GradientButton";
 import { toast } from "react-toastify";
 
@@ -84,58 +84,53 @@ const GameSession = () => {
                     {gameSession?.sessionDetails.map((question, index) => {
                         const correctAnswers = question.correctAnswers;
                         const userAnswers = question.userAnswers;
-                        const allAnswers = [...new Set([...correctAnswers, ...userAnswers, ...question.incorrectAnswers])];
+
+                        // Format answers for the Question component
+                        const formattedAnswers = [
+                            // Correct answers that user selected
+                            ...correctAnswers
+                                .filter(answer => userAnswers.includes(answer))
+                                .map(text => ({
+                                    text,
+                                    isCorrect: true,
+                                    isUserAnswer: true
+                                })),
+
+                            // Incorrect answers that user selected
+                            ...question.incorrectAnswers
+                                .filter(answer => userAnswers.includes(answer))
+                                .map(text => ({
+                                    text,
+                                    isCorrect: false,
+                                    isUserAnswer: true
+                                })),
+
+                            // Correct answers that user missed
+                            ...correctAnswers
+                                .filter(answer => !userAnswers.includes(answer))
+                                .map(text => ({
+                                    text,
+                                    isCorrect: true,
+                                    isMissed: true
+                                })),
+
+                            // Incorrect answers that user correctly avoided
+                            ...question.incorrectAnswers
+                                .filter(answer => !userAnswers.includes(answer))
+                                .map(text => ({
+                                    text,
+                                    isCorrect: false
+                                }))
+                        ];
 
                         return (
-                            <div
+                            <Question
                                 key={index}
-                                className={`p-4 bg-white rounded-lg border-l-4 ${
-                                    question.wasCorrect ? "border-green-500" : "border-red-500"
-                                } shadow-sm`}
-                            >
-                                <div className="flex items-center mb-2">
-                                    <div className="flex items-center gap-2 mr-4">
-                                        <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center">
-                                            <span className="text-blue-700 text-xs font-bold">{index + 1}</span>
-                                        </div>
-                                        <h4 className="font-semibold text-base text-gray-800">Question {index + 1}</h4>
-                                    </div>
-                                    <span className={`px-3 py-1.5 rounded-md text-xs font-medium ${
-                                        question.wasCorrect ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                                    }`}>
-                                        {question.wasCorrect ? "Correct" : "Incorrect"}
-                                    </span>
-                                </div>
-                                <p className="text-gray-700 mb-3 text-sm">{question.questionText}</p>
-
-                                <div className="space-y-2">
-                                    {allAnswers.map((answer, i) => {
-                                        let className = "p-2 rounded-lg text-sm font-medium flex items-center";
-                                        let icon = null;
-
-                                        if (correctAnswers.includes(answer) && userAnswers.includes(answer)) {
-                                            className += " bg-green-50 text-green-700 border border-green-200";
-                                            icon = <BsCheckCircleFill className="text-green-500 mr-2 text-xs flex-shrink-0" />;
-                                        } else if (!correctAnswers.includes(answer) && userAnswers.includes(answer)) {
-                                            className += " bg-red-50 text-red-700 border border-red-200";
-                                            icon = <BsXCircleFill className="text-red-500 mr-2 text-xs flex-shrink-0" />;
-                                        } else if (correctAnswers.includes(answer) && !userAnswers.includes(answer)) {
-                                            className += " bg-yellow-50 text-yellow-700 border border-yellow-200";
-                                            icon = <BsCheckCircleFill className="text-yellow-500 mr-2 text-xs flex-shrink-0" />;
-                                        } else {
-                                            className += " bg-gray-50 text-gray-500 border border-gray-200";
-                                            icon = <BsXCircleFill className="text-gray-400 mr-2 text-xs flex-shrink-0" />;
-                                        }
-
-                                        return (
-                                            <div key={i} className={className}>
-                                                {icon}
-                                                <span>{answer}</span>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
+                                index={index + 1}
+                                question={question.questionText}
+                                answers={formattedAnswers}
+                                status={question.wasCorrect ? 'correct' : 'incorrect'}
+                            />
                         );
                     })}
                 </div>

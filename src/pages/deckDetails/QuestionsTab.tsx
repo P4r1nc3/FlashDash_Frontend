@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import {
     AiOutlineQuestionCircle,
-    AiOutlineEdit,
-    AiOutlineDelete,
     AiOutlinePlus,
 } from "react-icons/ai";
 import { toast } from "react-toastify";
-import { BsCheckCircleFill, BsXCircleFill } from "react-icons/bs";
 import { getQuestionsInDeck, addQuestionToDeck, updateQuestion, deleteQuestion } from "../../api/questions.ts";
 import { QuestionResponse } from "../../interfaces/Question.ts";
 import { Difficulty } from "../../enums/Difficulty.ts";
@@ -14,8 +11,9 @@ import Card from "../../components/ui/Card";
 import Modal from "../../components/ui/Modal";
 import GradientButton from "../../components/ui/GradientButton";
 import EmptyState from "../../components/ui/EmptyState";
-import {useParams} from "react-router-dom";
-
+import Question from "../../components/ui/Question";
+import { useParams } from "react-router-dom";
+import { BsXCircleFill } from "react-icons/bs";
 
 const QuestionsTab = () => {
     const { deckFrn } = useParams<{ deckFrn: string }>();
@@ -104,24 +102,6 @@ const QuestionsTab = () => {
         }
     };
 
-    const getDifficultyBadge = (difficulty: string) => {
-        let colors = "";
-        switch(difficulty?.toLowerCase()) {
-            case 'easy':
-                colors = "bg-green-100 text-green-700";
-                break;
-            case 'medium':
-                colors = "bg-yellow-100 text-yellow-700";
-                break;
-            case 'hard':
-                colors = "bg-red-100 text-red-700";
-                break;
-            default:
-                colors = "bg-blue-100 text-blue-700";
-        }
-        return <span className={`px-3 py-1.5 rounded-md text-xs font-medium ${colors}`}>{difficulty}</span>;
-    };
-
     const renderQuestionsList = () => {
         if (questions.length === 0) {
             return (
@@ -136,65 +116,23 @@ const QuestionsTab = () => {
         return (
             <div className="space-y-4">
                 {questions.map((q, index) => {
-                    const correctAnswers = q.correctAnswers;
-                    const allAnswers = [...new Set([...correctAnswers, ...q.incorrectAnswers])];
+                    // Format answers for the Question component
+                    const answers = [
+                        ...q.correctAnswers.map(text => ({ text, isCorrect: true })),
+                        ...q.incorrectAnswers.map(text => ({ text, isCorrect: false }))
+                    ];
 
                     return (
-                        <div
+                        <Question
                             key={q.questionFrn}
-                            className="p-4 bg-white rounded-lg shadow-sm border-l-4 border-blue-500 relative"
-                        >
-                            <div className="absolute top-3 right-3 flex space-x-2">
-                                <button
-                                    className="text-indigo-500 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md transition-colors"
-                                    onClick={() => openEditModal(q)}
-                                >
-                                    <AiOutlineEdit size={18} />
-                                </button>
-                                <button
-                                    className="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-1.5 rounded-md transition-colors"
-                                    onClick={() => deleteCurrentQuestion(q.questionFrn)}
-                                >
-                                    <AiOutlineDelete size={18} />
-                                </button>
-                            </div>
-
-                            <div className="flex items-center mb-2">
-                                <div className="flex items-center gap-2 mr-4">
-                                    <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center">
-                                        <span className="text-blue-700 text-xs font-bold">{index + 1}</span>
-                                    </div>
-                                    <h4 className="font-semibold text-base text-gray-800">Question {index + 1}</h4>
-                                </div>
-                                {q.difficulty && getDifficultyBadge(q.difficulty)}
-                            </div>
-                            <p className="text-gray-700 mb-3 text-sm">{q.question}</p>
-
-                            <div className="space-y-2">
-                                {allAnswers.map((answer, i) => {
-                                    // Determine if this is a correct answer
-                                    const isCorrect = correctAnswers.includes(answer);
-
-                                    return (
-                                        <div
-                                            key={i}
-                                            className={`p-2 rounded-lg text-sm font-medium flex items-center ${
-                                                isCorrect
-                                                    ? "bg-green-50 text-green-700 border border-green-200"
-                                                    : "bg-gray-50 text-gray-500 border border-gray-200"
-                                            }`}
-                                        >
-                                            {isCorrect ? (
-                                                <BsCheckCircleFill className="text-green-500 mr-2 text-xs flex-shrink-0" />
-                                            ) : (
-                                                <BsXCircleFill className="text-gray-400 mr-2 text-xs flex-shrink-0" />
-                                            )}
-                                            <span>{answer}</span>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
+                            index={index + 1}
+                            question={q.question}
+                            answers={answers}
+                            difficulty={q.difficulty}
+                            editable={true}
+                            onEdit={() => openEditModal(q)}
+                            onDelete={() => deleteCurrentQuestion(q.questionFrn)}
+                        />
                     );
                 })}
             </div>
