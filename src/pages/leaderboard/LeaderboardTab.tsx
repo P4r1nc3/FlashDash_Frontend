@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { getLeaderboard } from "../../api/leaderboards";
 import { LeaderboardEntry } from "../../interfaces/LeaderboardEntry";
-import { AiOutlineTrophy, AiOutlineSearch, AiOutlineUser, AiOutlineGlobal } from "react-icons/ai";
+import { AiOutlineSearch, AiOutlineUser, AiOutlineGlobal } from "react-icons/ai";
 import { MdOutlineLeaderboard } from "react-icons/md";
 import { FaRegClock, FaGamepad, FaFire, FaRegStar } from "react-icons/fa";
 import Card from "../../components/ui/Card";
