@@ -8,6 +8,7 @@ import ReactECharts from "echarts-for-react";
 import { EChartsOption } from "echarts";
 import Card from "../../components/ui/Card";
 import EmptyState from "../../components/ui/EmptyState";
+import StatItem from "../../components/ui/StatItem";
 import { toast } from "react-toastify";
 import { CallbackDataParams } from "echarts/types/dist/shared";
 
@@ -230,53 +231,31 @@ const StatisticsTab = () => {
         >
             <div className="flex flex-col h-full">
                 <div className="grid grid-cols-4 gap-2 mb-4 flex-shrink-0">
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-2 rounded-lg shadow-sm">
-                        <div className="flex items-center justify-between">
-                            <p className="text-gray-600 font-medium text-xs">Total Games</p>
-                            <div className="w-6 h-6 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-sm">
-                                <FaTrophy className="text-white text-[10px]" />
-                            </div>
-                        </div>
-                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
-                            {totalGames}
-                        </p>
-                    </div>
+                    <StatItem
+                        label="Total Games"
+                        value={totalGames}
+                        icon={<FaTrophy className="text-white text-[10px]" />}
+                    />
 
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-2 rounded-lg shadow-sm">
-                        <div className="flex items-center justify-between">
-                            <p className="text-gray-600 font-medium text-xs">Accuracy</p>
-                            <div className="w-6 h-6 bg-gradient-to-r from-green-400 to-teal-400 rounded-full flex items-center justify-center shadow-sm">
-                                <FaCheckCircle className="text-white text-[10px]" />
-                            </div>
-                        </div>
-                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-teal-500">
-                            {avgAccuracy.toFixed(2)}%
-                        </p>
-                    </div>
+                    <StatItem
+                        label="Accuracy"
+                        value={`${avgAccuracy.toFixed(2)}%`}
+                        icon={<FaCheckCircle className="text-white text-[10px]" />}
+                    />
 
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-2 rounded-lg shadow-sm">
-                        <div className="flex items-center justify-between">
-                            <p className="text-gray-600 font-medium text-xs">First Game</p>
-                            <div className="w-6 h-6 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-sm">
-                                <FaCalendarAlt className="text-white text-[10px]" />
-                            </div>
-                        </div>
-                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 truncate" title={firstGame}>
-                            {firstGame}
-                        </p>
-                    </div>
+                    <StatItem
+                        label="First Game"
+                        value={firstGame}
+                        icon={<FaCalendarAlt className="text-white text-[10px]" />}
+                        title={firstGame}
+                    />
 
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-2 rounded-lg shadow-sm">
-                        <div className="flex items-center justify-between">
-                            <p className="text-gray-600 font-medium text-xs">Last Game</p>
-                            <div className="w-6 h-6 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-sm">
-                                <FaRegClock className="text-white text-[10px]" />
-                            </div>
-                        </div>
-                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 truncate" title={lastGame}>
-                            {lastGame}
-                        </p>
-                    </div>
+                    <StatItem
+                        label="Last Game"
+                        value={lastGame}
+                        icon={<FaRegClock className="text-white text-[10px]" />}
+                        title={lastGame}
+                    />
                 </div>
 
                 <div
