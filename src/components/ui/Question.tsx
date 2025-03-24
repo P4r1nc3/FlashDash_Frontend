@@ -121,22 +121,24 @@ const Question: React.FC<QuestionProps> = ({
 
                     {status !== 'neutral' && (
                         <span className={`px-3 py-1.5 rounded-md text-xs font-medium ${statusStyle.badge}`}>
-              {statusStyle.badgeText}
-            </span>
+                          {statusStyle.badgeText}
+                        </span>
                     )}
                 </div>
 
                 {editable && (
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-3">
                         <button
-                            className="text-indigo-500 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-md transition-colors"
+                            className="flex items-center justify-center h-9 w-9 text-indigo-600 border border-indigo-200 bg-white hover:bg-indigo-50 rounded-md transition-colors shadow-sm"
                             onClick={onEdit}
+                            title="Edit question"
                         >
                             <AiOutlineEdit size={18} />
                         </button>
                         <button
-                            className="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-1.5 rounded-md transition-colors"
+                            className="flex items-center justify-center h-9 w-9 text-red-600 border border-red-200 bg-white hover:bg-red-50 rounded-md transition-colors shadow-sm"
                             onClick={onDelete}
+                            title="Delete question"
                         >
                             <AiOutlineDelete size={18} />
                         </button>
