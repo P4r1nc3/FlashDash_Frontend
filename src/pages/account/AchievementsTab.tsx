@@ -282,14 +282,14 @@ const AchievementsTab = () => {
         >
             {/* Filter buttons */}
             <div className="flex flex-wrap items-center gap-2 mb-6">
-                <div className="text-gray-500 flex items-center gap-3 pr-3">
+                <div className="text-gray-500 flex items-center gap-1 pr-1">
                     <AiOutlineFilter />
                     <span className="text-sm font-medium">Filter by:</span>
                 </div>
                 {filterButtons.map(button => (
                     <button
                         key={button.id}
-                        className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1 ${
+                        className={`whitespace-nowrap px-2.5 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1 ${
                             selectedAchievementType === button.id
                                 ? "bg-indigo-600 text-white shadow-md"
                                 : "bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200"
