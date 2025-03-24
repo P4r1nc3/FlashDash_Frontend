@@ -141,7 +141,7 @@ const AchievementsTab = () => {
     };
 
     const filterButtons = [
-        { id: "ALL" as AchievementType, label: "All Achievements", icon: <AiOutlineTrophy /> },
+        { id: "ALL" as AchievementType, label: "All", icon: <AiOutlineTrophy /> },
         { id: "STREAK_ACHIEVEMENT" as AchievementType, label: "Streak", icon: <FaFire /> },
         { id: "GAMES_PLAYED" as AchievementType, label: "Games", icon: <FaGamepad /> },
         { id: "DECKS_CREATED" as AchievementType, label: "Decks", icon: <FaLayerGroup /> },
@@ -258,11 +258,7 @@ const AchievementsTab = () => {
                                         </span>
                                     </div>
                                 </div>
-
-
                             </div>
-
-
                         </motion.div>
                     );
                 })}
@@ -286,14 +282,14 @@ const AchievementsTab = () => {
         >
             {/* Filter buttons */}
             <div className="flex flex-wrap items-center gap-2 mb-6">
-                <div className="text-gray-500 flex items-center gap-1 pr-2">
+                <div className="text-gray-500 flex items-center gap-3 pr-3">
                     <AiOutlineFilter />
                     <span className="text-sm font-medium">Filter by:</span>
                 </div>
                 {filterButtons.map(button => (
                     <button
                         key={button.id}
-                        className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 ${
+                        className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1 ${
                             selectedAchievementType === button.id
                                 ? "bg-indigo-600 text-white shadow-md"
                                 : "bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200"
@@ -302,10 +298,10 @@ const AchievementsTab = () => {
                     >
                         {button.icon}
                         {button.label}
-                        <span className={`inline-block px-1.5 py-0.5 rounded-full text-xs ${
+                        <span className={`inline-flex items-center justify-center w-4 h-4 text-xs ${
                             selectedAchievementType === button.id
-                                ? "bg-white bg-opacity-20 text-white"
-                                : "bg-white text-gray-700 border border-gray-300"
+                                ? "bg-white bg-opacity-20 text-white rounded-full"
+                                : "text-gray-700"
                         }`}>
                             {achievementCounts[button.id]}
                         </span>
