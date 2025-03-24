@@ -123,7 +123,7 @@ const AuthForm = ({
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, ease: 'easeOut' }}
                 >
-                    <ToastContainer position="top-right" autoClose={5000} />
+                    <ToastContainer position="bottom-right" autoClose={5000} />
                     <h2 className="text-2xl font-bold text-gray-800 mb-2">{title}</h2>
                     <p className="text-sm text-gray-600 mb-4">{subtitle}</p>
 
