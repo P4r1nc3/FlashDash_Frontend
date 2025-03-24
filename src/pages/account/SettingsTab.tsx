@@ -18,16 +18,16 @@ const SettingsTab = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [passwordModalOpen, setPasswordModalOpen] = useState(false);
     const [timePickerPosition, setTimePickerPosition] = useState({ top: 0, left: 0 });
-    const timePickerRef = useRef(null);
-    const timeButtonRef = useRef(null);
+    const timePickerRef = useRef<HTMLDivElement>(null);
+    const timeButtonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         fetchNotificationSettings();
 
         // Close time picker when clicking outside
-        const handleClickOutside = (event) => {
-            if (timePickerRef.current && !timePickerRef.current.contains(event.target) &&
-                timeButtonRef.current && !timeButtonRef.current.contains(event.target)) {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (timePickerRef.current && !timePickerRef.current.contains(event.target as Node) &&
+                timeButtonRef.current && !timeButtonRef.current.contains(event.target as Node)) {
                 setShowTimePicker(false);
             }
         };
@@ -85,7 +85,7 @@ const SettingsTab = () => {
         }
     };
 
-    const handleTimeSelect = (type, value) => {
+    const handleTimeSelect = (type: string, value: string) => {
         if (type === "hour") {
             setTempNotificationTime(`${value}:${tempNotificationTime.split(":")[1]}`);
         } else {
