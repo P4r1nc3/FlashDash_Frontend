@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { getLeaderboard } from "../../api/leaderboards";
 import { LeaderboardEntry } from "../../interfaces/LeaderboardEntry";
 import { AiOutlineTrophy, AiOutlineSearch, AiOutlineUser, AiOutlineGlobal } from "react-icons/ai";
+import { MdOutlineLeaderboard } from "react-icons/md";
 import { FaRegClock, FaGamepad, FaFire, FaRegStar } from "react-icons/fa";
 import Card from "../../components/ui/Card";
 import EmptyState from "../../components/ui/EmptyState";
@@ -109,7 +110,7 @@ const LeaderboardTab = () => {
         if (filteredEntries.length === 0) {
             return (
                 <EmptyState
-                    icon={<AiOutlineTrophy size={48} />}
+                    icon={<MdOutlineLeaderboard size={48} />}
                     title="No leaderboard data found"
                     description={searchTerm ? "Try a different search term" : friendsOnly ? "Add friends to see them on the leaderboard" : "Be the first to join the leaderboard!"}
                 />
@@ -187,7 +188,7 @@ const LeaderboardTab = () => {
         <Card
             title="Leaderboard"
             description="See how you rank against others"
-            icon={<AiOutlineTrophy size={22} />}
+            icon={<MdOutlineLeaderboard size={22} />}
             scrollable={true}
             fullHeight={true}
         >

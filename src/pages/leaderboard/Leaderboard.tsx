@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AiOutlineTrophy } from "react-icons/ai";
+import { MdOutlineLeaderboard } from "react-icons/md";
 import MainLayout from "../../components/MainLayout";
 import LeaderboardTab from "./LeaderboardTab";
 
@@ -11,7 +11,7 @@ const Leaderboard = () => {
             title="Leaderboard"
             description="See how you compare with others in our learning community."
             tabs={[
-                { id: "global", icon: <AiOutlineTrophy size={22} />, label: "Leaderboard" },
+                { id: "global", icon: <MdOutlineLeaderboard size={22} />, label: "Leaderboard" },
             ]}
             activeTab={tabIndex}
             setActiveTab={setTabIndex}
