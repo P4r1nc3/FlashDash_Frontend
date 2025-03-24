@@ -4,7 +4,7 @@ import { getAllAchievementSchemas, getUserAchievements } from "../../api/achieve
 import { Achievement, AchievementSchema } from "../../interfaces/Achievement";
 import { AiOutlineTrophy, AiOutlineFilter } from "react-icons/ai";
 import { FaLock, FaFire, FaGamepad, FaLayerGroup, FaUserFriends, FaQuestion } from "react-icons/fa";
-import { BsCheckCircleFill } from "react-icons/bs";
+import { BsCheckCircleFill, BsStarFill } from "react-icons/bs";
 import Card from "../../components/ui/Card";
 import EmptyState from "../../components/ui/EmptyState";
 import { toast } from "react-toastify";
@@ -46,17 +46,17 @@ const AchievementsTab = () => {
     const getAchievementIcon = (type: string) => {
         switch (type) {
             case "STREAK_ACHIEVEMENT":
-                return <FaFire className="text-orange-500" />;
+                return <FaFire className="text-white" />;
             case "GAMES_PLAYED":
-                return <FaGamepad className="text-indigo-500" />;
+                return <FaGamepad className="text-white" />;
             case "DECKS_CREATED":
-                return <FaLayerGroup className="text-blue-500" />;
+                return <FaLayerGroup className="text-white" />;
             case "FRIENDS_ADDED":
-                return <FaUserFriends className="text-green-500" />;
+                return <FaUserFriends className="text-white" />;
             case "QUESTIONS_CREATED":
-                return <FaQuestion className="text-purple-500" />;
+                return <FaQuestion className="text-white" />;
             default:
-                return <AiOutlineTrophy className="text-blue-500" />;
+                return <AiOutlineTrophy className="text-white" />;
         }
     };
 
@@ -64,45 +64,57 @@ const AchievementsTab = () => {
         switch (type) {
             case "STREAK_ACHIEVEMENT":
                 return {
-                    bg: "bg-orange-100",
+                    bg: "from-orange-400 to-orange-600",
+                    lightBg: "bg-orange-100",
                     text: "text-orange-700",
                     border: "border-orange-200",
-                    borderLeft: "border-orange-500"
+                    shadow: "shadow-orange-200",
+                    glow: "orange"
                 };
             case "GAMES_PLAYED":
                 return {
-                    bg: "bg-indigo-100",
+                    bg: "from-indigo-400 to-indigo-600",
+                    lightBg: "bg-indigo-100",
                     text: "text-indigo-700",
                     border: "border-indigo-200",
-                    borderLeft: "border-indigo-500"
+                    shadow: "shadow-indigo-200",
+                    glow: "indigo"
                 };
             case "DECKS_CREATED":
                 return {
-                    bg: "bg-blue-100",
+                    bg: "from-blue-400 to-blue-600",
+                    lightBg: "bg-blue-100",
                     text: "text-blue-700",
                     border: "border-blue-200",
-                    borderLeft: "border-blue-500"
+                    shadow: "shadow-blue-200",
+                    glow: "blue"
                 };
             case "FRIENDS_ADDED":
                 return {
-                    bg: "bg-green-100",
+                    bg: "from-green-400 to-green-600",
+                    lightBg: "bg-green-100",
                     text: "text-green-700",
                     border: "border-green-200",
-                    borderLeft: "border-green-500"
+                    shadow: "shadow-green-200",
+                    glow: "green"
                 };
             case "QUESTIONS_CREATED":
                 return {
-                    bg: "bg-purple-100",
+                    bg: "from-purple-400 to-purple-600",
+                    lightBg: "bg-purple-100",
                     text: "text-purple-700",
                     border: "border-purple-200",
-                    borderLeft: "border-purple-500"
+                    shadow: "shadow-purple-200",
+                    glow: "purple"
                 };
             default:
                 return {
-                    bg: "bg-blue-100",
+                    bg: "from-blue-400 to-blue-600",
+                    lightBg: "bg-blue-100",
                     text: "text-blue-700",
                     border: "border-blue-200",
-                    borderLeft: "border-blue-500"
+                    shadow: "shadow-blue-200",
+                    glow: "blue"
                 };
         }
     };
@@ -129,12 +141,12 @@ const AchievementsTab = () => {
     };
 
     const filterButtons = [
-        { id: "ALL" as AchievementType, label: "All Achievements" },
-        { id: "STREAK_ACHIEVEMENT" as AchievementType, label: "Streak" },
-        { id: "GAMES_PLAYED" as AchievementType, label: "Games" },
-        { id: "DECKS_CREATED" as AchievementType, label: "Decks" },
-        { id: "FRIENDS_ADDED" as AchievementType, label: "Friends" },
-        { id: "QUESTIONS_CREATED" as AchievementType, label: "Questions" }
+        { id: "ALL" as AchievementType, label: "All Achievements", icon: <AiOutlineTrophy /> },
+        { id: "STREAK_ACHIEVEMENT" as AchievementType, label: "Streak", icon: <FaFire /> },
+        { id: "GAMES_PLAYED" as AchievementType, label: "Games", icon: <FaGamepad /> },
+        { id: "DECKS_CREATED" as AchievementType, label: "Decks", icon: <FaLayerGroup /> },
+        { id: "FRIENDS_ADDED" as AchievementType, label: "Friends", icon: <FaUserFriends /> },
+        { id: "QUESTIONS_CREATED" as AchievementType, label: "Questions", icon: <FaQuestion /> }
     ];
 
     const filteredAchievements = achievementSchemas.filter(
@@ -152,7 +164,7 @@ const AchievementsTab = () => {
         }
 
         return (
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {filteredAchievements.map((schema: AchievementSchema) => {
                     const userAchievement = userAchievements.find(a => a.schemaFrn === schema.schemaFrn);
                     const isUnlocked = !!userAchievement;
@@ -161,78 +173,96 @@ const AchievementsTab = () => {
                     return (
                         <motion.div
                             key={schema.schemaId}
-                            className={`p-4 rounded-lg shadow-sm border-l-4 ${
-                                isUnlocked
-                                    ? `${colors.borderLeft} ${colors.bg} bg-opacity-30`
-                                    : 'border-gray-300 bg-gray-50'
-                            }`}
-                            whileHover={{ x: 3 }}
-                            transition={{ duration: 0.2 }}
+                            className={`relative overflow-hidden rounded-lg ${isUnlocked ? 'shadow-lg ' + colors.shadow : 'shadow bg-gray-50'} border ${isUnlocked ? colors.border : 'border-gray-200'}`}
+                            whileHover={{
+                                y: -5,
+                                transition: { duration: 0.2 }
+                            }}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3 }}
                         >
-                            <div className="flex items-center mb-2">
-                                <div className="flex items-center gap-2 mr-3">
-                                    <div className={`w-10 h-10 rounded-full ${
-                                        isUnlocked
-                                            ? colors.bg
-                                            : 'bg-gray-200'
-                                    } flex items-center justify-center`}>
+                            {/* Achievement Header */}
+                            <div className={`p-4 ${isUnlocked ? 'bg-gradient-to-r ' + colors.bg : 'bg-gray-200'}`}>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isUnlocked ? 'bg-white bg-opacity-20 shadow-inner' : 'bg-gray-300'}`}>
+                                            {isUnlocked ? (
+                                                getAchievementIcon(schema.achievementType)
+                                            ) : (
+                                                <FaLock className="text-gray-500" size={16} />
+                                            )}
+                                        </div>
+                                        <div>
+                                            <h4 className={`font-bold text-lg ${isUnlocked ? 'text-white' : 'text-gray-600'}`}>
+                                                {schema.name}
+                                            </h4>
+                                            <div className={`text-xs font-medium inline-block px-2 py-0.5 rounded-full ${isUnlocked ? 'bg-white bg-opacity-20 text-white' : 'bg-gray-300 text-gray-600'}`}>
+                                                {getAchievementTypeName(schema.achievementType)}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="absolute top-2 right-2">
+                                        <div className="flex">
+                                            {[...Array(5)].map((_, i) => {
+                                                // Używam poziomu (level) osiągnięcia do określenia liczby gwiazdek
+                                                // level 1 = 1 gwiazdka, level 2 = 2 gwiazdki, itd.
+                                                const filled = isUnlocked ?
+                                                    schema.level > i :
+                                                    false;
+
+                                                return (
+                                                    <BsStarFill
+                                                        key={i}
+                                                        className={`${filled ? 'text-yellow-300' : 'text-gray-300'} drop-shadow-sm`}
+                                                        size={16}
+                                                    />
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Achievement Body */}
+                            <div className="p-4">
+                                <p className={`text-sm mb-4 ${isUnlocked ? 'text-gray-700' : 'text-gray-500'}`}>
+                                    {schema.description}
+                                </p>
+
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
                                         {isUnlocked ? (
-                                            getAchievementIcon(schema.achievementType)
+                                            <>
+                                                <BsCheckCircleFill className={colors.text} />
+                                                <span className={`text-sm font-medium ${colors.text}`}>
+                                                    Unlocked: {formatDate(userAchievement.achievedAt)}
+                                                </span>
+                                            </>
                                         ) : (
-                                            <FaLock className="text-gray-500" size={16} />
+                                            <>
+                                                <FaLock className="text-gray-500" size={14} />
+                                                <span className="text-sm text-gray-500 font-medium">Locked</span>
+                                            </>
                                         )}
                                     </div>
-                                    <h4 className={`font-semibold text-base ${
-                                        isUnlocked
-                                            ? colors.text
-                                            : 'text-gray-500'
-                                    }`}>
-                                        {schema.name}
-                                    </h4>
+
+                                    <div className="text-right">
+                                        <span className={`text-xs font-bold px-2 py-1 rounded-full ${
+                                            isUnlocked
+                                                ? colors.lightBg + ' ' + colors.text
+                                                : 'bg-gray-200 text-gray-600'
+                                        }`}>
+                                            {isUnlocked ? 'Completed: ' : 'Goal: '}{schema.threshold}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className={`px-2 py-1 rounded-md text-xs font-medium ml-auto ${
-                                    isUnlocked
-                                        ? `${colors.bg} ${colors.text}`
-                                        : 'bg-gray-200 text-gray-600'
-                                }`}>
-                                    {getAchievementTypeName(schema.achievementType)}
-                                </div>
+
+
                             </div>
 
-                            <p className={`text-sm mb-3 ${
-                                isUnlocked
-                                    ? 'text-gray-700'
-                                    : 'text-gray-500'
-                            }`}>
-                                {schema.description}
-                            </p>
 
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    {isUnlocked ? (
-                                        <>
-                                            <BsCheckCircleFill className={colors.text} />
-                                            <span className={`text-sm font-medium ${colors.text}`}>
-                                                Unlocked on {formatDate(userAchievement.achievedAt)}
-                                            </span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <FaLock className="text-gray-500" size={14} />
-                                            <span className="text-sm text-gray-500 font-medium">Not yet unlocked</span>
-                                        </>
-                                    )}
-                                </div>
-                                <div className="text-right">
-                                    <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                                        isUnlocked
-                                            ? `${colors.bg} ${colors.text}`
-                                            : 'bg-gray-200 text-gray-600'
-                                    }`}>
-                                        Threshold: {schema.threshold}
-                                    </span>
-                                </div>
-                            </div>
                         </motion.div>
                     );
                 })}
@@ -246,31 +276,37 @@ const AchievementsTab = () => {
             description="Track your progress and unlock rewards as you learn."
             icon={<AiOutlineTrophy size={22} />}
             actions={
-                <div className="bg-indigo-50 text-indigo-700 px-3 py-2 rounded-lg font-medium">
-                    {userAchievements.length} / {achievementSchemas.length} Unlocked
+                <div className="bg-yellow-50 text-yellow-700 px-3 py-2 rounded-lg font-bold flex items-center gap-2 border border-yellow-200 shadow-sm">
+                    <AiOutlineTrophy className="text-yellow-500" />
+                    <span>{userAchievements.length} / {achievementSchemas.length}</span>
                 </div>
             }
             scrollable={true}
             fullHeight={true}
         >
             {/* Filter buttons */}
-            <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2">
+            <div className="flex flex-wrap items-center gap-2 mb-6">
                 <div className="text-gray-500 flex items-center gap-1 pr-2">
                     <AiOutlineFilter />
-                    <span className="text-sm">Filter:</span>
+                    <span className="text-sm font-medium">Filter by:</span>
                 </div>
                 {filterButtons.map(button => (
                     <button
                         key={button.id}
-                        className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 ${
+                        className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 ${
                             selectedAchievementType === button.id
-                                ? "bg-indigo-100 text-indigo-700 border border-indigo-200"
+                                ? "bg-indigo-600 text-white shadow-md"
                                 : "bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200"
                         }`}
                         onClick={() => setSelectedAchievementType(button.id)}
                     >
+                        {button.icon}
                         {button.label}
-                        <span className="ml-1 bg-white px-2 py-0.5 rounded-full text-xs">
+                        <span className={`inline-block px-1.5 py-0.5 rounded-full text-xs ${
+                            selectedAchievementType === button.id
+                                ? "bg-white bg-opacity-20 text-white"
+                                : "bg-white text-gray-700 border border-gray-300"
+                        }`}>
                             {achievementCounts[button.id]}
                         </span>
                     </button>
