@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { getAllAchievementSchemas, getUserAchievements } from "../../api/achievements.ts";
 import { Achievement, AchievementSchema } from "../../interfaces/Achievement";
@@ -31,7 +31,8 @@ const AchievementsTab = () => {
                 toast.error("Failed to fetch achievement data");
             }
         };
-        fetchData();
+        // Execute fetchData and handle the Promise properly
+        void fetchData();
     }, []);
 
     const formatDate = (dateString: string) => {
@@ -141,12 +142,12 @@ const AchievementsTab = () => {
     };
 
     const filterButtons = [
-        { id: "ALL" as AchievementType, label: "All", icon: <AiOutlineTrophy /> },
-        { id: "STREAK_ACHIEVEMENT" as AchievementType, label: "Streak", icon: <FaFire /> },
-        { id: "GAMES_PLAYED" as AchievementType, label: "Games", icon: <FaGamepad /> },
-        { id: "DECKS_CREATED" as AchievementType, label: "Decks", icon: <FaLayerGroup /> },
-        { id: "FRIENDS_ADDED" as AchievementType, label: "Friends", icon: <FaUserFriends /> },
-        { id: "QUESTIONS_CREATED" as AchievementType, label: "Questions", icon: <FaQuestion /> }
+        { id: "ALL" as AchievementType, label: "All", icon: <AiOutlineTrophy className={selectedAchievementType === "ALL" ? "text-indigo-600" : "text-gray-400"} /> },
+        { id: "STREAK_ACHIEVEMENT" as AchievementType, label: "Streak", icon: <FaFire className={selectedAchievementType === "STREAK_ACHIEVEMENT" ? "text-indigo-600" : "text-gray-400"} /> },
+        { id: "GAMES_PLAYED" as AchievementType, label: "Games", icon: <FaGamepad className={selectedAchievementType === "GAMES_PLAYED" ? "text-indigo-600" : "text-gray-400"} /> },
+        { id: "DECKS_CREATED" as AchievementType, label: "Decks", icon: <FaLayerGroup className={selectedAchievementType === "DECKS_CREATED" ? "text-indigo-600" : "text-gray-400"} /> },
+        { id: "FRIENDS_ADDED" as AchievementType, label: "Friends", icon: <FaUserFriends className={selectedAchievementType === "FRIENDS_ADDED" ? "text-indigo-600" : "text-gray-400"} /> },
+        { id: "QUESTIONS_CREATED" as AchievementType, label: "Questions", icon: <FaQuestion className={selectedAchievementType === "QUESTIONS_CREATED" ? "text-indigo-600" : "text-gray-400"} /> }
     ];
 
     const filteredAchievements = achievementSchemas.filter(
@@ -206,8 +207,6 @@ const AchievementsTab = () => {
                                     <div className="absolute top-2 right-2">
                                         <div className="flex">
                                             {[...Array(5)].map((_, i) => {
-                                                // Używam poziomu (level) osiągnięcia do określenia liczby gwiazdek
-                                                // level 1 = 1 gwiazdka, level 2 = 2 gwiazdki, itd.
                                                 const filled = isUnlocked ?
                                                     schema.level > i :
                                                     false;
@@ -280,28 +279,34 @@ const AchievementsTab = () => {
             scrollable={true}
             fullHeight={true}
         >
-            {/* Filter buttons */}
-            <div className="flex flex-wrap items-center gap-2 mb-6">
-                <div className="text-gray-500 flex items-center gap-1 pr-1">
-                    <AiOutlineFilter />
-                    <span className="text-sm font-medium">Filter by:</span>
+            {/* Filter buttons - updated to match LeaderboardTab style */}
+            <div className="flex flex-wrap items-center mb-6 border border-gray-200 rounded-lg bg-gray-50 h-10 overflow-hidden">
+                <div className="flex items-center h-full px-3 text-xs text-gray-500 font-medium">
+                    <AiOutlineFilter className="mr-1.5" />
+                    <span>Filter by:</span>
                 </div>
+
                 {filterButtons.map(button => (
                     <button
                         key={button.id}
-                        className={`whitespace-nowrap px-2.5 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1 ${
+                        className={`flex-1 flex items-center justify-center h-full px-3 py-2 text-sm ${
                             selectedAchievementType === button.id
-                                ? "bg-indigo-600 text-white shadow-md"
-                                : "bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200"
+                                ? 'bg-indigo-100 text-indigo-700'
+                                : 'text-gray-600 hover:bg-gray-100'
                         }`}
                         onClick={() => setSelectedAchievementType(button.id)}
                     >
-                        {button.icon}
-                        {button.label}
-                        <span className={`inline-flex items-center justify-center w-4 h-4 text-xs ${
+                        <span className="flex items-center">
+                            {React.cloneElement(button.icon, {
+                                className: selectedAchievementType === button.id ? 'text-indigo-600' : 'text-gray-400',
+                                size: 16
+                            })}
+                            <span className="ml-1.5">{button.label}</span>
+                        </span>
+                        <span className={`ml-1 inline-flex items-center justify-center text-xs ${
                             selectedAchievementType === button.id
-                                ? "bg-white bg-opacity-20 text-white rounded-full"
-                                : "text-gray-700"
+                                ? "bg-white bg-opacity-20 text-indigo-700 px-1.5 rounded-full"
+                                : "text-gray-500"
                         }`}>
                             {achievementCounts[button.id]}
                         </span>
