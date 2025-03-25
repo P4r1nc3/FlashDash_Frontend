@@ -150,57 +150,58 @@ const Home = () => {
                 </div>
             </section>
 
-            <section className="h-[calc(100vh-70px)] bg-white flex flex-col justify-center py-12">
+            {/* Key Features Section */}
+            <section className="h-[calc(100vh-70px)] bg-white flex flex-col justify-center py-16">
                 <div className="container mx-auto px-6 lg:px-16">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.7 }}
                         viewport={{ once: true }}
-                        className="text-center mb-12"
+                        className="text-center mb-10"
                     >
                         <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">Key Features</h2>
                         <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto mb-6"></div>
-                        <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-12">
+                        <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
                             Explore how FlashDash empowers learning through personalized quizzes, progress tracking, and social features.
                         </p>
                     </motion.div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
                         <FeatureCard
                             title="Custom Quiz Decks"
                             description="Create and organize your own decks of flashcards with questions. Easily update and manage content anytime."
-                            icon={<Book size={32} />}
+                            icon={<Book size={28} />}
                             color="from-blue-400 to-blue-600"
                         />
                         <FeatureCard
                             title="Progress Tracking"
                             description="Track your learning progress with detailed statistics, including streaks, games played, and question accuracy."
-                            icon={<Award size={32} />}
+                            icon={<Award size={28} />}
                             color="from-indigo-400 to-indigo-600"
                         />
                         <FeatureCard
                             title="Friends & Invitations"
                             description="Build your learning circle by adding friends, sending invites, and viewing their progress."
-                            icon={<Users size={32} />}
+                            icon={<Users size={28} />}
                             color="from-purple-400 to-purple-600"
                         />
                         <FeatureCard
                             title="Game Sessions"
                             description="Start solo quiz sessions and get immediate feedback on your answers. Track correct and incorrect responses."
-                            icon={<Zap size={32} />}
+                            icon={<Zap size={28} />}
                             color="from-pink-400 to-pink-600"
                         />
                         <FeatureCard
                             title="Achievements System"
                             description="Unlock achievements by reaching learning milestones such as streaks, number of quizzes, or added friends."
-                            icon={<Gift size={32} />}
+                            icon={<Gift size={28} />}
                             color="from-amber-400 to-amber-600"
                         />
                         <FeatureCard
                             title="Daily Reminders"
                             description="Stay consistent with optional daily email reminders. Set your preferred time and never miss a session."
-                            icon={<Star size={32} />}
+                            icon={<Star size={28} />}
                             color="from-teal-400 to-teal-600"
                         />
                     </div>
@@ -258,22 +259,22 @@ const Home = () => {
             </section>
 
             {/* FAQ Section */}
-            <section className="py-24 bg-gray-50">
+            <section className="h-[calc(100vh-70px)] bg-gray-50 flex flex-col justify-center py-6">
                 <div className="container mx-auto px-6 lg:px-16">
-                    <div className="text-center mb-16">
+                    <div className="text-center mb-6">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.7 }}
                             viewport={{ once: true }}
                         >
-                            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
-                            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto mb-6"></div>
-                            <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-4">Have questions? We have answers!</p>
+                            <h2 className="text-4xl font-bold text-gray-900 mb-3">Frequently Asked Questions</h2>
+                            <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto mb-4"></div>
+                            <p className="text-lg text-gray-600 max-w-2xl mx-auto">Have questions? We have answers!</p>
                         </motion.div>
                     </div>
 
-                    <div className="max-w-3xl mx-auto space-y-4">
+                    <div className="max-w-3xl mx-auto space-y-5">
                         {faqData.map((faq, index) => (
                             <FAQAccordionItem key={index} question={faq.question} answer={faq.answer} />
                         ))}
@@ -332,18 +333,18 @@ const faqData = [
 const FeatureCard = ({ title, description, icon, color }: FeatureCardProps) => (
     <motion.div
         whileHover={{
-            y: -10,
-            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+            y: -6,
+            boxShadow: "0 15px 20px -5px rgba(0, 0, 0, 0.1), 0 8px 8px -5px rgba(0, 0, 0, 0.04)"
         }}
-        className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
+        className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
     >
         <div className={`h-2 w-full bg-gradient-to-r ${color}`}></div>
-        <div className="p-7 flex flex-col items-center text-center">
-            <div className={`p-4 rounded-full bg-gradient-to-r ${color} bg-opacity-10 mb-5`}>
+        <div className="p-6 flex flex-col items-center text-center">
+            <div className={`p-3 rounded-full bg-gradient-to-r ${color} bg-opacity-10 mb-4`}>
                 <div className="text-white">{icon}</div>
             </div>
-            <h3 className="text-2xl font-bold text-gray-800 mb-3">{title}</h3>
-            <p className="text-gray-600">{description}</p>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">{title}</h3>
+            <p className="text-gray-600 text-sm">{description}</p>
         </div>
     </motion.div>
 );
@@ -365,8 +366,8 @@ const FAQAccordionItem = ({ question, answer }: FAQItemProps) => {
 
     return (
         <motion.div
-            className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
-            whileHover={{ y: -5 }}
+            className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+            whileHover={{ y: -3 }}
         >
             <button
                 className="w-full px-6 py-5 flex justify-between items-center text-left focus:outline-none"
@@ -377,7 +378,7 @@ const FAQAccordionItem = ({ question, answer }: FAQItemProps) => {
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.3 }}
                 >
-                    <ChevronDown className={`w-5 h-5 transition-colors ${isOpen ? 'text-indigo-600' : 'text-blue-500'}`} />
+                    <ChevronDown className={`w-6 h-6 transition-colors ${isOpen ? 'text-indigo-600' : 'text-blue-500'}`} />
                 </motion.div>
             </button>
 
@@ -390,7 +391,7 @@ const FAQAccordionItem = ({ question, answer }: FAQItemProps) => {
                         transition={{ duration: 0.3 }}
                         className="overflow-hidden"
                     >
-                        <div className="px-6 pb-5 text-gray-700 border-t border-gray-100 pt-3">
+                        <div className="px-6 pb-5 text-gray-700 border-t border-gray-100 pt-3 text-base">
                             {answer}
                         </div>
                     </motion.div>
