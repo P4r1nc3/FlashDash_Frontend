@@ -161,43 +161,45 @@ const Home = () => {
                     >
                         <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">Key Features</h2>
                         <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto mb-6"></div>
-                        <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-12">Discover how FlashDash makes learning engaging and rewarding with our powerful set of features.</p>
+                        <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-12">
+                            Explore how FlashDash empowers learning through personalized quizzes, progress tracking, and social features.
+                        </p>
                     </motion.div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
                         <FeatureCard
-                            title="Engaging Quizzes"
-                            description="Test your knowledge with thousands of interactive quizzes on various topics. Tailored difficulty levels and dynamic content."
+                            title="Custom Quiz Decks"
+                            description="Create and organize your own decks of flashcards with questions. Easily update and manage content anytime."
                             icon={<Book size={32} />}
                             color="from-blue-400 to-blue-600"
                         />
                         <FeatureCard
-                            title="Gamification Rewards"
-                            description="Earn points, unlock achievements, and climb the leaderboards. Stay motivated with streaks and badges."
+                            title="Progress Tracking"
+                            description="Track your learning progress with detailed statistics, including streaks, games played, and question accuracy."
                             icon={<Award size={32} />}
                             color="from-indigo-400 to-indigo-600"
                         />
                         <FeatureCard
-                            title="Compete with Friends"
-                            description="Challenge your friends to quizzes, compare scores in real-time, and engage in friendly competition."
+                            title="Friends & Invitations"
+                            description="Build your learning circle by adding friends, sending invites, and viewing their progress."
                             icon={<Users size={32} />}
                             color="from-purple-400 to-purple-600"
                         />
                         <FeatureCard
-                            title="Daily Challenges"
-                            description="Keep your knowledge fresh with new daily challenges across different subjects. Build streaks for bonus rewards."
+                            title="Game Sessions"
+                            description="Start solo quiz sessions and get immediate feedback on your answers. Track correct and incorrect responses."
                             icon={<Zap size={32} />}
                             color="from-pink-400 to-pink-600"
                         />
                         <FeatureCard
-                            title="Personalized Learning"
-                            description="Our AI adapts to your strengths and weaknesses, creating a personalized learning path for efficient improvement."
+                            title="Achievements System"
+                            description="Unlock achievements by reaching learning milestones such as streaks, number of quizzes, or added friends."
                             icon={<Gift size={32} />}
                             color="from-amber-400 to-amber-600"
                         />
                         <FeatureCard
-                            title="Create & Share"
-                            description="Create your own quizzes to share with friends or the community. Customize topics, difficulty, and formats."
+                            title="Daily Reminders"
+                            description="Stay consistent with optional daily email reminders. Set your preferred time and never miss a session."
                             icon={<Star size={32} />}
                             color="from-teal-400 to-teal-600"
                         />
@@ -302,29 +304,30 @@ const Home = () => {
 const faqData = [
     {
         question: "Is FlashDash free to use?",
-        answer: "Yes! FlashDash offers free access to thousands of quizzes. A premium version is available for extra features and exclusive content."
+        answer: "Yes! FlashDash is completely free to use. All features are available without any subscription or payment."
     },
     {
         question: "Can I create my own quizzes?",
-        answer: "Absolutely! Create, share, and challenge friends with your custom quizzes. Our intuitive editor makes it easy to get started."
+        answer: "Yes! You can create your own decks of flashcards, add custom questions, and use them to study or play solo quiz sessions."
     },
     {
-        question: "How do I earn rewards?",
-        answer: "Earn points by completing quizzes, maintaining daily learning streaks, and participating in community challenges and competitions."
+        question: "How do I track my progress?",
+        answer: "FlashDash tracks your activity automatically. You can view statistics like the number of games played, correct answers, and your current learning streak."
     },
     {
         question: "Is FlashDash available on mobile?",
-        answer: "Yes! Our app is available for both iOS and Android devices. Search for 'FlashDash Quiz' in your app store."
+        answer: "Currently, FlashDash is available through the web browser. A mobile app for iOS and Android is planned for release in the near future."
     },
     {
-        question: "How does the leaderboard system work?",
-        answer: "Our leaderboards update in real-time based on points earned. Compete globally or just with friends, and reset weekly for fresh competition."
+        question: "Is there a leaderboard or competition feature?",
+        answer: "Yes! FlashDash features leaderboards that allow you to compete based on points earned. You can view global rankings or filter them to see only your friends' scores."
     },
     {
         question: "Can I use FlashDash for educational purposes?",
-        answer: "Definitely! Many educators use FlashDash in their classrooms. We offer special features for teachers to create private quizzes for their students."
+        answer: "FlashDash is designed for individual learning. While there is no dedicated teacher mode yet, educators can still create decks and share them with students manually."
     }
 ];
+
 
 const FeatureCard = ({ title, description, icon, color }: FeatureCardProps) => (
     <motion.div
