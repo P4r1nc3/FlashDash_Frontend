@@ -194,7 +194,7 @@ const Friends = () => {
             >
                 {/* Collapsed Card View */}
                 <div
-                    className={`flex justify-between items-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 cursor-pointer ${isExpanded ? 'border-b border-indigo-100' : ''}`}
+                    className={`flex justify-between items-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 cursor-pointer hover:bg-gradient-to-br hover:from-blue-100 hover:to-indigo-100 transition-colors duration-200 ${isExpanded ? 'border-b border-indigo-100' : ''}`}
                     onClick={() => toggleExpandFriend(friend.userFrn)}
                 >
                     <div className="flex items-center">
@@ -210,11 +210,11 @@ const Friends = () => {
                     </div>
                     <div className="flex items-center">
                         <button
-                            className="bg-red-100 text-red-600 hover:bg-red-200 px-3 py-2 mr-3 rounded-lg flex items-center gap-1 transition-colors text-sm font-medium"
+                            className="flex items-center justify-center h-9 w-9 text-red-600 border border-red-200 bg-white hover:bg-red-50 rounded-md transition-colors shadow-sm mr-3"
                             onClick={(e) => openDeleteModal(friend, e)}
+                            title="Remove friend"
                         >
-                            <BsPersonXFill size={16} />
-                            Remove
+                            <BsPersonXFill size={18} />
                         </button>
                         {isExpanded ? <BsChevronUp size={18} className="text-indigo-500" /> : <BsChevronDown size={18} className="text-indigo-500" />}
                     </div>
@@ -363,7 +363,7 @@ const Friends = () => {
                     {receivedInvitations.map((inv) => (
                         <div
                             key={inv.invitationId}
-                            className="flex justify-between items-center p-4 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-lg border border-amber-100"
+                            className="flex justify-between items-center p-4 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-lg border border-amber-100 hover:bg-gradient-to-br hover:from-yellow-100 hover:to-amber-100 transition-colors duration-200"
                         >
                             <div className="flex items-center">
                                 <div className="w-10 h-10 bg-gradient-to-r from-amber-400 to-yellow-400 rounded-full flex items-center justify-center shadow-sm mr-3">
@@ -382,18 +382,18 @@ const Friends = () => {
                             </div>
                             <div className="flex space-x-2">
                                 <button
-                                    className="bg-green-100 text-green-600 hover:bg-green-200 px-3 py-2 rounded-lg flex items-center gap-1 transition-colors text-sm font-medium"
+                                    className="flex items-center justify-center h-9 w-9 text-green-600 border border-green-200 bg-white hover:bg-green-50 rounded-md transition-colors shadow-sm"
                                     onClick={() => handleRespondToInvitation(inv.invitationFrn, "ACCEPTED")}
+                                    title="Accept invitation"
                                 >
-                                    <BsCheck2Circle size={16} />
-                                    Accept
+                                    <BsCheck2Circle size={18} />
                                 </button>
                                 <button
-                                    className="bg-red-100 text-red-600 hover:bg-red-200 px-3 py-2 rounded-lg flex items-center gap-1 transition-colors text-sm font-medium"
+                                    className="flex items-center justify-center h-9 w-9 text-red-600 border border-red-200 bg-white hover:bg-red-50 rounded-md transition-colors shadow-sm"
                                     onClick={() => handleRespondToInvitation(inv.invitationFrn, "REJECTED")}
+                                    title="Reject invitation"
                                 >
-                                    <BsXCircle size={16} />
-                                    Reject
+                                    <BsXCircle size={18} />
                                 </button>
                             </div>
                         </div>
@@ -422,7 +422,7 @@ const Friends = () => {
                     {sentInvitations.map((inv) => (
                         <div
                             key={inv.invitationId}
-                            className="flex justify-between items-center p-4 bg-gradient-to-br from-gray-50 to-slate-50 rounded-lg border border-slate-100"
+                            className="flex justify-between items-center p-4 bg-gradient-to-br from-gray-50 to-slate-50 rounded-lg border border-slate-100 hover:from-gray-100 hover:to-slate-100 hover:bg-gradient-to-br transition-colors duration-200"
                         >
                             <div className="flex items-center">
                                 <div className="w-10 h-10 bg-gradient-to-r from-slate-400 to-gray-400 rounded-full flex items-center justify-center shadow-sm mr-3">
@@ -440,11 +440,11 @@ const Friends = () => {
                                 </div>
                             </div>
                             <button
-                                className="bg-red-100 text-red-600 hover:bg-red-200 px-3 py-2 rounded-lg flex items-center gap-1 transition-colors text-sm font-medium"
+                                className="flex items-center justify-center h-9 w-9 text-red-600 border border-red-200 bg-white hover:bg-red-50 rounded-md transition-colors shadow-sm"
                                 onClick={() => handleRespondToInvitation(inv.invitationFrn, "CANCELLED")}
+                                title="Cancel invitation"
                             >
-                                <BsXCircle size={16} />
-                                Cancel
+                                <BsXCircle size={18} />
                             </button>
                         </div>
                     ))}
