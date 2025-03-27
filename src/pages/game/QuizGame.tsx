@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { startGameSession, endGameSession } from "../../api/gameSession.ts";
 import { QuestionRequest, QuestionResponse } from "../../interfaces/Question.ts";
 import MainLayout from "../../components/MainLayout";
-import GradientButton from "../../components/ui/GradientButton";
 import EmptyState from "../../components/ui/EmptyState";
 import { toast } from "react-toastify";
-import { BsLightbulb, BsCheck2Circle, BsXCircle } from "react-icons/bs";
-import { FaRegClock } from "react-icons/fa";
+import { BsCheck2, BsXCircle, BsArrowRight, BsStopwatch, BsQuestionCircle } from "react-icons/bs";
+import { FaSignal } from "react-icons/fa";
 
 const QuizGame = () => {
     const { deckFrn } = useParams<{ deckFrn: string }>();
@@ -34,7 +33,7 @@ const QuizGame = () => {
                 .then(fetchedQuestions => {
                     setQuestions(fetchedQuestions || []);
                     if (fetchedQuestions?.length > 0) {
-                        setDeckName("Quiz Game");
+                        setDeckName(fetchedQuestions[0].deckName || "Quiz Game");
                         shuffleAnswers(fetchedQuestions[0]);
                     }
                 })
@@ -104,12 +103,9 @@ const QuizGame = () => {
         };
     };
 
-    const saveUserAnswer = () => {
-        setUserAnswersList(prev => [...prev, getCurrentQuestionAnswer()]);
-    };
-
     const handleNextQuestion = () => {
-        saveUserAnswer();
+        // Save answer without checking correctness
+        setUserAnswersList(prev => [...prev, getCurrentQuestionAnswer()]);
 
         if (currentIndex + 1 < questions.length) {
             setCurrentIndex(prevIndex => prevIndex + 1);
@@ -126,12 +122,28 @@ const QuizGame = () => {
         return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
     };
 
-    const getDifficultyColor = (difficulty: string) => {
+    const getDifficultyBadge = (difficulty: string) => {
         switch (difficulty?.toLowerCase()) {
-            case 'easy': return 'bg-green-100 text-green-700';
-            case 'medium': return 'bg-yellow-100 text-yellow-700';
-            case 'hard': return 'bg-red-100 text-red-700';
-            default: return 'bg-blue-100 text-blue-700';
+            case 'easy': return {
+                label: 'EASY',
+                color: 'bg-gradient-to-r from-green-400 to-green-500',
+                textColor: 'text-white'
+            };
+            case 'medium': return {
+                label: 'MEDIUM',
+                color: 'bg-gradient-to-r from-yellow-400 to-yellow-500',
+                textColor: 'text-white'
+            };
+            case 'hard': return {
+                label: 'HARD',
+                color: 'bg-gradient-to-r from-red-400 to-red-500',
+                textColor: 'text-white'
+            };
+            default: return {
+                label: 'NORMAL',
+                color: 'bg-gradient-to-r from-blue-400 to-blue-500',
+                textColor: 'text-white'
+            };
         }
     };
 
@@ -144,9 +156,10 @@ const QuizGame = () => {
                 transition={{ duration: 0.5 }}
                 className="flex flex-col items-center justify-center"
             >
-                <div className="w-40 h-40 bg-gradient-to-br from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-lg">
-                    <div className="w-36 h-36 bg-white rounded-full flex items-center justify-center">
-                        <span className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
+                <div className="w-40 h-40 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center shadow-lg relative overflow-hidden">
+                    <div className="absolute inset-0 bg-white/20 mix-blend-overlay"></div>
+                    <div className="w-36 h-36 bg-white rounded-full flex items-center justify-center shadow-inner">
+                        <span className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-600">
                             {countdown > 0 ? countdown : "GO!"}
                         </span>
                     </div>
@@ -169,103 +182,160 @@ const QuizGame = () => {
     const renderQuizContent = () => {
         const currentQuestion = questions[currentIndex];
         const isMultipleChoice = currentQuestion.correctAnswers.length > 1;
-        const progress = (currentIndex / questions.length) * 100;
+        const progress = ((currentIndex) / questions.length) * 100;
+        const difficultyBadge = getDifficultyBadge(currentQuestion.difficulty);
+        const letterOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
         return (
-            <>
-                {/* Progress bar */}
-                <div className="relative h-2 w-full bg-gray-100 rounded-full mb-6 overflow-hidden">
+            <div className="flex flex-col h-full">
+                {/* Progress bar at the very top */}
+                <div className="h-1.5 w-full bg-gray-200 rounded-full mb-6 overflow-hidden">
                     <motion.div
-                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full"
-                        initial={{ width: `${progress}%` }}
+                        className="h-full bg-blue-500 rounded-full"
+                        initial={{ width: 0 }}
                         animate={{ width: `${progress}%` }}
-                        transition={{ duration: 0.3 }}
+                        transition={{ duration: 0.5 }}
                     />
                 </div>
 
-                <div className="flex justify-between items-center mb-6">
-                    <span className="text-sm font-bold bg-gradient-to-r from-blue-400 to-indigo-400 text-white px-4 py-1.5 rounded-full shadow-sm">
-                        {currentIndex + 1}/{questions.length}
-                    </span>
-
-                    {currentQuestion?.difficulty && (
-                        <span className={`text-base font-medium px-4 py-1.5 rounded-full ${getDifficultyColor(currentQuestion.difficulty)} shadow-sm`}>
-                            {currentQuestion.difficulty}
-                        </span>
-                    )}
-
-                    <div className="flex items-center bg-indigo-50 px-4 py-1.5 rounded-full">
-                        <FaRegClock className="text-indigo-400 mr-2" />
-                        <span className="text-indigo-600 font-medium">{formatTime(timeSpent)}</span>
-                    </div>
-                </div>
-
-                <motion.div
-                    key={currentIndex}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-8"
-                >
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-sm mb-8 border border-blue-100">
-                        <div className="flex items-start gap-4">
-                            <div className="bg-white p-2 rounded-lg shadow-sm">
-                                <BsLightbulb className="text-blue-500 text-2xl" />
+                {/* Question with integrated header */}
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={currentIndex}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.5 }}
+                        className="mb-5"
+                    >
+                        {/* Stats Bar */}
+                        <div className="flex justify-between items-center mb-3 text-sm">
+                            {/* Question counter - left */}
+                            <div className="flex items-center gap-3 text-gray-500">
+                                <span className="font-medium">Question {currentIndex + 1} of {questions.length}</span>
                             </div>
-                            <p className="text-xl font-medium text-gray-800 leading-relaxed">{currentQuestion.question}</p>
-                        </div>
-                    </div>
 
-                    <div className="space-y-4">
+                            {/* Difficulty - center */}
+                            <div className={`flex items-center ${difficultyBadge.color} ${difficultyBadge.textColor} px-3 py-1.5 rounded-full`}>
+                                <FaSignal className="mr-1.5" size={12} />
+                                <span className="font-medium">{difficultyBadge.label}</span>
+                            </div>
+
+                            {/* Time - right */}
+                            <div className="flex items-center bg-gray-100 px-3 py-1.5 rounded-full">
+                                <BsStopwatch className="text-gray-600 mr-1.5" size={14} />
+                                <span className="text-gray-700 font-medium">{formatTime(timeSpent)}</span>
+                            </div>
+                        </div>
+
+                        {/* Question Text - Enhanced Visual Display */}
+                        <motion.div
+                            className="relative bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl shadow-md border border-blue-100 mb-5"
+                            initial={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05)" }}
+                            animate={{ boxShadow: "0 10px 15px rgba(59, 130, 246, 0.1)" }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                        >
+                            {/* Question icon */}
+                            <div className="flex items-center mb-3">
+                                <motion.div
+                                    className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center mr-3"
+                                    initial={{ rotate: -10 }}
+                                    animate={{ rotate: [0, 10, 0] }}
+                                    transition={{ duration: 2, delay: 0.5 }}
+                                >
+                                    <BsQuestionCircle className="text-white" size={20} />
+                                </motion.div>
+
+                                <div className="text-xs uppercase tracking-wider text-blue-800 font-semibold bg-blue-100 px-3 py-1 rounded-full">
+                                    {isMultipleChoice ? "Multiple Choice" : "Single Choice"}
+                                </div>
+                            </div>
+
+                            {/* The actual question text */}
+                            <motion.h3
+                                className="text-xl font-medium text-gray-800 leading-relaxed"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.5 }}
+                            >
+                                {currentQuestion.question}
+                            </motion.h3>
+                        </motion.div>
+                    </motion.div>
+                </AnimatePresence>
+
+                {/* Answer Options with animation matching questions */}
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={`answers-${currentIndex}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.5 }}
+                        className="space-y-3 mb-4 flex-grow"
+                    >
                         {shuffledAnswers.map((answer, index) => {
                             const isSelected = selectedAnswers.includes(answer);
 
                             return (
                                 <motion.button
-                                    key={index}
-                                    whileHover={{ scale: 1.02, boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)" }}
+                                    key={`${answer}-${index}`}
                                     whileTap={{ scale: 0.98 }}
-                                    className={`flex items-center w-full py-4 px-5 rounded-xl text-left transition-all ${
+                                    className={`flex items-center w-full p-4 rounded-xl text-left transition-all ${
                                         isSelected
-                                            ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md"
+                                            ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md"
                                             : "bg-white hover:bg-gray-50 text-gray-800 border border-gray-200"
                                     }`}
                                     onClick={() => handleAnswerSelect(answer)}
                                 >
-                                    {isMultipleChoice ? (
-                                        <div className={`w-6 h-6 mr-4 flex items-center justify-center ${
-                                            isSelected ? "bg-white" : "border-2 border-gray-300"
-                                        } rounded-md`}>
-                                            {isSelected && <BsCheck2Circle className="text-indigo-500" size={16} />}
-                                        </div>
-                                    ) : (
-                                        <div className={`w-6 h-6 mr-4 rounded-full flex items-center justify-center ${
-                                            isSelected ? "bg-white" : "border-2 border-gray-300"
-                                        }`}>
-                                            {isSelected && <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400"></div>}
-                                        </div>
-                                    )}
-                                    <span className={`text-lg ${isSelected ? 'font-medium' : ''}`}>{answer}</span>
+                                    <div className={`flex-shrink-0 w-8 h-8 flex items-center justify-center mr-3 ${
+                                        isMultipleChoice
+                                            ? "rounded-md"
+                                            : "rounded-full"
+                                    } ${
+                                        isSelected
+                                            ? "bg-white"
+                                            : "border border-gray-300 bg-gray-50"
+                                    }`}>
+                                        {isSelected ? (
+                                            <BsCheck2
+                                                className="text-blue-600"
+                                                size={18}
+                                            />
+                                        ) : (
+                                            <span className="text-gray-600 font-medium">
+                                                {letterOptions[index]}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <span className={`text-base ${isSelected ? 'font-medium' : ''}`}>
+                                        {answer}
+                                    </span>
                                 </motion.button>
                             );
                         })}
-                    </div>
-                </motion.div>
+                    </motion.div>
+                </AnimatePresence>
 
-                <div className="flex justify-end mt-6">
-                    <GradientButton
+                {/* Next Button */}
+                <div className="flex justify-end mt-auto">
+                    <motion.button
                         onClick={handleNextQuestion}
                         disabled={selectedAnswers.length === 0}
-                        className="px-8 py-3 relative overflow-hidden"
-                        startColor="from-blue-500"
-                        endColor="to-indigo-500"
-                        hoverStartColor="from-blue-600"
-                        hoverEndColor="to-indigo-600"
+                        whileHover={selectedAnswers.length > 0 ? { scale: 1.03 } : {}}
+                        whileTap={selectedAnswers.length > 0 ? { scale: 0.97 } : {}}
+                        className={`px-5 py-3 rounded-lg flex items-center gap-2 font-medium transition-all ${
+                            selectedAnswers.length > 0
+                                ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 shadow-md"
+                                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        }`}
                     >
                         {currentIndex + 1 === questions.length ? "Finish Quiz" : "Next Question"}
-                        <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 animate-shine"></div>
-                    </GradientButton>
+                        <BsArrowRight />
+                    </motion.button>
                 </div>
-            </>
+            </div>
         );
     };
 
