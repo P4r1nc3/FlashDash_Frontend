@@ -32,7 +32,9 @@ const Friends = () => {
     useEffect(() => {
         fetchFriends();
         fetchSentInvitations();
-        fetchReceivedInvitations();
+        fetchReceivedInvitations().catch(error => {
+            console.error("Unhandled error in fetchReceivedInvitations:", error);
+        });
     }, []);
 
     const fetchFriends = async () => {
@@ -145,7 +147,9 @@ const Friends = () => {
                             >
                                 <div className="flex items-center">
                                     <div className="w-10 h-10 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center shadow-sm mr-3">
-                                        <BsPersonCircle className="text-white text-lg" />
+                                        <span className="text-sm font-bold text-white">
+                                            {friend.firstName.charAt(0)}{friend.lastName.charAt(0)}
+                                        </span>
                                     </div>
                                     <div>
                                         <h3 className="font-semibold text-gray-800">{friend.firstName} {friend.lastName}</h3>
@@ -190,7 +194,13 @@ const Friends = () => {
                         >
                             <div className="flex items-center">
                                 <div className="w-10 h-10 bg-gradient-to-r from-amber-400 to-yellow-400 rounded-full flex items-center justify-center shadow-sm mr-3">
-                                    <BsPersonPlusFill className="text-white text-lg" />
+                                    {inv.sender?.firstName && inv.sender?.lastName ? (
+                                        <span className="text-sm font-bold text-white">
+                                            {inv.sender.firstName.charAt(0)}{inv.sender.lastName.charAt(0)}
+                                        </span>
+                                    ) : (
+                                        <BsPersonPlusFill className="text-white text-lg" />
+                                    )}
                                 </div>
                                 <div>
                                     <h3 className="font-semibold text-gray-800">{inv.sender?.firstName} {inv.sender?.lastName}</h3>
@@ -243,7 +253,13 @@ const Friends = () => {
                         >
                             <div className="flex items-center">
                                 <div className="w-10 h-10 bg-gradient-to-r from-slate-400 to-gray-400 rounded-full flex items-center justify-center shadow-sm mr-3">
-                                    <AiOutlineSend className="text-white text-lg" />
+                                    {inv.recipient?.firstName && inv.recipient?.lastName ? (
+                                        <span className="text-sm font-bold text-white">
+                                            {inv.recipient.firstName.charAt(0)}{inv.recipient.lastName.charAt(0)}
+                                        </span>
+                                    ) : (
+                                        <AiOutlineSend className="text-white text-lg" />
+                                    )}
                                 </div>
                                 <div>
                                     <h3 className="font-semibold text-gray-800">{inv.recipient?.firstName} {inv.recipient?.lastName}</h3>
