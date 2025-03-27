@@ -22,7 +22,6 @@ const QuizGame = () => {
     const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([]);
     const [userAnswersList, setUserAnswersList] = useState<QuestionRequest[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [deckName, setDeckName] = useState("Quiz");
     const [timeSpent, setTimeSpent] = useState(0);
     const [startTime, setStartTime] = useState<number | null>(null);
 
@@ -33,7 +32,6 @@ const QuizGame = () => {
                 .then(fetchedQuestions => {
                     setQuestions(fetchedQuestions || []);
                     if (fetchedQuestions?.length > 0) {
-                        setDeckName(fetchedQuestions[0].deckName || "Quiz Game");
                         shuffleAnswers(fetchedQuestions[0]);
                     }
                 })
@@ -189,7 +187,7 @@ const QuizGame = () => {
         return (
             <div className="flex flex-col h-full">
                 {/* Progress bar at the very top */}
-                <div className="h-1.5 w-full bg-gray-200 rounded-full mb-6 overflow-hidden">
+                <div className="h-1 w-full bg-gray-200 rounded-full mb-4 overflow-hidden">
                     <motion.div
                         className="h-full bg-blue-500 rounded-full"
                         initial={{ width: 0 }}
@@ -206,54 +204,54 @@ const QuizGame = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.5 }}
-                        className="mb-5"
+                        className="mb-3"
                     >
                         {/* Stats Bar */}
-                        <div className="flex justify-between items-center mb-3 text-sm">
+                        <div className="flex justify-between items-center mb-2 text-xs">
                             {/* Question counter - left */}
-                            <div className="flex items-center gap-3 text-gray-500">
+                            <div className="flex items-center gap-2 text-gray-500">
                                 <span className="font-medium">Question {currentIndex + 1} of {questions.length}</span>
                             </div>
 
                             {/* Difficulty - center */}
-                            <div className={`flex items-center ${difficultyBadge.color} ${difficultyBadge.textColor} px-3 py-1.5 rounded-full`}>
-                                <FaSignal className="mr-1.5" size={12} />
+                            <div className={`flex items-center ${difficultyBadge.color} ${difficultyBadge.textColor} px-2 py-1 rounded-full`}>
+                                <FaSignal className="mr-1" size={10} />
                                 <span className="font-medium">{difficultyBadge.label}</span>
                             </div>
 
                             {/* Time - right */}
-                            <div className="flex items-center bg-gray-100 px-3 py-1.5 rounded-full">
-                                <BsStopwatch className="text-gray-600 mr-1.5" size={14} />
+                            <div className="flex items-center bg-gray-100 px-2 py-1 rounded-full">
+                                <BsStopwatch className="text-gray-600 mr-1" size={12} />
                                 <span className="text-gray-700 font-medium">{formatTime(timeSpent)}</span>
                             </div>
                         </div>
 
                         {/* Question Text - Enhanced Visual Display */}
                         <motion.div
-                            className="relative bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl shadow-md border border-blue-100 mb-5"
-                            initial={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05)" }}
-                            animate={{ boxShadow: "0 10px 15px rgba(59, 130, 246, 0.1)" }}
+                            className="relative bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-xl shadow-sm border border-blue-100 mb-3"
+                            initial={{ boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)" }}
+                            animate={{ boxShadow: "0 4px 8px rgba(59, 130, 246, 0.1)" }}
                             transition={{ duration: 0.5, delay: 0.2 }}
                         >
                             {/* Question icon */}
-                            <div className="flex items-center mb-3">
+                            <div className="flex items-center mb-2">
                                 <motion.div
-                                    className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center mr-3"
+                                    className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center mr-2"
                                     initial={{ rotate: -10 }}
                                     animate={{ rotate: [0, 10, 0] }}
                                     transition={{ duration: 2, delay: 0.5 }}
                                 >
-                                    <BsQuestionCircle className="text-white" size={20} />
+                                    <BsQuestionCircle className="text-white" size={12} />
                                 </motion.div>
 
-                                <div className="text-xs uppercase tracking-wider text-blue-800 font-semibold bg-blue-100 px-3 py-1 rounded-full">
+                                <div className="text-xs uppercase tracking-wider text-blue-800 font-semibold bg-blue-100 px-2 py-0.5 rounded-full">
                                     {isMultipleChoice ? "Multiple Choice" : "Single Choice"}
                                 </div>
                             </div>
 
                             {/* The actual question text */}
                             <motion.h3
-                                className="text-xl font-medium text-gray-800 leading-relaxed"
+                                className="text-base font-medium text-gray-800 leading-relaxed"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.5 }}
@@ -272,7 +270,7 @@ const QuizGame = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.5 }}
-                        className="space-y-3 mb-4 flex-grow"
+                        className="space-y-2 mb-3 flex-grow"
                     >
                         {shuffledAnswers.map((answer, index) => {
                             const isSelected = selectedAnswers.includes(answer);
@@ -281,14 +279,14 @@ const QuizGame = () => {
                                 <motion.button
                                     key={`${answer}-${index}`}
                                     whileTap={{ scale: 0.98 }}
-                                    className={`flex items-center w-full p-4 rounded-xl text-left transition-all ${
+                                    className={`flex items-center w-full p-3 rounded-lg text-left transition-all ${
                                         isSelected
-                                            ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md"
+                                            ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm"
                                             : "bg-white hover:bg-gray-50 text-gray-800 border border-gray-200"
                                     }`}
                                     onClick={() => handleAnswerSelect(answer)}
                                 >
-                                    <div className={`flex-shrink-0 w-8 h-8 flex items-center justify-center mr-3 ${
+                                    <div className={`flex-shrink-0 w-6 h-6 flex items-center justify-center mr-2 ${
                                         isMultipleChoice
                                             ? "rounded-md"
                                             : "rounded-full"
@@ -300,16 +298,16 @@ const QuizGame = () => {
                                         {isSelected ? (
                                             <BsCheck2
                                                 className="text-blue-600"
-                                                size={18}
+                                                size={14}
                                             />
                                         ) : (
-                                            <span className="text-gray-600 font-medium">
+                                            <span className="text-gray-600 font-medium text-xs">
                                                 {letterOptions[index]}
                                             </span>
                                         )}
                                     </div>
 
-                                    <span className={`text-base ${isSelected ? 'font-medium' : ''}`}>
+                                    <span className={`text-sm ${isSelected ? 'font-medium' : ''}`}>
                                         {answer}
                                     </span>
                                 </motion.button>
@@ -323,16 +321,16 @@ const QuizGame = () => {
                     <motion.button
                         onClick={handleNextQuestion}
                         disabled={selectedAnswers.length === 0}
-                        whileHover={selectedAnswers.length > 0 ? { scale: 1.03 } : {}}
-                        whileTap={selectedAnswers.length > 0 ? { scale: 0.97 } : {}}
-                        className={`px-5 py-3 rounded-lg flex items-center gap-2 font-medium transition-all ${
+                        whileHover={selectedAnswers.length > 0 ? { scale: 1.02 } : {}}
+                        whileTap={selectedAnswers.length > 0 ? { scale: 0.98 } : {}}
+                        className={`px-4 py-2 rounded-lg flex items-center gap-1.5 font-medium text-sm transition-all ${
                             selectedAnswers.length > 0
-                                ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 shadow-md"
+                                ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 shadow-sm"
                                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
                         }`}
                     >
                         {currentIndex + 1 === questions.length ? "Finish Quiz" : "Next Question"}
-                        <BsArrowRight />
+                        <BsArrowRight size={14} />
                     </motion.button>
                 </div>
             </div>
@@ -341,13 +339,13 @@ const QuizGame = () => {
 
     return (
         <MainLayout
-            title={deckName}
+            title={"Quiz Game"}
             description={showCountdown ? "Prepare for quiz" : "Choose the correct answer"}
             onBack={() => navigate(`/decks/${deckFrn}`)}
         >
             {showCountdown ? renderCountdown() :
                 questions.length === 0 ? <EmptyState
-                    icon={<BsXCircle size={48}/>}
+                    icon={<BsXCircle size={36}/>}
                     title="No questions yet."
                     description="No questions available for this deck."
                 /> : renderQuizContent()}
