@@ -5,6 +5,13 @@ export interface QuestionRequest {
     difficulty: string;
 }
 
+export interface GenerateQuestionRequest {
+    count: number;
+    language: string;
+    difficulty: string;
+    prompt: string;
+}
+
 export interface QuestionResponse {
     questionId: string;
     questionFrn: string;
