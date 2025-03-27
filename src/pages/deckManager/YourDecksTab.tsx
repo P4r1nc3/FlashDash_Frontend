@@ -302,7 +302,7 @@ const YourDecksTab = () => {
     const renderDeckList = () => {
         if (filteredDecks.length === 0) {
             return (
-                <div className="h-full flex items-center justify-center pb-24">
+                <div className="h-full flex items-center justify-center">
                     <EmptyState
                         icon={<BsBook size={48} />}
                         title="No decks found."
