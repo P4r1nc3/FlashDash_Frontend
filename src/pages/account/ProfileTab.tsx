@@ -37,6 +37,11 @@ const ProfileTab = () => {
         });
     };
 
+    const getCreationYear = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.getFullYear();
+    };
+
     const formatStudyTime = (minutes: number) => {
         if (!minutes) return "0 min";
 
@@ -97,7 +102,7 @@ const ProfileTab = () => {
                                     <AiOutlineUser className="mr-1" /> {user.username}
                                 </div>
                                 <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
-                                    <AiOutlineCalendar className="mr-1" /> Joined {formatDate(user.createdAt).split(' ').slice(0, 2).join(' ')}
+                                    <AiOutlineCalendar className="mr-1" /> Joined {formatDate(user.createdAt).split(' ').slice(0, 2).join(' ')} {getCreationYear(user.createdAt)}
                                 </div>
                             </div>
                         </div>
