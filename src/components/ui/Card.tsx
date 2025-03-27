@@ -6,6 +6,7 @@ interface CardProps {
     icon?: React.ReactNode;
     children?: React.ReactNode;
     actions?: React.ReactNode;
+    toolbar?: React.ReactNode;
     scrollable?: boolean;
     maxHeight?: string;
     className?: string;
@@ -20,6 +21,7 @@ const Card: React.FC<CardProps> = ({
                                        icon,
                                        children,
                                        actions,
+                                       toolbar,
                                        scrollable = false,
                                        maxHeight = 'max-h-[50vh]',
                                        className = '',
@@ -57,6 +59,12 @@ const Card: React.FC<CardProps> = ({
                     </div>
                     {actions && <div>{actions}</div>}
                 </div>
+
+                {toolbar && (
+                    <div className="flex-shrink-0 mb-4 border-b border-gray-100 pb-4">
+                        {toolbar}
+                    </div>
+                )}
 
                 <div className={`${fullHeight ? 'flex-grow relative' : ''}`}>
                     <div

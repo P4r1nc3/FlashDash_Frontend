@@ -86,12 +86,84 @@ const LeaderboardTab = () => {
     }, [criteria, friendsOnly]);
 
     useEffect(() => {
-        fetchLeaderboardData()
+        fetchLeaderboardData();
     }, [fetchLeaderboardData]);
 
     const filteredEntries = entries.filter(entry =>
         entry.user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
         `${entry.user.firstName} ${entry.user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const renderToolbar = () => (
+        <div className="flex flex-wrap gap-2 items-center">
+            <div className="relative w-full sm:w-auto sm:flex-1 max-w-md">
+                <input
+                    type="text"
+                    placeholder="Search users..."
+                    className="p-2 pl-9 w-full bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-300 text-sm"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                    <AiOutlineSearch className="text-gray-400" size={18} />
+                </div>
+            </div>
+
+            <div className="flex items-center">
+                <label className="mr-2 text-xs text-gray-500 font-medium">Sort by:</label>
+                <div className="relative">
+                    <select
+                        className="h-10 py-2 pl-8 pr-8 border border-gray-200 rounded-lg bg-gray-50 appearance-none focus:outline-none focus:ring-1 focus:ring-indigo-300 text-sm text-gray-700 cursor-pointer"
+                        value={criteria}
+                        onChange={(e) => setCriteria(e.target.value)}
+                    >
+                        <option value="points">Points</option>
+                        <option value="studyTime">Study Time</option>
+                        <option value="gamesPlayed">Games Played</option>
+                        <option value="streak">Streak</option>
+                    </select>
+                    <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                        {(() => {
+                            switch (criteria) {
+                                case "studyTime":
+                                    return <FaRegClock className="text-purple-500" />;
+                                case "gamesPlayed":
+                                    return <FaGamepad className="text-amber-500" />;
+                                case "streak":
+                                    return <FaFire className="text-orange-500" />;
+                                case "points":
+                                default:
+                                    return <FaRegStar className="text-blue-500" />;
+                            }
+                        })()}
+                    </div>
+                    <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+                        <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div className="flex items-center border border-gray-200 rounded-lg bg-gray-50 h-10 overflow-hidden">
+                    <button
+                        className={`flex items-center px-3 py-2 text-sm ${!friendsOnly ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:bg-gray-100'}`}
+                        onClick={() => setFriendsOnly(false)}
+                    >
+                        <AiOutlineGlobal className={`mr-1.5 ${!friendsOnly ? 'text-indigo-600' : 'text-gray-400'}`} size={16} />
+                        Global
+                    </button>
+                    <button
+                        className={`flex items-center px-3 py-2 text-sm ${friendsOnly ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:bg-gray-100'}`}
+                        onClick={() => setFriendsOnly(true)}
+                    >
+                        <AiOutlineUser className={`mr-1.5 ${friendsOnly ? 'text-indigo-600' : 'text-gray-400'}`} size={16} />
+                        Friends
+                    </button>
+                </div>
+            </div>
+        </div>
     );
 
     const renderLeaderboard = () => {
@@ -177,81 +249,10 @@ const LeaderboardTab = () => {
             title="Leaderboard"
             description="See how you rank against others"
             icon={<MdOutlineLeaderboard size={22} />}
+            toolbar={renderToolbar()}
             scrollable={true}
             fullHeight={true}
         >
-            <div className="mb-4">
-                <div className="flex flex-wrap gap-2 items-center">
-                    <div className="relative w-full sm:w-auto sm:flex-1 max-w-md">
-                        <input
-                            type="text"
-                            placeholder="Search users..."
-                            className="p-2 pl-9 w-full bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-300 text-sm"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                        <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
-                            <AiOutlineSearch className="text-gray-400" size={18} />
-                        </div>
-                    </div>
-
-                    <div className="flex items-center">
-                        <label className="mr-2 text-xs text-gray-500 font-medium">Sort by:</label>
-                        <div className="relative">
-                            <select
-                                className="h-10 py-2 pl-8 pr-8 border border-gray-200 rounded-lg bg-gray-50 appearance-none focus:outline-none focus:ring-1 focus:ring-indigo-300 text-sm text-gray-700 cursor-pointer"
-                                value={criteria}
-                                onChange={(e) => setCriteria(e.target.value)}
-                            >
-                                <option value="points">Points</option>
-                                <option value="studyTime">Study Time</option>
-                                <option value="gamesPlayed">Games Played</option>
-                                <option value="streak">Streak</option>
-                            </select>
-                            <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
-                                {(() => {
-                                    switch (criteria) {
-                                        case "studyTime":
-                                            return <FaRegClock className="text-purple-500" />;
-                                        case "gamesPlayed":
-                                            return <FaGamepad className="text-amber-500" />;
-                                        case "streak":
-                                            return <FaFire className="text-orange-500" />;
-                                        case "points":
-                                        default:
-                                            return <FaRegStar className="text-blue-500" />;
-                                    }
-                                })()}
-                            </div>
-                            <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
-                                <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div className="flex items-center border border-gray-200 rounded-lg bg-gray-50 h-10 overflow-hidden">
-                            <button
-                                className={`flex items-center px-3 py-2 text-sm ${!friendsOnly ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:bg-gray-100'}`}
-                                onClick={() => setFriendsOnly(false)}
-                            >
-                                <AiOutlineGlobal className={`mr-1.5 ${!friendsOnly ? 'text-indigo-600' : 'text-gray-400'}`} size={16} />
-                                Global
-                            </button>
-                            <button
-                                className={`flex items-center px-3 py-2 text-sm ${friendsOnly ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:bg-gray-100'}`}
-                                onClick={() => setFriendsOnly(true)}
-                            >
-                                <AiOutlineUser className={`mr-1.5 ${friendsOnly ? 'text-indigo-600' : 'text-gray-400'}`} size={16} />
-                                Friends
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div className="custom-scrollbar">
                 {renderLeaderboard()}
             </div>

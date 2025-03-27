@@ -184,6 +184,71 @@ const QuestionsTab = () => {
         }
     };
 
+    const renderToolbar = () => (
+        <div className="flex flex-wrap items-center gap-3">
+            <div className="relative w-full sm:w-auto sm:flex-1 max-w-md">
+                <input
+                    type="text"
+                    placeholder="Search questions..."
+                    className="p-2 pl-9 w-full bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-300 text-sm"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                    <AiOutlineSearch className="text-gray-400" size={18} />
+                </div>
+            </div>
+
+            <div className="flex items-center">
+                <label className="mr-2 text-xs text-gray-500 font-medium">Sort by:</label>
+                <div className="relative">
+                    <select
+                        className="h-10 py-2 pl-8 pr-8 border border-gray-200 rounded-lg bg-gray-50 appearance-none focus:outline-none focus:ring-1 focus:ring-indigo-300 text-sm text-gray-700 cursor-pointer"
+                        value={sortOption}
+                        onChange={(e) => setSortOption(e.target.value)}
+                    >
+                        <option value="recent">Most Recent</option>
+                        <option value="alphabetical">Alphabetical</option>
+                        <option value="difficulty">Difficulty</option>
+                    </select>
+                    <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                        <BiSortAlt2 className="text-gray-400" size={18} />
+                    </div>
+                    <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+                        <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex gap-2 ml-auto">
+                <GradientButton
+                    onClick={handleGenerateQuestions}
+                    startColor="from-emerald-400"
+                    endColor="to-teal-400"
+                    hoverStartColor="from-emerald-500"
+                    hoverEndColor="to-teal-500"
+                    icon={<AiOutlineRobot size={16} />}
+                    className="text-sm"
+                >
+                    Generate Questions
+                </GradientButton>
+                <GradientButton
+                    onClick={openAddModal}
+                    startColor="from-blue-400"
+                    endColor="to-indigo-400"
+                    hoverStartColor="from-blue-500"
+                    hoverEndColor="to-indigo-500"
+                    icon={<AiOutlinePlus size={16} />}
+                    className="text-sm"
+                >
+                    Add Question
+                </GradientButton>
+            </div>
+        </div>
+    );
+
     const renderQuestionsList = () => {
         if (filteredQuestions.length === 0) {
             return (
@@ -366,72 +431,10 @@ const QuestionsTab = () => {
                 title="Questions"
                 description="Manage questions in this deck."
                 icon={<AiOutlineQuestionCircle size={22} />}
+                toolbar={renderToolbar()}
                 scrollable={filteredQuestions.length > 0}
                 fullHeight={true}
             >
-                <div className="flex flex-wrap mb-6 items-center gap-3">
-                    <div className="relative w-full sm:w-auto sm:flex-1 max-w-md">
-                        <input
-                            type="text"
-                            placeholder="Search questions..."
-                            className="p-2 pl-9 w-full bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-300 text-sm"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                        <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
-                            <AiOutlineSearch className="text-gray-400" size={18} />
-                        </div>
-                    </div>
-
-                    <div className="flex items-center">
-                        <label className="mr-2 text-xs text-gray-500 font-medium">Sort by:</label>
-                        <div className="relative">
-                            <select
-                                className="h-10 py-2 pl-8 pr-8 border border-gray-200 rounded-lg bg-gray-50 appearance-none focus:outline-none focus:ring-1 focus:ring-indigo-300 text-sm text-gray-700 cursor-pointer"
-                                value={sortOption}
-                                onChange={(e) => setSortOption(e.target.value)}
-                            >
-                                <option value="recent">Most Recent</option>
-                                <option value="alphabetical">Alphabetical</option>
-                                <option value="difficulty">Difficulty</option>
-                            </select>
-                            <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
-                                <BiSortAlt2 className="text-gray-400" size={18} />
-                            </div>
-                            <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
-                                <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex gap-2 ml-auto">
-                        <GradientButton
-                            onClick={handleGenerateQuestions}
-                            startColor="from-emerald-400"
-                            endColor="to-teal-400"
-                            hoverStartColor="from-emerald-500"
-                            hoverEndColor="to-teal-500"
-                            icon={<AiOutlineRobot size={16} />}
-                            className="text-sm"
-                        >
-                            Generate Questions
-                        </GradientButton>
-                        <GradientButton
-                            onClick={openAddModal}
-                            startColor="from-blue-400"
-                            endColor="to-indigo-400"
-                            hoverStartColor="from-blue-500"
-                            hoverEndColor="to-indigo-500"
-                            icon={<AiOutlinePlus size={16} />}
-                            className="text-sm"
-                        >
-                            Add Question
-                        </GradientButton>
-                    </div>
-                </div>
-
                 {renderQuestionsList()}
             </Card>
 

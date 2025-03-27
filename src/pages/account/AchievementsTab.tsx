@@ -150,6 +150,42 @@ const AchievementsTab = () => {
         { id: "QUESTIONS_CREATED" as AchievementType, label: "Questions", icon: <FaQuestion className={selectedAchievementType === "QUESTIONS_CREATED" ? "text-indigo-600" : "text-gray-400"} /> }
     ];
 
+    const renderToolbar = () => (
+        <div className="flex flex-wrap items-center border border-gray-200 rounded-lg bg-gray-50 h-10 overflow-hidden">
+            <div className="flex items-center h-full px-3 text-xs text-gray-500 font-medium">
+                <AiOutlineFilter className="mr-1.5" />
+                <span>Filter by:</span>
+            </div>
+
+            {filterButtons.map(button => (
+                <button
+                    key={button.id}
+                    className={`flex-1 flex items-center justify-center h-full px-3 py-2 text-sm ${
+                        selectedAchievementType === button.id
+                            ? 'bg-indigo-100 text-indigo-700'
+                            : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                    onClick={() => setSelectedAchievementType(button.id)}
+                >
+                    <span className="flex items-center">
+                        {React.cloneElement(button.icon, {
+                            className: selectedAchievementType === button.id ? 'text-indigo-600' : 'text-gray-400',
+                            size: 16
+                        })}
+                        <span className="ml-1.5">{button.label}</span>
+                    </span>
+                    <span className={`ml-1 inline-flex items-center justify-center text-xs ${
+                        selectedAchievementType === button.id
+                            ? "bg-white bg-opacity-20 text-indigo-700 px-1.5 rounded-full"
+                            : "text-gray-500"
+                    }`}>
+                        {achievementCounts[button.id]}
+                    </span>
+                </button>
+            ))}
+        </div>
+    );
+
     const filteredAchievements = achievementSchemas.filter(
         schema => selectedAchievementType === "ALL" || schema.achievementType === selectedAchievementType
     );
@@ -270,6 +306,7 @@ const AchievementsTab = () => {
             title="Your Achievements"
             description="Track your progress and unlock rewards as you learn."
             icon={<AiOutlineTrophy size={22} />}
+            toolbar={renderToolbar()}
             actions={
                 <div className="bg-yellow-50 text-yellow-700 px-3 py-2 rounded-lg font-bold flex items-center gap-2 border border-yellow-200 shadow-sm">
                     <AiOutlineTrophy className="text-yellow-500" />
@@ -279,41 +316,6 @@ const AchievementsTab = () => {
             scrollable={true}
             fullHeight={true}
         >
-            {/* Filter buttons - updated to match LeaderboardTab style */}
-            <div className="flex flex-wrap items-center mb-6 border border-gray-200 rounded-lg bg-gray-50 h-10 overflow-hidden">
-                <div className="flex items-center h-full px-3 text-xs text-gray-500 font-medium">
-                    <AiOutlineFilter className="mr-1.5" />
-                    <span>Filter by:</span>
-                </div>
-
-                {filterButtons.map(button => (
-                    <button
-                        key={button.id}
-                        className={`flex-1 flex items-center justify-center h-full px-3 py-2 text-sm ${
-                            selectedAchievementType === button.id
-                                ? 'bg-indigo-100 text-indigo-700'
-                                : 'text-gray-600 hover:bg-gray-100'
-                        }`}
-                        onClick={() => setSelectedAchievementType(button.id)}
-                    >
-                        <span className="flex items-center">
-                            {React.cloneElement(button.icon, {
-                                className: selectedAchievementType === button.id ? 'text-indigo-600' : 'text-gray-400',
-                                size: 16
-                            })}
-                            <span className="ml-1.5">{button.label}</span>
-                        </span>
-                        <span className={`ml-1 inline-flex items-center justify-center text-xs ${
-                            selectedAchievementType === button.id
-                                ? "bg-white bg-opacity-20 text-indigo-700 px-1.5 rounded-full"
-                                : "text-gray-500"
-                        }`}>
-                            {achievementCounts[button.id]}
-                        </span>
-                    </button>
-                ))}
-            </div>
-
             {renderAchievementList()}
         </Card>
     );
