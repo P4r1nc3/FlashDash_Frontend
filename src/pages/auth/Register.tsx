@@ -22,8 +22,6 @@ const Register = () => {
             pauseOnHover: true,
             draggable: true,
         });
-
-        navigate("/login");
     };
 
     return (

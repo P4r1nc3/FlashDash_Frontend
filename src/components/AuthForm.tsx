@@ -40,18 +40,19 @@ const AuthForm = ({
                   }: AuthFormProps) => {
     const [formData, setFormData] = useState<Record<string, string>>({});
     const [showPassword, setShowPassword] = useState(false);
-    const [passwordsMatch, setPasswordsMatch] = useState(true);
 
-    const gridColumnsClass = columns > 1 ? `grid-cols-1 md:grid-cols-${Math.min(columns, 4)}` : 'grid-cols-1';
+    const gridColumnsClass = columns > 1 ? `grid-cols-1 md:grid-cols-${Math.min(columns || 1, 4)}` : 'grid-cols-1';
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+    };
 
-        if (validatePasswords && (name === 'password' || name === 'confirmPassword')) {
-            const otherField = name === 'password' ? 'confirmPassword' : 'password';
-            const otherValue = formData[otherField] || '';
-            setPasswordsMatch(!otherValue || value === otherValue);
+    const resetForm = () => {
+        setFormData({});
+        const form = document.querySelector('form') as HTMLFormElement;
+        if (form) {
+            form.reset();
         }
     };
 
@@ -67,6 +68,8 @@ const AuthForm = ({
             const dataToSubmit = { ...formData };
             delete dataToSubmit.confirmPassword;
             await onSubmit(dataToSubmit);
+
+            resetForm();
         } catch (error) {
             toast.error(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
         }
@@ -74,7 +77,6 @@ const AuthForm = ({
 
     const renderField = (field: FormField) => {
         const isPasswordField = field.type === 'password';
-        const hasPasswordError = validatePasswords && field.name === 'confirmPassword' && !passwordsMatch;
 
         return (
             <div key={field.name} className="mb-3">
@@ -87,10 +89,9 @@ const AuthForm = ({
                         type={isPasswordField && showPassword ? 'text' : field.type}
                         name={field.name}
                         placeholder={field.placeholder}
-                        className={`p-2 w-full bg-gray-50 border ${
-                            hasPasswordError ? 'border-red-300' : 'border-gray-200'
-                        } rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-300 transition-all duration-200`}
+                        className="p-2 w-full bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-300 transition-all duration-200"
                         onChange={handleChange}
+                        value={formData[field.name] || ''}
                         required={field.required !== false}
                     />
 
@@ -104,12 +105,6 @@ const AuthForm = ({
                         </button>
                     )}
                 </div>
-
-                {hasPasswordError && (
-                    <div className="text-red-500 text-xs mt-1 text-left">
-                        Passwords do not match
-                    </div>
-                )}
             </div>
         );
     };
