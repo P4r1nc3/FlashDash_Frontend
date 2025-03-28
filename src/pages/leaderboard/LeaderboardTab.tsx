@@ -1,74 +1,74 @@
 import { useState, useEffect, useCallback } from "react";
 import { getLeaderboard } from "../../api/leaderboards";
 import { LeaderboardEntry } from "../../interfaces/LeaderboardEntry";
+import { LeaderboardCriteria } from "../../enums/LeaderboardCriteria";
 import { AiOutlineSearch, AiOutlineUser, AiOutlineGlobal } from "react-icons/ai";
 import { MdOutlineLeaderboard } from "react-icons/md";
 import { FaRegClock, FaGamepad, FaFire, FaRegStar } from "react-icons/fa";
 import Card from "../../components/ui/Card";
 import EmptyState from "../../components/ui/EmptyState";
-import { toast } from "react-toastify";
 
 const LeaderboardTab = () => {
     const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
-    const [criteria, setCriteria] = useState<string>("points");
+    const [criteria, setCriteria] = useState<LeaderboardCriteria>(LeaderboardCriteria.POINTS);
     const [friendsOnly, setFriendsOnly] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState("");
 
-    const getCriteriaIcon = (criteriaType: string) => {
+    const getCriteriaIcon = (criteriaType: LeaderboardCriteria) => {
         switch (criteriaType) {
-            case "studyTime":
+            case LeaderboardCriteria.STUDY_TIME:
                 return <FaRegClock className="text-white" />;
-            case "gamesPlayed":
+            case LeaderboardCriteria.GAMES_PLAYED:
                 return <FaGamepad className="text-white" />;
-            case "streak":
+            case LeaderboardCriteria.STREAK:
                 return <FaFire className="text-white" />;
-            case "points":
+            case LeaderboardCriteria.POINTS:
             default:
                 return <FaRegStar className="text-white" />;
         }
     };
 
-    const getCriteriaColor = (criteriaType: string) => {
+    const getCriteriaColor = (criteriaType: LeaderboardCriteria) => {
         switch (criteriaType) {
-            case "studyTime": {
+            case LeaderboardCriteria.STUDY_TIME: {
                 return "bg-gradient-to-r from-purple-400 to-pink-400";
             }
-            case "gamesPlayed": {
+            case LeaderboardCriteria.GAMES_PLAYED: {
                 return "bg-gradient-to-r from-yellow-400 to-amber-400";
             }
-            case "streak": {
+            case LeaderboardCriteria.STREAK: {
                 return "bg-gradient-to-r from-orange-400 to-red-400";
             }
-            case "points":
+            case LeaderboardCriteria.POINTS:
             default:
                 return "bg-gradient-to-r from-blue-400 to-indigo-400";
         }
     };
 
-    const getCriteriaLabel = (criteriaType: string) => {
+    const getCriteriaLabel = (criteriaType: LeaderboardCriteria) => {
         switch (criteriaType) {
-            case "studyTime":
+            case LeaderboardCriteria.STUDY_TIME:
                 return "Study Time";
-            case "gamesPlayed":
+            case LeaderboardCriteria.GAMES_PLAYED:
                 return "Games Played";
-            case "streak":
+            case LeaderboardCriteria.STREAK:
                 return "Streak";
-            case "points":
+            case LeaderboardCriteria.POINTS:
             default:
                 return "Points";
         }
     };
 
-    const formatValue = (value: number, criteriaType: string) => {
+    const formatValue = (value: number, criteriaType: LeaderboardCriteria) => {
         switch (criteriaType) {
-            case "studyTime": {
+            case LeaderboardCriteria.STUDY_TIME: {
                 const hours = Math.floor(value / 60);
                 const minutes = value % 60;
                 if (hours === 0) return `${minutes} min`;
                 if (minutes === 0) return `${hours} hrs`;
                 return `${hours} hrs ${minutes} min`;
             }
-            case "streak":
+            case LeaderboardCriteria.STREAK:
                 return `${value} days`;
             default:
                 return value.toLocaleString();
@@ -110,23 +110,23 @@ const LeaderboardTab = () => {
                     <select
                         className="h-10 py-2 pl-8 pr-8 border border-gray-200 rounded-lg bg-gray-50 appearance-none focus:outline-none focus:ring-1 focus:ring-indigo-300 text-sm text-gray-700 cursor-pointer"
                         value={criteria}
-                        onChange={(e) => setCriteria(e.target.value)}
+                        onChange={(e) => setCriteria(e.target.value as LeaderboardCriteria)}
                     >
-                        <option value="points">Points</option>
-                        <option value="studyTime">Study Time</option>
-                        <option value="gamesPlayed">Games Played</option>
-                        <option value="streak">Streak</option>
+                        <option value={LeaderboardCriteria.POINTS}>Points</option>
+                        <option value={LeaderboardCriteria.STUDY_TIME}>Study Time</option>
+                        <option value={LeaderboardCriteria.GAMES_PLAYED}>Games Played</option>
+                        <option value={LeaderboardCriteria.STREAK}>Streak</option>
                     </select>
                     <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
                         {(() => {
                             switch (criteria) {
-                                case "studyTime":
+                                case LeaderboardCriteria.STUDY_TIME:
                                     return <FaRegClock className="text-purple-500" />;
-                                case "gamesPlayed":
+                                case LeaderboardCriteria.GAMES_PLAYED:
                                     return <FaGamepad className="text-amber-500" />;
-                                case "streak":
+                                case LeaderboardCriteria.STREAK:
                                     return <FaFire className="text-orange-500" />;
-                                case "points":
+                                case LeaderboardCriteria.POINTS:
                                 default:
                                     return <FaRegStar className="text-blue-500" />;
                             }
