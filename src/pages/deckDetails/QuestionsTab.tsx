@@ -48,10 +48,9 @@ const QuestionsTab = () => {
 
     useEffect(() => {
         void fetchQuestions();
-    }, [deckFrn]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [deckFrn]);
 
     useEffect(() => {
-        // Filter and sort questions whenever dependencies change
         let filtered = [...questions];
 
         if (searchTerm) {

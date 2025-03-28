@@ -1,11 +1,8 @@
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { register } from "../../api/auth";
 import AuthForm from "../../components/AuthForm";
 
 const Register = () => {
-    const navigate = useNavigate();
-
     const handleRegister = async (data: Record<string, string>) => {
         await register({
             firstName: data.firstName,
