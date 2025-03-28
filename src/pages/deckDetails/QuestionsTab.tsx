@@ -3,7 +3,8 @@ import {
     AiOutlineQuestionCircle,
     AiOutlinePlus,
     AiOutlineSearch,
-    AiOutlineRobot
+    AiOutlineRobot,
+    AiOutlineDelete
 } from "react-icons/ai";
 import { BiSortAlt2 } from "react-icons/bi";
 import { toast } from "react-toastify";
@@ -16,7 +17,7 @@ import GradientButton from "../../components/ui/GradientButton";
 import EmptyState from "../../components/ui/EmptyState";
 import Question from "../../components/ui/Question";
 import { useParams } from "react-router-dom";
-import { BsXCircleFill } from "react-icons/bs";
+import { BsCheckCircleFill, BsXCircleFill } from "react-icons/bs";
 
 const QuestionsTab = () => {
     const { deckFrn } = useParams<{ deckFrn: string }>();
@@ -345,7 +346,7 @@ const QuestionsTab = () => {
             <h3 className="font-medium text-blue-600 mb-2 text-sm">Answers</h3>
             <p className="text-xs text-gray-500 mb-3">Click the indicator to toggle between correct and incorrect answers.</p>
 
-            {/* Combined answers section with toggle functionality */}
+            {/* Combined answers section with improved styling and icons */}
             {[...correctAnswers.map(text => ({ text, isCorrect: true })),
                 ...incorrectAnswers.map(text => ({ text, isCorrect: false }))]
                 .sort((a, b) => Number(b.isCorrect) - Number(a.isCorrect))
@@ -372,17 +373,17 @@ const QuestionsTab = () => {
                             className={`flex-shrink-0 w-10 h-10 rounded-md flex items-center justify-center ${
                                 answer.isCorrect
                                     ? "bg-green-100 text-green-600 hover:bg-green-200"
-                                    : "bg-red-100 text-red-600 hover:bg-red-200"
+                                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                             }`}
                             title={answer.isCorrect ? "Correct answer (click to change)" : "Incorrect answer (click to change)"}
                         >
-                            {answer.isCorrect ? "✓" : "✗"}
+                            {answer.isCorrect ? <BsCheckCircleFill className="text-green-500 text-xs" /> : <BsXCircleFill className="text-gray-400 text-xs" />}
                         </button>
 
                         <input
                             type="text"
-                            className={`p-2 w-full border border-gray-200 rounded-lg ${
-                                answer.isCorrect ? "bg-green-50" : "bg-red-50"
+                            className={`p-2 w-full border rounded-lg ${
+                                answer.isCorrect ? "bg-green-50 border-green-200" : "bg-gray-50 border-gray-200"
                             }`}
                             value={answer.text}
                             onChange={(e) => {
@@ -408,9 +409,9 @@ const QuestionsTab = () => {
                                     setIncorrectAnswers(incorrectAnswers.filter(text => text !== answer.text));
                                 }
                             }}
-                            className="flex-shrink-0 w-10 h-10 rounded-md flex items-center justify-center bg-red-50 text-red-500 hover:bg-red-100"
+                            className="flex-shrink-0 w-10 h-10 rounded-md flex items-center justify-center text-red-600 border border-red-200 bg-white hover:bg-red-50 transition-colors shadow-sm"
                         >
-                            <BsXCircleFill />
+                            <AiOutlineDelete size={18} />
                         </button>
                     </div>
                 ))}
