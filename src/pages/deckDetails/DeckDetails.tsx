@@ -17,13 +17,9 @@ const DeckDetails = () => {
     useEffect(() => {
         const fetchDeckDetails = async () => {
             if (!deckFrn) return;
-            try {
-                const deckDetails = await getDeckDetails(deckFrn);
-                setDeckName(deckDetails.name || "Untitled Deck");
-                setDeckDescription(deckDetails.description || "No description available.");
-            } catch (err) {
-                console.error("Error fetching deck details:", err);
-            }
+            const deckDetails = await getDeckDetails(deckFrn);
+            setDeckName(deckDetails.name || "Untitled Deck");
+            setDeckDescription(deckDetails.description || "No description available.");
         };
         fetchDeckDetails();
     }, [deckFrn]);

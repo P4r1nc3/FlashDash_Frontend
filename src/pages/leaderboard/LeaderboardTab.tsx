@@ -76,13 +76,8 @@ const LeaderboardTab = () => {
     };
 
     const fetchLeaderboardData = useCallback(async () => {
-        try {
-            const data = await getLeaderboard(criteria, friendsOnly, 100);
-            setEntries(data);
-        } catch (error) {
-            console.error("Error fetching leaderboard:", error);
-            toast.error("Failed to load leaderboard data");
-        }
+        const data = await getLeaderboard(criteria, friendsOnly, 100);
+        setEntries(data);
     }, [criteria, friendsOnly]);
 
     useEffect(() => {

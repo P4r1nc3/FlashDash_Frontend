@@ -41,14 +41,9 @@ const QuestionsTab = () => {
 
     const fetchQuestions = async () => {
         if (!deckFrn) return;
-        try {
-            const fetchedQuestions = await getQuestionsInDeck(deckFrn);
-            setQuestions(fetchedQuestions);
-            setFilteredQuestions(fetchedQuestions);
-        } catch (error) {
-            console.error("Error while loading the question:", error);
-            toast.error("Failed to load questions.");
-        }
+        const fetchedQuestions = await getQuestionsInDeck(deckFrn);
+        setQuestions(fetchedQuestions);
+        setFilteredQuestions(fetchedQuestions);
     };
 
     useEffect(() => {
@@ -111,35 +106,25 @@ const QuestionsTab = () => {
             return;
         }
 
-        try {
-            const payload = { question: newQuestion, correctAnswers, incorrectAnswers, difficulty };
+        const payload = { question: newQuestion, correctAnswers, incorrectAnswers, difficulty };
 
-            if (isEditing && editItemId) {
-                await updateQuestion(deckFrn, editItemId, payload);
-                toast.success("Question updated successfully!");
-            } else {
-                await addQuestionToDeck(deckFrn, payload);
-                toast.success("Question added successfully!");
-            }
-
-            await fetchQuestions();
-            setModalOpen(false);
-        } catch (error) {
-            console.error("Error when saving the question:", error);
-            toast.error("Failed to save question.");
+        if (isEditing && editItemId) {
+            await updateQuestion(deckFrn, editItemId, payload);
+            toast.success("Question updated successfully!");
+        } else {
+            await addQuestionToDeck(deckFrn, payload);
+            toast.success("Question added successfully!");
         }
+
+        await fetchQuestions();
+        setModalOpen(false);
     };
 
     const deleteCurrentQuestion = async (itemId: string) => {
         if (!deckFrn) return;
-        try {
-            await deleteQuestion(deckFrn, itemId);
-            toast.success("Question deleted successfully.");
-            await fetchQuestions();
-        } catch (error) {
-            console.error("Error while deleting the question:", error);
-            toast.error("Failed to delete question.");
-        }
+        await deleteQuestion(deckFrn, itemId);
+        toast.success("Question deleted successfully.");
+        await fetchQuestions();
     };
 
     const handleGenerateQuestions = () => {
@@ -154,35 +139,28 @@ const QuestionsTab = () => {
             return;
         }
 
-        try {
-            setIsGenerating(true);
+        setIsGenerating(true);
 
-            const payload = {
-                count: generateCount,
-                language: generateLanguage,
-                difficulty: generateDifficulty,
-                prompt: generatePrompt
-            };
+        const payload = {
+            count: generateCount,
+            language: generateLanguage,
+            difficulty: generateDifficulty,
+            prompt: generatePrompt
+        };
 
-            await generateQuestions(deckFrn, payload);
+        await generateQuestions(deckFrn, payload);
 
-            toast.success(`Successfully generated ${generateCount} questions!`);
-            await fetchQuestions();
+        toast.success(`Successfully generated ${generateCount} questions!`);
+        await fetchQuestions();
 
-            setIsGenerating(false);
-            setGenerateModalOpen(false);
+        setIsGenerating(false);
+        setGenerateModalOpen(false);
 
-            // Reset the form for next time
-            setGenerateCount(3);
-            setGenerateLanguage("English");
-            setGenerateDifficulty(Difficulty.MEDIUM);
-            setGeneratePrompt("");
-
-        } catch (error) {
-            console.error("Error generating questions:", error);
-            toast.error("Failed to generate questions. Please try again.");
-            setIsGenerating(false);
-        }
+        // Reset the form for next time
+        setGenerateCount(3);
+        setGenerateLanguage("English");
+        setGenerateDifficulty(Difficulty.MEDIUM);
+        setGeneratePrompt("");
     };
 
     const renderToolbar = () => (

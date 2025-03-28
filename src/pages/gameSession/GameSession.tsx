@@ -19,12 +19,8 @@ const GameSession = () => {
     useEffect(() => {
         const fetchGameSession = async () => {
             if (!deckFrn || !gameSessionId) return;
-            try {
-                const sessionData = await getGameSession(deckFrn, gameSessionId);
-                setGameSession(sessionData);
-            } catch {
-                toast.error("Failed to fetch game session.");
-            }
+            const sessionData = await getGameSession(deckFrn, gameSessionId);
+            setGameSession(sessionData);
         };
 
         fetchGameSession();

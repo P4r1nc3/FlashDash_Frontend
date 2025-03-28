@@ -54,75 +54,44 @@ const Friends = () => {
     }, []);
 
     const fetchFriends = async () => {
-        try {
-            const data = await getFriends();
-            setFriends(data);
-        } catch (error) {
-            console.error("Error while fetching friends:", error);
-            toast.error("Failed to load friends.");
-        }
+        const data = await getFriends();
+        setFriends(data);
     };
 
     const fetchSentInvitations = async () => {
-        try {
-            const data = await getSentInvitations();
-            setSentInvitations(data);
-        } catch (error) {
-            console.error("Error while fetching sent invitations:", error);
-            toast.error("Failed to load sent invitations.");
-        }
+        const data = await getSentInvitations();
+        setSentInvitations(data);
     };
 
     const fetchReceivedInvitations = async () => {
-        try {
-            const data = await getReceivedInvitations();
-            setReceivedInvitations(data);
-        } catch (error) {
-            console.error("Error while fetching received invitations:", error);
-            toast.error("Failed to load received invitations.");
-        }
+        const data = await getReceivedInvitations();
+        setReceivedInvitations(data);
     };
 
     const handleSendInvitation = async () => {
         if (!email) return;
-        try {
-            await sendFriendInvitation(email);
-            setEmail("");
-            toast.success("Friend invitation sent successfully!");
-            fetchSentInvitations();
-        } catch (error) {
-            console.error("Error while sending invitation:", error);
-            toast.error("Failed to send invitation.");
-        }
+        await sendFriendInvitation(email);
+        setEmail("");
+        toast.success("Friend invitation sent successfully!");
+        fetchSentInvitations();
     };
 
     const handleRespondToInvitation = async (invitationFrn: string, status: "ACCEPTED" | "REJECTED" | "CANCELLED") => {
-        try {
-            await respondToInvitation(invitationFrn, status);
-            toast.success(status === "ACCEPTED" ? "Friend invitation accepted!" : status === "REJECTED" ? "Friend invitation rejected." : "Friend invitation cancelled.");
-            fetchSentInvitations();
-            fetchReceivedInvitations();
-            fetchFriends();
-        } catch (error) {
-            console.error(`Error while responding to invitation with status ${status}:`, error);
-            toast.error("Failed to respond to invitation.");
-        }
+        await respondToInvitation(invitationFrn, status);
+        toast.success(status === "ACCEPTED" ? "Friend invitation accepted!" : status === "REJECTED" ? "Friend invitation rejected." : "Friend invitation cancelled.");
+        fetchSentInvitations();
+        fetchReceivedInvitations();
+        fetchFriends();
     };
 
     const handleDeleteFriend = async () => {
         if (!deletingFriend) return;
-
-        try {
-            await deleteFriend(deletingFriend.userFrn);
-            toast.success("Friend removed successfully.");
-            fetchFriends();
-            setExpandedFriendId(null);
-            setDeleteModalOpen(false);
-            setDeletingFriend(null);
-        } catch (error) {
-            console.error("Error while deleting friend:", error);
-            toast.error("Failed to remove friend.");
-        }
+        await deleteFriend(deletingFriend.userFrn);
+        toast.success("Friend removed successfully.");
+        fetchFriends();
+        setExpandedFriendId(null);
+        setDeleteModalOpen(false);
+        setDeletingFriend(null);
     };
 
     const openDeleteModal = (friend: User, e: React.MouseEvent) => {

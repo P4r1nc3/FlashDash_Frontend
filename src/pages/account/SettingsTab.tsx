@@ -39,32 +39,22 @@ const SettingsTab = () => {
     }, []);
 
     const fetchNotificationSettings = async () => {
-        try {
-            const data = await getNotificationSettings();
-            setNotificationsEnabled(data.dailyNotifications);
-            const time = data.notificationTime ? data.notificationTime.split("T")[1].substring(0, 5) : "08:00";
-            setNotificationTime(time);
-            setTempNotificationTime(time);
-        } catch (error) {
-            console.error("Error while fetching notifications settings:", error);
-            toast.error("Failed to fetch notifications settings");
-        }
+        const data = await getNotificationSettings();
+        setNotificationsEnabled(data.dailyNotifications);
+        const time = data.notificationTime ? data.notificationTime.split("T")[1].substring(0, 5) : "08:00";
+        setNotificationTime(time);
+        setTempNotificationTime(time);
     };
 
     const handleToggleNotifications = async () => {
-        try {
-            if (notificationsEnabled) {
-                await disableNotifications();
-                toast.info("Notifications disabled.");
-            } else {
-                await enableNotifications(notificationTime);
-                toast.success("Notifications enabled.");
-            }
-            setNotificationsEnabled(!notificationsEnabled);
-        } catch (error) {
-            console.error("Error while turning on notifications:", error);
-            toast.error("Failed to update notifications.");
+        if (notificationsEnabled) {
+            await disableNotifications();
+            toast.info("Notifications disabled.");
+        } else {
+            await enableNotifications(notificationTime);
+            toast.success("Notifications enabled.");
         }
+        setNotificationsEnabled(!notificationsEnabled);
     };
 
     const handleTimePickerOpen = () => {
@@ -97,14 +87,8 @@ const SettingsTab = () => {
         if (tempNotificationTime !== notificationTime) {
             setNotificationTime(tempNotificationTime);
             if (notificationsEnabled) {
-                try {
-                    await enableNotifications(tempNotificationTime);
-                    toast.success("Notification time updated.");
-                } catch (error) {
-                    console.error("Error while updating notification time:", error);
-                    toast.error("Failed to update notification time.");
-                    setTempNotificationTime(notificationTime);
-                }
+                await enableNotifications(tempNotificationTime);
+                toast.success("Notification time updated.");
             }
         }
         setShowTimePicker(false);
@@ -127,25 +111,15 @@ const SettingsTab = () => {
             toast.error("Both fields are required.");
             return;
         }
-        try {
-            await changeUserPassword({ oldPassword: passwords.oldPassword, newPassword: passwords.newPassword });
-            setPasswords({ oldPassword: "", newPassword: "" });
-            toast.success("Password changed successfully.");
-        } catch (error) {
-            console.error("Error while changing password:", error);
-            toast.error("Failed to change password.");
-        }
+        await changeUserPassword({ oldPassword: passwords.oldPassword, newPassword: passwords.newPassword });
+        setPasswords({ oldPassword: "", newPassword: "" });
+        toast.success("Password changed successfully.");
     };
 
     const handleDeleteAccount = async () => {
-        try {
-            await deleteUserAccount();
-            toast.error("Your account has been deleted.");
-            window.location.href = "/";
-        } catch (error) {
-            console.error("Error while deleting an account:", error);
-            toast.error("Failed to delete account.");
-        }
+        await deleteUserAccount();
+        toast.error("Your account has been deleted.");
+        window.location.href = "/";
     };
 
     const renderTimePicker = () => (

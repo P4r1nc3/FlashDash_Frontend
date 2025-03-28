@@ -18,18 +18,13 @@ const AchievementsTab = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const [schemas, achievements] = await Promise.all([
-                    getAllAchievementSchemas(),
-                    getUserAchievements()
-                ]);
+            const [schemas, achievements] = await Promise.all([
+                getAllAchievementSchemas(),
+                getUserAchievements()
+            ]);
 
-                setAchievementSchemas(schemas);
-                setUserAchievements(achievements);
-            } catch (error) {
-                console.error("Error while fetching achievement data:", error);
-                toast.error("Failed to fetch achievement data");
-            }
+            setAchievementSchemas(schemas);
+            setUserAchievements(achievements);
         };
         // Execute fetchData and handle the Promise properly
         void fetchData();

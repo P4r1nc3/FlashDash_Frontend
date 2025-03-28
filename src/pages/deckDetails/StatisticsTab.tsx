@@ -21,13 +21,8 @@ const StatisticsTab = () => {
     useEffect(() => {
         const fetchGameSessions = async () => {
             if (!deckFrn) return;
-            try {
-                const sessions = await getGameSessions(deckFrn);
-                setGameSessions(sessions);
-            } catch (error) {
-                console.error("Error while fetching game statistics:", error);
-                toast.error("Failed to fetch game statistics");
-            }
+            const sessions = await getGameSessions(deckFrn);
+            setGameSessions(sessions);
         };
 
         fetchGameSessions();

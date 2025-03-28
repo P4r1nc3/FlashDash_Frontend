@@ -55,13 +55,8 @@ const YourDecksTab = () => {
     }, [decks, searchTerm, sortOption]);
 
     const fetchDecks = async () => {
-        try {
-            const data = await getDecks();
-            setDecks(data);
-        } catch (error) {
-            console.error("Error while fetching decks:", error);
-            toast.error("Failed to fetch decks.");
-        }
+        const data = await getDecks();
+        setDecks(data);
     };
 
     useEffect(() => {
@@ -78,78 +73,63 @@ const YourDecksTab = () => {
             return;
         }
 
-        try {
-            const deckData: CreateDeckRequest = {
-                name,
-                description: description || ""
-            };
+        const deckData: CreateDeckRequest = {
+            name,
+            description: description || ""
+        };
 
-            if (editingDeck) {
-                await updateDeck(editingDeck.deckFrn, deckData);
-                toast.success("Deck updated successfully!");
-            } else {
-                await createDeck(deckData);
-                toast.success("Deck created successfully!");
-            }
-            setName("");
-            setDescription("");
-            setEditingDeck(null);
-            await fetchDecks();
-            setModalOpen(false);
-        } catch (error) {
-            console.error("Error while saving the deck:", error);
-            toast.error("Failed to save deck.");
+        if (editingDeck) {
+            await updateDeck(editingDeck.deckFrn, deckData);
+            toast.success("Deck updated successfully!");
+        } else {
+            await createDeck(deckData);
+            toast.success("Deck created successfully!");
         }
+        setName("");
+        setDescription("");
+        setEditingDeck(null);
+        await fetchDecks();
+        setModalOpen(false);
     };
 
     const handleDeleteDeck = async () => {
         if (!deletingDeck) return;
 
-        try {
-            await deleteDeck(deletingDeck.deckFrn);
-            toast.success("Deck deleted successfully.");
-            await fetchDecks();
-            setDeleteModalOpen(false);
-            setDeletingDeck(null);
-        } catch (error) {
-            console.error("Error while deleting the deck:", error);
-            toast.error("Failed to delete deck.");
-        }
+        await deleteDeck(deletingDeck.deckFrn);
+        toast.success("Deck deleted successfully.");
+        await fetchDecks();
+        setDeleteModalOpen(false);
+        setDeletingDeck(null);
     };
 
     const handleDownloadDeck = async (deck: Deck) => {
-        try {
-            const questions = await getQuestionsInDeck(deck.deckFrn);
+        const questions = await getQuestionsInDeck(deck.deckFrn);
 
-            const deckData: ExportDeck = {
-                name: deck.name,
-                description: deck.description || "",
-                questions: questions.map(q => ({
-                    question: q.question,
-                    correctAnswers: q.correctAnswers,
-                    incorrectAnswers: q.incorrectAnswers,
-                    difficulty: q.difficulty
-                }))
-            };
+        const deckData: ExportDeck = {
+            name: deck.name,
+            description: deck.description || "",
+            questions: questions.map(q => ({
+                question: q.question,
+                correctAnswers: q.correctAnswers,
+                incorrectAnswers: q.incorrectAnswers,
+                difficulty: q.difficulty
+            }))
+        };
 
-            const dataStr = JSON.stringify(deckData, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(dataBlob);
+        const dataStr = JSON.stringify(deckData, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
 
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${deck.name.replace(/\s+/g, '_')}.json`;
-            document.body.appendChild(a);
-            a.click();
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${deck.name.replace(/\s+/g, '_')}.json`;
+        document.body.appendChild(a);
+        a.click();
 
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
 
-            toast.success("Deck downloaded successfully!");
-        } catch (error) {
-            console.error("Error downloading deck:", error);
-            toast.error("Failed to download deck.");
-        }
+        toast.success("Deck downloaded successfully!");
     };
 
     const handleUploadDeck = async (event: React.ChangeEvent<HTMLInputElement>) => {

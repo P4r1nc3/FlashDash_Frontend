@@ -14,13 +14,8 @@ const ProfileTab = () => {
 
     useEffect(() => {
         const fetchUserInfo = async () => {
-            try {
-                const data = await getUserInfo();
-                setUser(data);
-            } catch (error) {
-                console.error("Error fetching user info:", error);
-                toast.error("Failed to fetch user information");
-            }
+            const data = await getUserInfo();
+            setUser(data);
         };
 
         fetchUserInfo().catch(error => {
