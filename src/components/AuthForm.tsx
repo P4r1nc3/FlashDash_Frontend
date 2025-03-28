@@ -64,15 +64,11 @@ const AuthForm = ({
             return;
         }
 
-        try {
-            const dataToSubmit = { ...formData };
-            delete dataToSubmit.confirmPassword;
-            await onSubmit(dataToSubmit);
+        const dataToSubmit = { ...formData };
+        delete dataToSubmit.confirmPassword;
+        await onSubmit(dataToSubmit);
 
-            resetForm();
-        } catch (error) {
-            toast.error(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
-        }
+        resetForm();
     };
 
     const renderField = (field: FormField) => {
