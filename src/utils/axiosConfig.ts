@@ -16,22 +16,31 @@ export const axiosActivityInstance = axios.create({
 });
 
 const responseInterceptor = (error: any) => {
+    console.error('API Error:', error);
+
     // Handle 401 Unauthorized errors
     if (error.response?.status === 401) {
+        console.log('Authentication error: User not authorized (401)');
         localStorage.removeItem('token');
         window.location.href = '/login';
         return Promise.reject(error);
     }
 
-    // Handle API error responses
-    const errorData = error.response.data;
-    if (errorData.status && errorData.cause && errorData.action) {
-        const apiError = errorData as ErrorResponse;
-        toast.error(`${apiError.cause}. ${apiError.action}`);
-        return Promise.reject(apiError);
+    // Check if error response exists and has data
+    if (error.response && error.response.data) {
+        const errorData = error.response.data;
+        console.log('Error response data:', errorData);
+
+        // Handle API error responses with our expected format
+        if (errorData.status && errorData.cause && errorData.action) {
+            const apiError = errorData as ErrorResponse;
+            console.log(`API Error (${apiError.error}): ${apiError.cause}. Action: ${apiError.action}`);
+            toast.error(`${apiError.cause}. ${apiError.action}`);
+            return Promise.reject(apiError);
+        }
     }
 
-
+    console.log('Unexpected error occurred:', error.message || 'Unknown error');
     toast.error('An unexpected error occurred. Please try again later.');
     return Promise.reject(error);
 };
