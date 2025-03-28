@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
-import { getNotificationSettings, enableNotifications, disableNotifications, changeUserPassword, deleteUserAccount } from "../../api/user.ts";
+import { getNotificationSettings, enableNotifications, disableNotifications, changeUserPassword, deleteUserAccount } from "../../api/user";
+import { NotificationResponse } from "../../interfaces/NotificationResponse";
 import { AiOutlineBell, AiOutlineUserDelete, AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { FiClock } from "react-icons/fi";
@@ -18,16 +19,22 @@ const SettingsTab = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [passwordModalOpen, setPasswordModalOpen] = useState(false);
     const [timePickerPosition, setTimePickerPosition] = useState({ top: 0, left: 0 });
-    const timePickerRef = useRef<HTMLDivElement>(null);
-    const timeButtonRef = useRef<HTMLButtonElement>(null);
+    const timePickerRef = useRef<HTMLDivElement | null>(null);
+    const timeButtonRef = useRef<HTMLButtonElement | null>(null);
 
     useEffect(() => {
-        fetchNotificationSettings();
+        void fetchNotificationSettings();
 
-        // Close time picker when clicking outside
         const handleClickOutside = (event: MouseEvent) => {
-            if (timePickerRef.current && !timePickerRef.current.contains(event.target as Node) &&
-                timeButtonRef.current && !timeButtonRef.current.contains(event.target as Node)) {
+            const pickerElement = timePickerRef.current;
+            const buttonElement = timeButtonRef.current;
+
+            if (
+                pickerElement &&
+                buttonElement &&
+                !pickerElement.contains(event.target as Node) &&
+                !buttonElement.contains(event.target as Node)
+            ) {
                 setShowTimePicker(false);
             }
         };
@@ -39,7 +46,7 @@ const SettingsTab = () => {
     }, []);
 
     const fetchNotificationSettings = async () => {
-        const data = await getNotificationSettings();
+        const data: NotificationResponse = await getNotificationSettings();
         setNotificationsEnabled(data.dailyNotifications);
         const time = data.notificationTime ? data.notificationTime.split("T")[1].substring(0, 5) : "08:00";
         setNotificationTime(time);
@@ -57,12 +64,13 @@ const SettingsTab = () => {
         setNotificationsEnabled(!notificationsEnabled);
     };
 
-    const handleTimePickerOpen = () => {
+    const handleTimePickerOpen = (): void => {
         if (notificationsEnabled) {
             setTempNotificationTime(notificationTime);
 
-            if (timeButtonRef.current && !showTimePicker) {
-                const rect = timeButtonRef.current.getBoundingClientRect();
+            const buttonElement = timeButtonRef.current;
+            if (buttonElement && !showTimePicker) {
+                const rect = buttonElement.getBoundingClientRect();
                 const rightAlignedLeft = rect.right - 255;
 
                 setTimePickerPosition({

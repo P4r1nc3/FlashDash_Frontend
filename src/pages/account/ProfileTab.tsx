@@ -7,7 +7,6 @@ import { FaRegStar, FaFire, FaRegClock, FaGamepad } from "react-icons/fa";
 import Card from "../../components/ui/Card";
 import EmptyState from "../../components/ui/EmptyState";
 import GradientButton from "../../components/ui/GradientButton";
-import { toast } from "react-toastify";
 
 const ProfileTab = () => {
     const [user, setUser] = useState<User | null>(null);
@@ -25,7 +24,7 @@ const ProfileTab = () => {
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString(undefined, {
+        return date.toLocaleDateString('pl-PL', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
