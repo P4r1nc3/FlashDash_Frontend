@@ -198,6 +198,7 @@ const AchievementsTab = () => {
                 <EmptyState
                     icon={<AiOutlineTrophy size={48} />}
                     title="No achievements found in this category."
+                    description="Try selecting a different category filter."
                 />
             );
         }

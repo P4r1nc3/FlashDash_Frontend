@@ -164,11 +164,13 @@ const LeaderboardTab = () => {
     const renderLeaderboard = () => {
         if (filteredEntries.length === 0) {
             return (
-                <EmptyState
-                    icon={<MdOutlineLeaderboard size={48} />}
-                    title="No leaderboard data found"
-                    description={searchTerm ? "Try a different search term" : friendsOnly ? "Add friends to see them on the leaderboard" : "Be the first to join the leaderboard!"}
-                />
+                <div className="h-full flex items-center justify-center">
+                    <EmptyState
+                        icon={<MdOutlineLeaderboard size={48} />}
+                        title="No leaderboard data found"
+                        description={searchTerm ? "Try a different search term" : friendsOnly ? "Add friends to see them on the leaderboard" : "Be the first to join the leaderboard!"}
+                    />
+                </div>
             );
         }
 
@@ -245,10 +247,10 @@ const LeaderboardTab = () => {
             description="See how you rank against others"
             icon={<MdOutlineLeaderboard size={22} />}
             toolbar={renderToolbar()}
-            scrollable={true}
+            scrollable={filteredEntries.length > 0}
             fullHeight={true}
         >
-            <div className="custom-scrollbar">
+            <div className="custom-scrollbar h-full">
                 {renderLeaderboard()}
             </div>
         </Card>

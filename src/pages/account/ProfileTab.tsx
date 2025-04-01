@@ -6,7 +6,6 @@ import { AiOutlineUser, AiOutlineMail, AiOutlineCalendar } from "react-icons/ai"
 import { FaRegStar, FaFire, FaRegClock, FaGamepad } from "react-icons/fa";
 import Card from "../../components/ui/Card";
 import EmptyState from "../../components/ui/EmptyState";
-import GradientButton from "../../components/ui/GradientButton";
 
 const ProfileTab = () => {
     const [user, setUser] = useState<User | null>(null);
@@ -54,16 +53,6 @@ const ProfileTab = () => {
                     icon={<AiOutlineUser size={48} />}
                     title="Unable to load user data."
                     description="Please try again later."
-                    action={
-                        <GradientButton
-                            onClick={() => window.location.reload()}
-                            className="mt-4 px-4 py-2"
-                            startColor="from-indigo-400"
-                            endColor="to-indigo-500"
-                        >
-                            Retry
-                        </GradientButton>
-                    }
                 />
             );
         }
@@ -162,6 +151,7 @@ const ProfileTab = () => {
             title="Profile Information"
             description="Your personal account details and current statistics."
             icon={<AiOutlineUser size={22} />}
+            fullHeight={true}
         >
             {renderUserProfile()}
         </Card>
