@@ -1,11 +1,21 @@
 import { axiosCoreInstance } from '../utils/axiosConfig';
-import { QuestionRequest, QuestionResponse } from '../interfaces/Question';
+import { QuestionRequest, QuestionResponse, GenerateQuestionRequest } from '../interfaces/Question';
 import { getToken } from '../utils/tokenUtils';
 import { AxiosResponse } from 'axios';
 
 export const addQuestionToDeck = async (deckFrn: string, data: QuestionRequest): Promise<QuestionResponse> => {
     const token = getToken();
     const response: AxiosResponse<QuestionResponse> = await axiosCoreInstance.post(`/decks/${deckFrn}/questions`, data, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return response.data;
+};
+
+export const generateQuestions = async (deckFrn: string, data: GenerateQuestionRequest): Promise<QuestionResponse> => {
+    const token = getToken();
+    const response: AxiosResponse<QuestionResponse> = await axiosCoreInstance.post(`/decks/${deckFrn}/questions/generate`, data, {
         headers: {
             Authorization: `Bearer ${token}`,
         },

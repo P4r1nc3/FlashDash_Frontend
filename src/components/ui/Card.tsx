@@ -6,11 +6,13 @@ interface CardProps {
     icon?: React.ReactNode;
     children?: React.ReactNode;
     actions?: React.ReactNode;
+    toolbar?: React.ReactNode;
     scrollable?: boolean;
     maxHeight?: string;
     className?: string;
     colorScheme?: 'default' | 'danger' | string;
     titleColor?: string;
+    fullHeight?: boolean;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -19,11 +21,13 @@ const Card: React.FC<CardProps> = ({
                                        icon,
                                        children,
                                        actions,
+                                       toolbar,
                                        scrollable = false,
                                        maxHeight = 'max-h-[50vh]',
                                        className = '',
                                        colorScheme = 'default',
-                                       titleColor
+                                       titleColor,
+                                       fullHeight = false,
                                    }) => {
     let gradientClasses = "from-blue-400 to-indigo-400";
     let titleColorClass = "text-blue-600";
@@ -42,30 +46,46 @@ const Card: React.FC<CardProps> = ({
     }
 
     return (
-        <div className={`bg-white rounded-xl shadow-md w-full ${className}`}>
-            {/* Top gradient line */}
-            <div className={`h-1 w-full bg-gradient-to-r ${gradientClasses} rounded-t-xl`}></div>
+        <div className={`bg-white rounded-xl shadow-md w-full overflow-hidden ${fullHeight ? 'h-full flex flex-col' : ''} ${className}`}>
+            <div className={`h-1 w-full bg-gradient-to-r ${gradientClasses} rounded-t-xl flex-shrink-0`}></div>
 
-            <div className="p-6">
-                <div className="flex justify-between items-start">
+            <div className={`p-6 ${fullHeight ? 'flex flex-col flex-grow h-full' : ''}`}>
+                <div className="flex justify-between items-start mb-4 flex-shrink-0">
                     <div>
                         <h2 className={`text-xl font-bold ${titleColorClass} flex items-center gap-2 mb-2`}>
                             {icon && <span className={iconColorClass}>{icon}</span>} {title}
                         </h2>
-                        {description && <p className="mb-3 text-gray-500 text-sm">{description}</p>}
+                        {description && <p className="text-gray-500 text-sm">{description}</p>}
                     </div>
                     {actions && <div>{actions}</div>}
                 </div>
 
-                <div className={scrollable ? `${maxHeight} overflow-y-auto pr-2 custom-scrollbar` : ''}>
-                    {children}
+                {toolbar && (
+                    <div className="flex-shrink-0 mb-4 border-b border-gray-100 pb-4">
+                        {toolbar}
+                    </div>
+                )}
+
+                <div className={`${fullHeight ? 'flex-grow relative' : ''}`}>
+                    <div
+                        className={
+                            scrollable
+                                ? fullHeight
+                                    ? 'absolute inset-0 overflow-y-auto pr-2 custom-scrollbar overflow-auto-when-needed'
+                                    : `${maxHeight} overflow-y-auto pr-2 custom-scrollbar overflow-auto-when-needed`
+                                : fullHeight
+                                    ? 'absolute inset-0'
+                                    : ''
+                        }
+                    >
+                        {children}
+                    </div>
                 </div>
             </div>
         </div>
     );
 };
 
-// Add the custom scrollbar styles
 const style = document.createElement('style');
 style.innerHTML = `
 .custom-scrollbar::-webkit-scrollbar {
@@ -84,6 +104,19 @@ style.innerHTML = `
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, #3b82f6, #6366f1);
+}
+
+.overflow-auto-when-needed {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.overflow-auto-when-needed:not(:hover)::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.overflow-auto-when-needed:hover::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #60a5fa, #818cf8);
 }
 `;
 document.head.appendChild(style);

@@ -6,21 +6,14 @@ import { AiOutlineUser, AiOutlineMail, AiOutlineCalendar } from "react-icons/ai"
 import { FaRegStar, FaFire, FaRegClock, FaGamepad } from "react-icons/fa";
 import Card from "../../components/ui/Card";
 import EmptyState from "../../components/ui/EmptyState";
-import GradientButton from "../../components/ui/GradientButton";
-import { toast } from "react-toastify";
 
 const ProfileTab = () => {
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
         const fetchUserInfo = async () => {
-            try {
-                const data = await getUserInfo();
-                setUser(data);
-            } catch (error) {
-                console.error("Error fetching user info:", error);
-                toast.error("Failed to fetch user information");
-            }
+            const data = await getUserInfo();
+            setUser(data);
         };
 
         fetchUserInfo().catch(error => {
@@ -30,11 +23,16 @@ const ProfileTab = () => {
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString(undefined, {
+        return date.toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
         });
+    };
+
+    const getCreationYear = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.getFullYear();
     };
 
     const formatStudyTime = (minutes: number) => {
@@ -55,16 +53,6 @@ const ProfileTab = () => {
                     icon={<AiOutlineUser size={48} />}
                     title="Unable to load user data."
                     description="Please try again later."
-                    action={
-                        <GradientButton
-                            onClick={() => window.location.reload()}
-                            className="mt-4 px-4 py-2"
-                            startColor="from-indigo-400"
-                            endColor="to-indigo-500"
-                        >
-                            Retry
-                        </GradientButton>
-                    }
                 />
             );
         }
@@ -97,7 +85,7 @@ const ProfileTab = () => {
                                     <AiOutlineUser className="mr-1" /> {user.username}
                                 </div>
                                 <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
-                                    <AiOutlineCalendar className="mr-1" /> Joined {formatDate(user.createdAt).split(' ').slice(0, 2).join(' ')}
+                                    <AiOutlineCalendar className="mr-1" /> Joined {formatDate(user.createdAt).split(' ').slice(0, 2).join(' ')} {getCreationYear(user.createdAt)}
                                 </div>
                             </div>
                         </div>
@@ -163,6 +151,7 @@ const ProfileTab = () => {
             title="Profile Information"
             description="Your personal account details and current statistics."
             icon={<AiOutlineUser size={22} />}
+            fullHeight={true}
         >
             {renderUserProfile()}
         </Card>
